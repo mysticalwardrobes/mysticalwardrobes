@@ -1,3 +1,8 @@
+﻿"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import type { PanInfo } from "framer-motion";
 import Image from "next/image";
 import heroBg from "@/public/assets/Hero-bg.jpg"
 import Logo4fg from "@/public/assets/Mystical Wardrobes Logo-04(foreground).svg"
@@ -9,16 +14,28 @@ import Logo from "@/public/assets/Mystical Wardrobes Logo-02 (foreground).svg"
 
 import FadeInOnScroll from "@/components/FadeInOnScroll";
 import ExpandableText from "@/components/ExpandableText";
+import type { Review as ReviewResponse } from "@/app/api/reviews/model";
 
 
 export default function Home() {
   return (
-    <div className="m-0 flex flex-col items-center justify-start w-full h-screen overflow-x-hidden bg-background">
+    <div
+      className="m-0 flex flex-col items-center justify-start w-full h-screen overflow-x-hidden bg-background"
+      style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
+    >
+      <style jsx>{`
+      div::-webkit-scrollbar {
+        display: none;
+      }
+      `}</style>
       <Hero/>
       <FadeInOnScroll delay={0.1} className="w-full h-fit bg-background">
-        <Collections/>
+        <Collections />
       </FadeInOnScroll>
-      <Featured/>
+      <Featured />
+      <FadeInOnScroll delay={0.2} className="w-full h-fit bg-background">
+        <ReviewsSection />
+      </FadeInOnScroll>
     </div>
   );
 }
@@ -35,8 +52,404 @@ function Hero() {
         text="Discover a world of enchanting fashion, where every piece tells a story and every outfit is a journey into the mystical. Our collection is designed to inspire your imagination and elevate your wardrobe with unique, handcrafted garments that blend fantasy with elegance."
         color="text-background"
       />
+      <div className="w-full flex flex-row items-center justify-start space-x-4">
+        <button className="font-manrope text-lg md:text-xl bg-primary text-tertiary hover:text-white bg-white border-2 border-white rounded px-4 py-2 rounded hover:bg-secondary transition-colors duration-300">
+          Shop Now
+        </button>
+        <button className="font-manrope text-lg md:text-xl bg-transparent border-2 border-background text-background px-4 py-2 rounded hover:bg-white hover:text-tertiary transition-colors duration-300">
+          Learn More
+        </button>
+      </div>
     </div>
   )
+}
+
+type ReviewCardPosition = "active" | "previous" | "next";
+
+type ReviewWithImages = ReviewResponse & {
+  images: string[];
+};
+
+const CARD_TRANSITION = { duration: 0.6, ease: [0.22, 1, 0.36, 1] } as const;
+
+function ReviewsSection() {
+  const [reviews, setReviews] = useState<ReviewWithImages[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadReviews = async () => {
+      try {
+        const response = await fetch('/api/reviews');
+        if (!response.ok) {
+          throw new Error('Failed to load reviews');
+        }
+
+        const data: ReviewResponse[] = await response.json();
+        if (cancelled) {
+          return;
+        }
+
+        const normalized: ReviewWithImages[] = data
+          .filter((review) => Boolean(review.comment?.trim()))
+          .slice(0, 10)
+          .map((review) => {
+            const images = [
+              review.thumbnailMediaUrl ?? undefined,
+              ...(review.otherMediaUrls ?? []),
+            ].filter((url): url is string => typeof url === 'string' && url.length > 0);
+
+            return {
+              ...review,
+              images,
+            };
+          });
+
+        setReviews(normalized);
+        setActiveIndex(0);
+        setError(null);
+      } catch (caught) {
+        if (!cancelled) {
+          const message =
+            caught instanceof Error ? caught.message : 'Unable to load reviews.';
+          setError(message);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadReviews();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (reviews.length < 2) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setActiveIndex((previous) => (previous + 1) % reviews.length);
+    }, 8000);
+
+    return () => window.clearInterval(timer);
+  }, [reviews.length]);
+
+  const handleMove = useCallback(
+    (direction: 'next' | 'previous') => {
+      if (reviews.length < 2) {
+        return;
+      }
+
+      setActiveIndex((current) => {
+        const nextIndex =
+          direction === 'next'
+            ? (current + 1) % reviews.length
+            : (current - 1 + reviews.length) % reviews.length;
+
+        return nextIndex;
+      });
+    },
+    [reviews.length],
+  );
+
+  const handleSelect = useCallback(
+    (index: number) => {
+      if (!reviews.length) {
+        return;
+      }
+
+      setActiveIndex((index + reviews.length) % reviews.length);
+    },
+    [reviews.length],
+  );
+
+  const displayedCards = useMemo(() => {
+    if (!reviews.length) {
+      return [] as Array<{ review: ReviewWithImages; position: ReviewCardPosition }>;
+    }
+
+    if (reviews.length === 1) {
+      return [
+        { review: reviews[0], position: 'active' as ReviewCardPosition },
+      ];
+    }
+
+    if (reviews.length === 2) {
+      const active = reviews[activeIndex % reviews.length];
+      const other = reviews[(activeIndex + 1) % reviews.length];
+
+      return [
+        { review: other, position: 'previous' as ReviewCardPosition },
+        { review: active, position: 'active' as ReviewCardPosition },
+      ];
+    }
+
+    const previousIndex = (activeIndex - 1 + reviews.length) % reviews.length;
+    const nextIndex = (activeIndex + 1) % reviews.length;
+
+    return [
+      { review: reviews[previousIndex], position: 'previous' as ReviewCardPosition },
+      { review: reviews[activeIndex], position: 'active' as ReviewCardPosition },
+      { review: reviews[nextIndex], position: 'next' as ReviewCardPosition },
+    ];
+  }, [reviews, activeIndex]);
+
+  const showNavigation = reviews.length > 1;
+
+  return (
+    <section className="flex w-full flex-col items-center justify-center bg-background px-6 py-16 text-foreground md:px-16">
+      <div className="max-w-4xl text-center">
+        <p className="font-manrope text-xs uppercase tracking-[0.4em] text-secondary">Testimonials</p>
+        <h2 className="mt-3 font-vegawanty text-4xl text-foreground md:text-5xl">From Our Clients</h2>
+        <p className="mt-5 font-manrope text-base text-foreground/80 md:text-lg">
+          Glimpses of the magic we create together, gathered from gowns that made their fairytales real.
+        </p>
+      </div>
+
+      {isLoading ? (
+        <div className="mt-12 flex w-full max-w-5xl items-center justify-center">
+          <div className="h-72 w-full max-w-3xl animate-pulse rounded-3xl bg-foreground/10" />
+        </div>
+      ) : error ? (
+        <div className="mt-12 w-full max-w-3xl rounded-2xl border border-secondary/30 bg-secondary/5 px-6 py-12 text-center font-manrope text-foreground">
+          {error}
+        </div>
+      ) : !reviews.length ? (
+        <div className="mt-12 text-center font-manrope text-foreground/70">
+          Reviews will appear here as soon as our happy fairies share their stories.
+        </div>
+      ) : (
+        <>
+          <div className="relative mt-12 w-full max-w-5xl">
+            <div className="relative min-h-[420px] md:min-h-[460px]">
+              {displayedCards.map(({ review, position }) => (
+                <ReviewCard
+                  key={`${review.id}-${position}`}
+                  review={review}
+                  position={position}
+                  isActive={position === 'active'}
+                />
+              ))}
+            </div>
+
+            {showNavigation && (
+              <div className="pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-between px-2 md:px-4">
+                <button
+                  type="button"
+                  aria-label="Show previous review"
+                  onClick={() => handleMove('previous')}
+                  className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-foreground/30 bg-background/90 text-lg text-foreground shadow-md transition hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 sm:h-12 sm:w-12 sm:text-2xl"
+                >
+                  ?
+                </button>
+                <button
+                  type="button"
+                  aria-label="Show next review"
+                  onClick={() => handleMove('next')}
+                  className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-foreground/30 bg-background/90 text-lg text-foreground shadow-md transition hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 sm:h-12 sm:w-12 sm:text-2xl"
+                >
+                  ?
+                </button>
+              </div>
+            )}
+          </div>
+
+          {showNavigation && (
+            <div className="mt-10 flex items-center gap-2">
+              {reviews.map((review, index) => {
+                const isActive = index === activeIndex;
+
+                return (
+                  <button
+                    key={review.id}
+                    type="button"
+                    aria-label={`Show review ${index + 1}`}
+                    aria-current={isActive ? 'true' : undefined}
+                    onClick={() => handleSelect(index)}
+                    className={`h-2 rounded-full transition-all duration-300 ${isActive ? 'w-9 bg-secondary' : 'w-2 bg-foreground/30 hover:bg-foreground/60'}`}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+    </section>
+  );
+}
+
+interface ReviewCardProps {
+  review: ReviewWithImages;
+  position: ReviewCardPosition;
+  isActive: boolean;
+}
+
+function ReviewCard(props: ReviewCardProps) {
+  const { review, position, isActive } = props;
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    setCurrentImageIndex(0);
+  }, [review.id]);
+
+  const images = review.images;
+  const hasImages = images.length > 0;
+
+  const goToNextImage = useCallback(() => {
+    if (images.length < 2) {
+      return;
+    }
+
+    setCurrentImageIndex((previous) => (previous + 1) % images.length);
+  }, [images.length]);
+
+  const goToPreviousImage = useCallback(() => {
+    if (images.length < 2) {
+      return;
+    }
+
+    setCurrentImageIndex((previous) => (previous - 1 + images.length) % images.length);
+  }, [images.length]);
+
+  const handleDragEnd = useCallback(
+    (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+      if (images.length < 2) {
+        return;
+      }
+
+      if (info.offset.x < -50) {
+        goToNextImage();
+      } else if (info.offset.x > 50) {
+        goToPreviousImage();
+      }
+    },
+    [goToNextImage, goToPreviousImage, images.length],
+  );
+
+  const offsets: Record<ReviewCardPosition, string> = {
+    previous: '-150%',
+    active: '-50%',
+    next: '50%',
+  };
+
+  const safeName = review.clientName?.trim() ? review.clientName.trim() : 'Mystical Wardrobes Client';
+  const safeComment = review.comment?.trim() ?? 'This fairy has left a sprinkle of magic for us.';
+
+  return (
+    <motion.article
+      initial={false}
+      animate={{
+        x: offsets[position],
+        scale: isActive ? 1 : 0.9,
+        opacity: isActive ? 1 : 0.4,
+        y: isActive ? 0 : 24,
+      }}
+      transition={CARD_TRANSITION}
+      className={`absolute top-0 left-1/2 w-full max-w-5xl px-0 md:px-4 ${position === 'active' ? 'block' : 'hidden md:block'}`}
+      style={{ pointerEvents: isActive ? 'auto' : 'none', zIndex: position === 'active' ? 30 : 10 }}
+      aria-hidden={!isActive}
+    >
+      <div
+        className={`flex h-full flex-col gap-8 rounded border border-foreground/10 bg-white/95 px-6 py-8 shadow-[0_35px_70px_-40px_rgba(99,102,83,0.55)] md:px-12 md:py-12 ${hasImages ? 'md:flex-row md:items-start md:gap-10' : ''}`}
+      >
+        {hasImages ? (
+          <div className="flex w-full flex-col gap-4 md:w-[44%]">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded bg-foreground/5">
+              <motion.div
+                key={`${review.id}-${currentImageIndex}`}
+                className="relative h-full w-full"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={handleDragEnd}
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.35 }}
+              >
+                <Image
+                  src={images[currentImageIndex]}
+                  alt={`${safeName} review image ${currentImageIndex + 1}`}
+                  fill
+                  sizes="(min-width: 1024px) 22rem, 90vw"
+                  className="object-cover"
+                  priority={position === 'active'}
+                  unoptimized
+                />
+              </motion.div>
+
+              {images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Show previous photo"
+                    onClick={goToPreviousImage}
+                    className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/90 text-lg text-foreground shadow-md transition hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                  >
+                    {'<'}
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Show next photo"
+                    onClick={goToNextImage}
+                    className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/90 text-lg text-foreground shadow-md transition hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                  >
+                    {'>'}
+                  </button>
+                </>
+              )}
+            </div>
+
+            {images.length > 1 && (
+              <div className="mt-2 flex items-center gap-3 overflow-x-auto pb-1">
+                {images.map((src, index) => (
+                  <button
+                    key={`${review.id}-thumbnail-${index}`}
+                    type="button"
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border transition-all duration-300 ${currentImageIndex === index ? 'border-secondary ring-2 ring-secondary/50' : 'border-transparent hover:border-foreground/30'}`}
+                  >
+                    <Image
+                      src={src}
+                      alt={`${safeName} gallery thumbnail ${index + 1}`}
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        <div className={`flex w-full flex-col justify-between ${hasImages ? 'md:w-[56%]' : ''}`}>
+          <div className="flex flex-col gap-6">
+            <span className="text-4xl text-secondary md:text-5xl">&ldquo;</span>
+            <p className="font-manrope text-base leading-7 text-foreground/90 md:text-lg">{safeComment}</p>
+            <span className="self-start text-4xl text-secondary md:text-5xl">&rdquo;</span>
+          </div>
+          <div className="mt-6 border-t border-foreground/10 pt-6">
+            <p className="font-vegawanty text-2xl text-foreground">{safeName}</p>
+            {review.gownId ? (
+              <p className="font-manrope text-sm uppercase tracking-widest text-foreground/50">
+                Wore gown #{review.gownId}
+              </p>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </motion.article>
+  );
 }
 
 function Collections() {
@@ -169,4 +582,17 @@ function FeaturedGownsCard(props: FeaturedGownsCardProps) {
   );
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
