@@ -185,7 +185,7 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
 
   return (
     <main className="bg-background py-10 text-secondary md:py-16">
-      <section className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-1 sm:px-2 lg:flex-row lg:px-3">
+      <section className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-5 sm:px-6 lg:flex-row lg:px-8">
         <aside className="hidden w-full max-w-xs shrink-0 lg:block">
           <div className="bg-white p-6">
             <div className="mb-6">
@@ -235,7 +235,7 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8">
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:gap-8">
             {dummyGowns.map((gown) => (
               <article
                 key={gown.id}
@@ -251,7 +251,7 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
                       sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 30vw"
                     />
                   </div>
-                  <div className="flex flex-1 flex-col justify-between gap-1 px-4 py-4">
+                  <div className="flex flex-1 flex-col justify-between gap-0.5 px-1 py-2 md:gap-1 md:px-4 md:py-4">
                     <h2 className="font-manrope text-base font-semibold text-secondary sm:text-lg">{gown.name}</h2>
                     <p className="font-manrope text-sm uppercase tracking-[0.35em] text-secondary/70">{gown.price}</p>
                   </div>

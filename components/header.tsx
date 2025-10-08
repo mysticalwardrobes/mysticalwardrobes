@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Logo from "@/public/assets/Mystical Wardrobes Logo-02.svg"
+import Logo from "@/public/assets/Mystical-Wardrobes-Logo-02.svg"
 
 
 export default function Header() {

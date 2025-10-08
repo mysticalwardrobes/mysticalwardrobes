@@ -75,8 +75,8 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
 
       <div className="space-y-5 md:sticky md:top-24 md:pt-10 self-start">
         <div>
-          <h1 className="text-6xl font-semibold tracking-tight font-serif">{gown.name}</h1>
           <p className="mt-1 text-sm text-neutral-600">{gown.collection}</p>
+          <h1 className="text-6xl font-semibold tracking-tight font-serif">{gown.name}</h1>
           <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
             {gown.tags.map((t) => (
               <span key={t} className="rounded-full border px-3 py-1 bg-white/60 tracking-wide uppercase text-neutral-700">{t}</span>

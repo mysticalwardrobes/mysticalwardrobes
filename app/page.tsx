@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 import type { PanInfo } from "framer-motion";
 import Image from "next/image";
 import heroBg from "@/public/assets/Hero-bg.jpg"
-import Logo4fg from "@/public/assets/Mystical Wardrobes Logo-04(foreground).svg"
-import Icon6 from "@/public/assets/symbols/Mystical Wardrobes Icons-09-06.svg"
+import Logo4fg from "@/public/assets/Mystical-Wardrobes-Logo-04-foreground.svg"
+import Icon6 from "@/public/assets/symbols/Mystical-Wardrobes-Icons-09-06.svg"
 
 import premium from "@/public/assets/collections/Premium.png";
 import sampleGown1 from "@/public/assets/sample_gown-1.jpg";
-import Logo from "@/public/assets/Mystical Wardrobes Logo-02 (foreground).svg"
+import Logo from "@/public/assets/Mystical-Wardrobes-Logo-02-foreground.svg"
 
 import FadeInOnScroll from "@/components/FadeInOnScroll";
 import ExpandableText from "@/components/ExpandableText";
@@ -20,7 +20,7 @@ import type { Review as ReviewResponse } from "@/app/api/reviews/model";
 export default function Home() {
   return (
     <div
-      className="m-0 flex flex-col items-center justify-start w-full h-screen overflow-x-hidden bg-background"
+      className="m-0 flex flex-col items-center justify-start w-full bg-background"
       style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
     >
       <style jsx>{`
@@ -28,7 +28,10 @@ export default function Home() {
         display: none;
       }
       `}</style>
-      <Hero/>
+      <FadeInOnScroll delay={0.1} className="w-full h-fit bg-background">
+        <Hero/>
+      </FadeInOnScroll>
+      
       <FadeInOnScroll delay={0.1} className="w-full h-fit bg-background">
         <Collections />
       </FadeInOnScroll>
@@ -52,12 +55,12 @@ function Hero() {
         text="Discover a world of enchanting fashion, where every piece tells a story and every outfit is a journey into the mystical. Our collection is designed to inspire your imagination and elevate your wardrobe with unique, handcrafted garments that blend fantasy with elegance."
         color="text-background"
       />
-      <div className="w-full flex flex-row items-center justify-start space-x-4">
-        <button className="font-manrope text-lg md:text-xl bg-primary text-tertiary hover:text-white bg-white border-2 border-white rounded px-4 py-2 rounded hover:bg-secondary transition-colors duration-300">
-          Shop Now
+      <div className="w-full flex flex-row items-center justify-start space-x-4 mt-5">
+        <button className="font-manrope text-sm md:text-lg bg-primary text-secondary hover:text-white bg-white border-2 border-white rounded px-4 py-2 hover:bg-secondary transition-colors duration-300">
+          Browse Our Gowns
         </button>
-        <button className="font-manrope text-lg md:text-xl bg-transparent border-2 border-background text-background px-4 py-2 rounded hover:bg-white hover:text-tertiary transition-colors duration-300">
-          Learn More
+        <button className="font-manrope text-sm md:text-lg bg-transparent border-2 border-background text-background px-4 py-2 rounded hover:bg-white hover:text-secondary transition-colors duration-300">
+          Book a Fitting
         </button>
       </div>
     </div>
@@ -69,7 +72,6 @@ type ReviewCardPosition = "active" | "previous" | "next";
 type ReviewWithImages = ReviewResponse & {
   images: string[];
 };
-
 const CARD_TRANSITION = { duration: 0.6, ease: [0.22, 1, 0.36, 1] } as const;
 
 function ReviewsSection() {
@@ -83,7 +85,8 @@ function ReviewsSection() {
 
     const loadReviews = async () => {
       try {
-        const response = await fetch('/api/reviews');
+        const isRandom = true;
+        const response = await fetch('/api/reviews?random=' + isRandom);
         if (!response.ok) {
           throw new Error('Failed to load reviews');
         }
@@ -206,7 +209,7 @@ function ReviewsSection() {
   const showNavigation = reviews.length > 1;
 
   return (
-    <section className="flex w-full flex-col items-center justify-center bg-background px-6 py-16 text-foreground md:px-16">
+    <section className="flex w-full flex-col items-center justify-center bg-background overflow-x-hidden px-6 py-12 text-foreground md:px-16">
       <div className="max-w-4xl text-center">
         <p className="font-manrope text-xs uppercase tracking-[0.4em] text-secondary">Testimonials</p>
         <h2 className="mt-3 font-vegawanty text-4xl text-foreground md:text-5xl">From Our Clients</h2>
@@ -264,7 +267,7 @@ function ReviewsSection() {
           </div>
 
           {showNavigation && (
-            <div className="mt-10 flex items-center gap-2">
+            <div className="mt-14 flex items-center gap-2">
               {reviews.map((review, index) => {
                 const isActive = index === activeIndex;
 
@@ -359,11 +362,11 @@ function ReviewCard(props: ReviewCardProps) {
       aria-hidden={!isActive}
     >
       <div
-        className={`flex h-full flex-col gap-8 rounded border border-foreground/10 bg-white/95 px-6 py-8 shadow-[0_35px_70px_-40px_rgba(99,102,83,0.55)] md:px-12 md:py-12 ${hasImages ? 'md:flex-row md:items-start md:gap-10' : ''}`}
+        className={`flex h-full flex-col gap-8 rounded border border-foreground/10 bg-white/95 px-6 py-8 shadow-[0_35px_70px_-40px_rgba(99,102,83,0.55)] md:px-8 md:py-you 8 ${hasImages ? 'md:flex-row md:items-start md:gap-10' : ''}`}
       >
         {hasImages ? (
           <div className="flex w-full flex-col gap-4 md:w-[44%]">
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded bg-foreground/5">
+            <div className="relative aspect-[5/5] w-full overflow-hidden rounded bg-foreground/5">
               <motion.div
                 key={`${review.id}-${currentImageIndex}`}
                 className="relative h-full w-full"
@@ -408,7 +411,7 @@ function ReviewCard(props: ReviewCardProps) {
               )}
             </div>
 
-            {images.length > 1 && (
+            {/* {images.length > 1 && (
               <div className="mt-2 flex items-center gap-3 overflow-x-auto pb-1">
                 {images.map((src, index) => (
                   <button
@@ -428,7 +431,7 @@ function ReviewCard(props: ReviewCardProps) {
                   </button>
                 ))}
               </div>
-            )}
+            )} */}
           </div>
         ) : null}
 
@@ -458,7 +461,7 @@ function Collections() {
       <div className="flex flex-col items-center justify-center">
         <Image src={Icon6} alt="Icon 6" className="w-24 h-24 md:w-40 md:h-40 mb-[-10px]"/>
         <h2 className="font-vegawanty text-5xl md:text-7xl">Collections</h2>
-        <p className="font-manrope text-md md:text-lg text-foreground text-center max-w-2xl mt-2">
+        <p className="font-manrope text-md md:text-lg text-foreground/80 text-center max-w-2xl mt-2">
           Explore our curated collections that blend fantasy and fashion, each piece crafted to inspire and enchant.
         </p>
       </div>
@@ -507,7 +510,7 @@ function Featured() {
         </div>
 
         
-        <p className=" font-manrope text-md md:text-lg text-background text-center max-w-3xl hidden lg:block">
+        <p className=" font-manrope text-md md:text-lg text-background/80 text-center max-w-3xl hidden lg:block">
         Discover our latest gown arrivals! Be among the first to experience the magic of these brand-new designs and step into a world of enchantment...
       </p>
 
@@ -518,7 +521,7 @@ function Featured() {
       </p>
 
       {/* Featured gowns card container */}
-      <div className="w-full h-fit flex flex-col gap-6 mt-6 lg:flex-row lg:gap-4 lg:h-96 justify-center items-center">
+      <FadeInOnScroll className="w-full h-fit flex flex-col gap-6 mt-6 lg:flex-row lg:gap-4 lg:h-96 justify-center items-center" delay={0.1}>
         {sampleFeaturedGowns.map((gown, index) => (
             <FeaturedGownsCard
               key={index}
@@ -528,7 +531,7 @@ function Featured() {
               gownLink={gown.gownLink}
             />
           ))}
-      </div>
+      </FadeInOnScroll>
       
     </div>
   )
@@ -565,7 +568,7 @@ interface FeaturedGownsCardProps {
 function FeaturedGownsCard(props: FeaturedGownsCardProps) {
   const { gownImage, gownName, gownDescription, gownLink } = props;
   return (
-    <FadeInOnScroll className="row-span-1 h-72 lg:h-full lg:w-60 col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105 shadow-lg group" delay={0.1} style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${gownImage})` }}>
+    <div className="row-span-1 h-72 lg:h-full lg:w-60 col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105 shadow-lg group" style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${gownImage})` }}>
       <a className="h-full w-full flex flex-col items-center justify-end transition-transform duration-300 group-hover:scale-105"
         href={gownLink}
       >
@@ -578,7 +581,7 @@ function FeaturedGownsCard(props: FeaturedGownsCardProps) {
           </p>
         </div>
       </a>
-    </FadeInOnScroll>
+    </div>
   );
   
 }
