@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Transform Contentful entries to our PromQueen interface
-    const promQueens: PromQueen[] = response.items
+    const promQueens = response.items
       .map((item) => {
         const fields = isRecord(item.fields) ? (item.fields as Record<string, unknown>) : {};
 
@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
           gownName: gownInfo.name,
         };
       })
-      .filter((item): item is PromQueen => item !== null);
+      .filter((item) => item !== null);
 
     // Shuffle the array for random ordering
     const shuffledPromQueens = shuffleArray(promQueens);
