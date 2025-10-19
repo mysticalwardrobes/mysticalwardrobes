@@ -15,16 +15,16 @@ interface PageProps {
 // Filter atoms
 import { atom } from "jotai";
 
-export type PriceRange = [number, number];
-export const DEFAULT_PRICE_RANGE: PriceRange = [0, 2000];
-export const DEFAULT_SORT_BY = "name";
-export const ITEMS_PER_PAGE = 15;
+type PriceRange = [number, number];
+const DEFAULT_PRICE_RANGE: PriceRange = [0, 2000];
+const DEFAULT_SORT_BY = "name";
+const ITEMS_PER_PAGE = 15;
 
-export const priceRangeAtom = atom<PriceRange>(DEFAULT_PRICE_RANGE);
-export const sortByAtom = atom<string>(DEFAULT_SORT_BY);
-export const filterDrawerAtom = atom(false);
-export const currentPageAtom = atom(1);
-export const totalItemsAtom = atom(0);
+const priceRangeAtom = atom<PriceRange>(DEFAULT_PRICE_RANGE);
+const sortByAtom = atom<string>(DEFAULT_SORT_BY);
+const filterDrawerAtom = atom(false);
+const currentPageAtom = atom(1);
+const totalItemsAtom = atom(0);
 
 const sortOptions = [
   { value: "name", label: "Name A-Z" },
