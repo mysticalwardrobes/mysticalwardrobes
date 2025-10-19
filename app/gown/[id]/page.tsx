@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { getGownById, mockGowns } from "../data";
+import { useMemo, useState, useEffect } from "react";
+import { Gown } from "@/app/api/gowns/model";
 import React from "react";
 
 type Props = {
@@ -14,10 +14,32 @@ type LocationKey = "METRO_MANILA" | "LUZON" | "OUTSIDE_LUZON";
 
 export default function GownPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
-  const gown = getGownById(id);
+  const [gown, setGown] = useState<Gown | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [location, setLocation] = useState<LocationKey>("METRO_MANILA");
   const [isPixie, setIsPixie] = useState(false);
+
+  useEffect(() => {
+    const fetchGown = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/gowns/${id}`);
+        if (!response.ok) {
+          throw new Error('Gown not found');
+        }
+        const gownData = await response.json();
+        setGown(gownData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch gown');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGown();
+  }, [id]);
 
   const rate = useMemo(() => {
     if (!gown) return 0;
@@ -31,10 +53,18 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
     return gown.outsideLuzonRate;
   }, [gown, isPixie, location]);
 
-  if (!gown) {
+  if (loading) {
     return (
       <div className="p-6">
-        <p className="text-sm opacity-70">Gown not found.</p>
+        <p className="text-sm opacity-70">Loading gown...</p>
+      </div>
+    );
+  }
+
+  if (error || !gown) {
+    return (
+      <div className="p-6">
+        <p className="text-sm opacity-70">{error || "Gown not found."}</p>
         <Link className="underline" href="/">Go back</Link>
       </div>
     );
@@ -158,22 +188,64 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
           </ul>
         </div>
 
-        <div>
-          <h3 className="text-sm font-semibold mb-3 tracking-wide">Related Gowns</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {gown.relatedGownIds
-              .map((id) => mockGowns.find((g) => g.id === id))
-              .filter(Boolean)
-              .map((rel) => (
-                <Link key={rel!.id} href={`/gown/${rel!.id}`} className="block group">
-                  <div className="relative w-full aspect-[3/4] overflow-hidden rounded bg-neutral-50 group-hover:shadow-sm">
-                    <Image src={rel!.longGownPicture} alt={rel!.name} fill className="object-cover" sizes="200px" />
-                  </div>
-                  <div className="mt-2 text-sm group-hover:underline">{rel!.name}</div>
-                </Link>
-              ))}
-          </div>
-        </div>
+        <RelatedGowns relatedGownIds={gown.relatedGownIds} />
+      </div>
+    </div>
+  );
+}
+
+function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
+  const [relatedGowns, setRelatedGowns] = useState<Gown[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRelatedGowns = async () => {
+      try {
+        setLoading(true);
+        const promises = relatedGownIds.map(id => 
+          fetch(`/api/gowns/${id}`).then(res => res.json())
+        );
+        const gowns = await Promise.all(promises);
+        setRelatedGowns(gowns.filter(Boolean));
+      } catch (err) {
+        console.error('Failed to fetch related gowns:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (relatedGownIds.length > 0) {
+      fetchRelatedGowns();
+    } else {
+      setLoading(false);
+    }
+  }, [relatedGownIds]);
+
+  if (loading) {
+    return (
+      <div>
+        <h3 className="text-sm font-semibold mb-3 tracking-wide">Related Gowns</h3>
+        <p className="text-sm opacity-70">Loading...</p>
+      </div>
+    );
+  }
+
+  if (relatedGowns.length === 0) {
+    return null;
+  }
+
+  return (
+    <div>
+      <h3 className="text-sm font-semibold mb-3 tracking-wide">Related Gowns</h3>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {relatedGowns.map((gown) => (
+          <Link key={gown.id} href={`/gown/${gown.id}`} className="block group">
+            <div className="relative w-full aspect-[3/4] overflow-hidden rounded bg-neutral-50 group-hover:shadow-sm">
+              <Image src={gown.longGownPicture} alt={gown.name} fill className="object-cover" sizes="200px" />
+            </div>
+            <div className="mt-2 text-sm group-hover:underline">{gown.name}</div>
+          </Link>
+        ))}
       </div>
     </div>
   );

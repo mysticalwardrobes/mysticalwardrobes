@@ -8,19 +8,14 @@ import Logo from "@/public/assets/Mystical-Wardrobes-Logo-02.svg"
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCollectionsDropdownOpen, setIsCollectionsDropdownOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const toggleCollectionsDropdown = () => {
-    setIsCollectionsDropdownOpen(!isCollectionsDropdownOpen);
-  };
-
   return (
     <header className="bg-background shadow-md py-4">
-      <nav className="container mx-auto px-4 py-4 flex justify-between items-center ">
+      <nav className="container mx-auto px-12 py-4 flex justify-between items-center ">
         {/* Company Logo */}
         <div className="flex-shrink-0">
           <Link href="/" className="font-bold text-gray-800 flex items-center space-x-2 justify-center">
@@ -59,52 +54,16 @@ export default function Header() {
             Home
           </Link>
 
-            <div
-            className="relative group"
-            onMouseEnter={() => setIsCollectionsDropdownOpen(true)}
-            onMouseLeave={() => setIsCollectionsDropdownOpen(false)}
-            >
-            <button
-              className="hover:text-gray-900 focus:outline-none"
-              tabIndex={0}
-            >
+            <Link href="/collections" className="hover:text-gray-900">
               Collections
-            </button>
-            <div
-              className={`
-              absolute top-full left-0 mt-2 w-48 bg-background rounded shadow-lg z-10
-              transition-all duration-300 ease-in-out
-              ${isCollectionsDropdownOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"}
-              `}
-              style={{ transformOrigin: "top" }}
-            >
-              <Link
-              href="/collections/fairy"
-              className="block px-4 py-2 hover:bg-gray-100"
-              >
-              Fairy
-              </Link>
-              <Link
-              href="/collections/disney"
-              className="block px-4 py-2 hover:bg-gray-100"
-              >
-              Disney
-              </Link>
-              <Link
-              href="/collections/bridgerton"
-              className="block px-4 py-2 hover:bg-gray-100"
-              >
-              Bridgerton
-              </Link>
-              <Link
-              href="/collections/mystical"
-              className="block px-4 py-2 hover:bg-gray-100"
-              >
-              Mystical
-              </Link>
-            </div>
-            </div>
+            </Link>
 
+          <Link href="/addons" className=" hover:text-gray-900">
+            Add Ons
+          </Link>
+          <Link href="/promqueens" className=" hover:text-gray-900">
+            Prom Queens
+          </Link>
           <Link href="/about" className=" hover:text-gray-900">
             About
           </Link>
@@ -120,42 +79,15 @@ export default function Header() {
           <Link href="/" className="block  hover:text-gray-900">
             Home
           </Link>
-          <div>
-            <button
-              onClick={toggleCollectionsDropdown}
-              className="block hover:text-gray-900 w-full text-left"
-            >
-              Collections
-            </button>
-            {isCollectionsDropdownOpen && (
-              <div className="mt-2 ml-4 space-y-1">
-                <Link
-                  href="/collections/fairy"
-                  className="block  hover:text-gray-900"
-                >
-                  Fairy
-                </Link>
-                <Link
-                  href="/collections/disney"
-                  className="block  hover:text-gray-900"
-                >
-                  Disney
-                </Link>
-                <Link
-                  href="/collections/bridgerton"
-                  className="block  hover:text-gray-900"
-                >
-                  Bridgerton
-                </Link>
-                <Link
-                  href="/collections/mystical"
-                  className="block  hover:text-gray-900"
-                >
-                  Mystical
-                </Link>
-              </div>
-            )}
-          </div>
+          <Link href="/collections" className="block hover:text-gray-900">
+            Collections
+          </Link>
+          <Link href="/addons" className="block  hover:text-gray-900">
+            Add Ons
+          </Link>
+          <Link href="/promqueens" className="block  hover:text-gray-900">
+            Prom Queens
+          </Link>
           <Link href="/about" className="block  hover:text-gray-900">
             About
           </Link>

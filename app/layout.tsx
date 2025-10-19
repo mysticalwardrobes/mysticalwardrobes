@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
 import Header from "@/components/header"
+import Footer from "@/components/footer"
 import "@/app/globals.css";
 
 const vegawanty = localFont({
@@ -67,6 +68,7 @@ export default function RootLayout({
       >
         <Header/>
         {children}
+        <Footer/>
       </body>
     </html>
   );

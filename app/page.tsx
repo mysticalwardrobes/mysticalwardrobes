@@ -436,13 +436,13 @@ function ReviewCard(props: ReviewCardProps) {
         ) : null}
 
         <div className={`flex w-full flex-col justify-between ${hasImages ? 'md:w-[56%]' : ''}`}>
-          <div className="flex flex-col gap-6">
-            <span className="text-4xl text-secondary md:text-5xl">&ldquo;</span>
-            <p className="font-manrope text-base leading-7 text-foreground/90 md:text-lg">{safeComment}</p>
-            <span className="self-start text-4xl text-secondary md:text-5xl">&rdquo;</span>
+          <div className="flex flex-col gap-2">
+            <span className="text-4xl text-secondary md:text-4xl">&ldquo;</span>
+            <p className="font-manrope text-base leading-7 text-foreground/90 md:text-md  ">{safeComment}</p>
+            <span className="self-start text-4xl text-secondary md:text-4xl">&rdquo;</span>
           </div>
           <div className="mt-6 border-t border-foreground/10 pt-6">
-            <p className="font-vegawanty text-2xl text-foreground">{safeName}</p>
+            <p className="font-vegawanty text-lg text-foreground">{safeName}</p>
             {review.gownId ? (
               <p className="font-manrope text-sm uppercase tracking-widest text-foreground/50">
                 Wore gown #{review.gownId}
@@ -469,23 +469,23 @@ function Collections() {
         <a
           className="row-span-1 h-72 md:h-full md:row-span-2 col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
           style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${sampleGown1.src})` }}
-          href="/collections/premium"
+          href="/collections"
         >
-          PREMIUM
+          MODERN GLAMOUR
         </a>
         <a
           className="row-span-1 h-72 md:h-full col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
           style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${premium.src})` }}
-          href="/collections/signature"
+          href="/collections"
         >
-          SIGNATURE
+          FAIRYTALE FANTASY
         </a>
         <a
           className="row-span-1 h-72 md:h-full col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
           style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${premium.src})` }}
-          href="/collections/limited-edition"
+          href="/collections"
         >
-          CLASSIC
+          ROYAL HISTORICAL
         </a>
       </div>
     </div>
