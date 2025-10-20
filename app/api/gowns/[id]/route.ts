@@ -42,6 +42,20 @@ const extractAssetUrl = (value: unknown): string | null => {
   return ensureString((file as { url?: unknown }).url);
 };
 
+const normalizeAssetUrls = (value: unknown): string[] => {
+  const collect = Array.isArray(value) ? value : value != null ? [value] : [];
+
+  const urls = collect
+    .map((item) => extractAssetUrl(item))
+    .filter((url): url is string => 
+      typeof url === 'string' && 
+      url !== 'null' && 
+      url.trim() !== ''
+    );
+
+  return urls;
+};
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -50,7 +64,9 @@ export async function GET(
     const { id } = await params;
 
     // Fetch gown from Contentful by ID
-    const response = await client.getEntry(id);
+    const response = await client.getEntry(id, {
+      include: 10, // Include linked assets (images)
+    });
 
     if (!response) {
       return NextResponse.json(
@@ -62,50 +78,58 @@ export async function GET(
     const fields = isRecord(response.fields) ? (response.fields as Record<string, unknown>) : {};
 
     const name = ensureString(fields.name) ?? 'Untitled Gown';
-    const collection = ensureString(fields.collection) ?? 'Unknown Collection';
+    const collection = ensureStringArray(fields.collection);
+    const bestFor = ensureStringArray(fields.bestFor);
     const tags = ensureStringArray(fields.tags);
-    const skirt = ensureString(fields.skirt) ?? '';
+    const color = ensureStringArray(fields.color);
+    const skirtStyle = ensureStringArray(fields.skirtStyle);
     const metroManilaRate = ensureNumber(fields.metroManilaRate) ?? 0;
     const luzonRate = ensureNumber(fields.luzonRate) ?? 0;
     const outsideLuzonRate = ensureNumber(fields.outsideLuzonRate) ?? 0;
     const pixieMetroManilaRate = ensureNumber(fields.pixieMetroManilaRate) ?? 0;
     const pixieLuzonRate = ensureNumber(fields.pixieLuzonRate) ?? 0;
     const pixieOutsideLuzonRate = ensureNumber(fields.pixieOutsideLuzonRate) ?? 0;
+    const forSaleRateLong = ensureNumber(fields.forSaleRateLong) ?? 0;
+    const forSaleRatePixie = ensureNumber(fields.forSaleRatePixie) ?? 0;
     const bust = ensureString(fields.bust) ?? '';
     const waist = ensureString(fields.waist) ?? '';
     const arms = ensureString(fields.arms) ?? '';
     const backing = ensureString(fields.backing) ?? '';
     const addOns = ensureStringArray(fields.addOns);
-    const relatedGownIds = ensureStringArray(fields.relatedGownIds);
+    const relatedGowns = ensureStringArray(fields.relatedGowns);
 
-    // Extract image URLs
-    const longGownPicture = extractAssetUrl(fields.longGownPicture) ?? '/assets/sample_gown-1.jpg';
-    const filipinianaPicture = extractAssetUrl(fields.filipinianaPicture) ?? '/assets/sample_gown-1.jpg';
-    const pixiePicture = extractAssetUrl(fields.pixiePicture) ?? '/assets/sample_gown-1.jpg';
-    const trainPicture = extractAssetUrl(fields.trainPicture) ?? '/assets/sample_gown-1.jpg';
+    // Extract image URLs (handle arrays of images)
+    const longGownPictures = normalizeAssetUrls(fields.longGownPicture);
+    const filipinianaPictures = normalizeAssetUrls(fields.filipinianaPicture);
+    const pixiePictures = normalizeAssetUrls(fields.pixiePicture);
+    const trainPictures = normalizeAssetUrls(fields.trainPicture);
 
     const gown: Gown = {
       id: String(response.sys.id),
       name,
       collection,
+      bestFor,
       tags,
-      skirt,
+      color,
+      skirtStyle,
       metroManilaRate,
       luzonRate,
       outsideLuzonRate,
       pixieMetroManilaRate,
       pixieLuzonRate,
       pixieOutsideLuzonRate,
+      forSaleRateLong,
+      forSaleRatePixie,
       bust,
       waist,
       arms,
       backing,
-      longGownPicture,
-      filipinianaPicture,
-      pixiePicture,
-      trainPicture,
+      longGownPictures,
+      filipinianaPictures,
+      pixiePictures,
+      trainPictures,
       addOns,
-      relatedGownIds,
+      relatedGowns,
     };
 
     return NextResponse.json(gown);

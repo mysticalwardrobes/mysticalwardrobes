@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { AddOn } from "@/app/api/addons/model";
 import AddOnsSkeleton from "@/components/AddOnsSkeleton";
 import hoodThumbnail from "@/public/assets/addons/hoods.jpg";
@@ -109,8 +108,14 @@ export default function AddOnsPage() {
     return (
       <main className="bg-background py-10 text-secondary md:py-16">
         <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-          <div className="text-center py-20">
+          <div className="text-center py-20 animate-fade-in-up">
             <p className="font-manrope text-lg text-secondary/70">{error}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="mt-4 px-6 py-2 bg-secondary text-white rounded-full hover:bg-secondary/90 transition-all duration-200 hover:scale-105"
+            >
+              Try Again
+            </button>
           </div>
         </div>
       </main>
@@ -121,7 +126,7 @@ export default function AddOnsPage() {
     <main className="bg-background py-10 text-secondary md:py-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         {/* Header */}
-        <header className="mb-12 text-center">
+        <header className="mb-12 text-center animate-fade-in-up">
           <p className="font-manrope text-xs uppercase tracking-[0.4em] text-secondary/70">Accessories</p>
           <h1 className="font-vegawanty text-4xl text-foreground sm:text-5xl md:text-6xl">Add Ons</h1>
           <p className="mx-auto mt-4 max-w-2xl font-manrope text-sm text-secondary sm:text-base">
@@ -133,28 +138,27 @@ export default function AddOnsPage() {
         {/* Categories Grid */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {addOnCategories.map((category, index) => (
-            <motion.div
+            <div
               key={category.type}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="animate-fade-in-up"
+              style={{ animationDelay: `${0.1 + index * 0.1}s` }}
             >
               <Link 
                 href={`/addons/${category.type}`}
-                className="group block overflow-hidden rounded-sm bg-white shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                className="group block overflow-hidden rounded-sm bg-white shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:scale-105"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
                     src={category.image}
                     alt={`${category.type}s`}
                     fill
-                    className="object-cover transition duration-500 group-hover:scale-105"
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-br from-black/20 to-black/40"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-black/20 to-black/40 transition-opacity duration-300 group-hover:from-black/30 group-hover:to-black/50"></div>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <h3 className="font-vegawanty text-xl capitalize text-white drop-shadow-lg">
+                      <h3 className="font-vegawanty text-xl capitalize text-white drop-shadow-lg transition-transform duration-300 group-hover:scale-105">
                         {category.type}s
                       </h3>
                     </div>
@@ -162,25 +166,25 @@ export default function AddOnsPage() {
                 </div>
                 <div className="p-4">
                   <div className="mb-2 flex items-center justify-between">
-                    <h3 className="font-vegawanty text-lg capitalize text-foreground">
+                    <h3 className="font-vegawanty text-lg capitalize text-foreground group-hover:text-secondary transition-colors duration-200">
                       {category.type}s
                     </h3>
-                    <span className="rounded-full bg-secondary/10 px-2 py-1 text-xs font-medium text-secondary">
+                    <span className="rounded-full bg-secondary/10 px-2 py-1 text-xs font-medium text-secondary transition-all duration-200 group-hover:bg-secondary/20 group-hover:scale-105">
                       {category.count} items
                     </span>
                   </div>
-                  <p className="font-manrope text-sm text-secondary/70">
+                  <p className="font-manrope text-sm text-secondary/70 group-hover:text-secondary/80 transition-colors duration-200">
                     {category.description}
                   </p>
                 </div>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
 
         {/* Featured Add-Ons */}
         <section className="mt-16">
-          <div className="mb-8 text-center">
+          <div className="mb-8 text-center animate-fade-in-up" style={{ animationDelay: '0.9s' }}>
             <h2 className="font-vegawanty text-3xl text-foreground sm:text-4xl">Featured Add-Ons</h2>
             <p className="mt-2 font-manrope text-sm text-secondary/70">
               Discover our most popular accessories
@@ -189,15 +193,14 @@ export default function AddOnsPage() {
           
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {addOns.slice(0, 8).map((addon, index) => (
-              <motion.div
+              <div
                 key={addon.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${1.0 + index * 0.1}s` }}
               >
                 <Link 
                   href={`/addons/${addon.type}/${addon.id}`}
-                  className="group block overflow-hidden rounded-sm bg-white shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                  className="group block overflow-hidden rounded-sm bg-white shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:scale-105"
                 >
                   <div className="relative aspect-[4/5] overflow-hidden bg-secondary/10">
                     {addon.pictures && addon.pictures.length > 0 ? (
@@ -205,7 +208,7 @@ export default function AddOnsPage() {
                         src={'https:' + addon.pictures[0]}
                         alt={addon.name}
                         fill
-                        className="object-cover transition duration-500 group-hover:scale-105"
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       />
                     ) : (
@@ -220,22 +223,22 @@ export default function AddOnsPage() {
                   </div>
                   <div className="p-4">
                     <div className="mb-2 flex items-center justify-between">
-                      <span className="rounded-full bg-secondary/10 px-2 py-1 text-xs font-medium capitalize text-secondary">
+                      <span className="rounded-full bg-secondary/10 px-2 py-1 text-xs font-medium capitalize text-secondary transition-all duration-200 group-hover:bg-secondary/20 group-hover:scale-105">
                         {addon.type}
                       </span>
-                      <span className="font-manrope text-sm font-semibold text-foreground">
+                      <span className="font-manrope text-sm font-semibold text-foreground group-hover:text-secondary transition-colors duration-200">
                         From ₱{addon.metroManilaRate.toLocaleString()}
                       </span>
                     </div>
-                    <h3 className="font-vegawanty text-lg text-foreground group-hover:text-secondary transition-colors">
+                    <h3 className="font-vegawanty text-lg text-foreground group-hover:text-secondary transition-colors duration-200">
                       {addon.name}
                     </h3>
-                    <p className="mt-1 font-manrope text-sm text-secondary/70 line-clamp-2">
+                    <p className="mt-1 font-manrope text-sm text-secondary/70 line-clamp-2 group-hover:text-secondary/80 transition-colors duration-200">
                       {addon.description}
                     </p>
                   </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         </section>

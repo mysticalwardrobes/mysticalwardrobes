@@ -20,6 +20,8 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
 
   const [location, setLocation] = useState<LocationKey>("METRO_MANILA");
   const [isPixie, setIsPixie] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedImageType, setSelectedImageType] = useState<'longGown' | 'filipiniana' | 'pixie' | 'train'>('longGown');
 
   useEffect(() => {
     const fetchGown = async () => {
@@ -31,6 +33,21 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
         }
         const gownData = await response.json();
         setGown(gownData);
+        
+        // Set default version based on available pictures
+        if (gownData.longGownPictures.length > 0) {
+          setSelectedImageType('longGown');
+          setIsPixie(false);
+        } else if (gownData.filipinianaPictures.length > 0) {
+          setSelectedImageType('filipiniana');
+          setIsPixie(false);
+        } else if (gownData.pixiePictures.length > 0) {
+          setSelectedImageType('pixie');
+          setIsPixie(true);
+        } else if (gownData.trainPictures.length > 0) {
+          setSelectedImageType('train');
+          setIsPixie(false);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch gown');
       } finally {
@@ -43,20 +60,154 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
 
   const rate = useMemo(() => {
     if (!gown) return 0;
+    // For pixie version, always use pixie pricing
     if (isPixie) {
       if (location === "METRO_MANILA") return gown.pixieMetroManilaRate;
       if (location === "LUZON") return gown.pixieLuzonRate;
       return gown.pixieOutsideLuzonRate;
     }
+    // For standard version (long gown and filipiniana), use standard pricing
     if (location === "METRO_MANILA") return gown.metroManilaRate;
     if (location === "LUZON") return gown.luzonRate;
     return gown.outsideLuzonRate;
   }, [gown, isPixie, location]);
 
+  const getCurrentImages = () => {
+    if (!gown) return [];
+    switch (selectedImageType) {
+      case 'longGown':
+        return gown.longGownPictures;
+      case 'filipiniana':
+        return gown.filipinianaPictures;
+      case 'pixie':
+        return gown.pixiePictures;
+      case 'train':
+        return gown.trainPictures;
+      default:
+        return gown.longGownPictures;
+    }
+  };
+
+  const getCurrentImage = () => {
+    const images = getCurrentImages();
+    const imageUrl = images[selectedImageIndex];
+    // Check if imageUrl is valid and not null
+    if (imageUrl && imageUrl !== 'null' && imageUrl.trim() !== '') {
+      return imageUrl;
+    }
+    return '/assets/sample_gown-1.jpg';
+  };
+
+  const getAllImages = () => {
+    if (!gown) return [];
+    return [
+      ...gown.longGownPictures.map((url, index) => ({ url, type: 'longGown' as const, index })),
+      ...gown.filipinianaPictures.map((url, index) => ({ url, type: 'filipiniana' as const, index })),
+      ...gown.pixiePictures.map((url, index) => ({ url, type: 'pixie' as const, index })),
+      ...gown.trainPictures.map((url, index) => ({ url, type: 'train' as const, index }))
+    ];
+  };
+
   if (loading) {
     return (
-      <div className="p-6">
-        <p className="text-sm opacity-70">Loading gown...</p>
+      <div className="mx-auto max-w-6xl p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-10">
+        {/* Left side - Image skeleton */}
+        <div>
+          <div className="mb-4 text-xs">
+            <div className="h-4 w-32 bg-neutral-200 rounded animate-pulse"></div>
+          </div>
+          <div className="relative w-full aspect-[3/4] overflow-hidden rounded-sm bg-neutral-200 animate-pulse">
+            <div className="absolute inset-0 bg-gradient-to-r from-neutral-200 via-neutral-100 to-neutral-200 animate-pulse"></div>
+          </div>
+          
+          {/* Thumbnail skeleton */}
+          <div className="mt-3 grid grid-cols-4 gap-2">
+            {Array.from({ length: 4 }).map((_, idx) => (
+              <div key={idx} className="aspect-square bg-neutral-200 rounded-sm animate-pulse"></div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right side - Content skeleton */}
+        <div className="space-y-5 md:sticky md:top-24 md:pt-10 self-start">
+          <div>
+            <div className="h-4 w-24 bg-neutral-200 rounded animate-pulse mb-2"></div>
+            <div className="h-16 w-full bg-neutral-200 rounded animate-pulse mb-3"></div>
+            <div className="flex flex-wrap gap-2">
+              {Array.from({ length: 3 }).map((_, idx) => (
+                <div key={idx} className="h-6 w-20 bg-neutral-200 rounded-full animate-pulse"></div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded p-4 space-y-4 bg-white shadow-sm">
+            {/* Location skeleton */}
+            <div>
+              <div className="h-3 w-16 bg-neutral-200 rounded animate-pulse mb-2"></div>
+              <div className="inline-flex rounded-full bg-neutral-50 p-1">
+                {Array.from({ length: 3 }).map((_, idx) => (
+                  <div key={idx} className="h-8 w-20 bg-neutral-200 rounded-full animate-pulse mx-1"></div>
+                ))}
+              </div>
+            </div>
+
+            {/* Version skeleton */}
+            <div>
+              <div className="h-3 w-16 bg-neutral-200 rounded animate-pulse mb-2"></div>
+              <div className="inline-flex rounded-full bg-neutral-50 p-1">
+                {Array.from({ length: 2 }).map((_, idx) => (
+                  <div key={idx} className="h-8 w-24 bg-neutral-200 rounded-full animate-pulse mx-1"></div>
+                ))}
+              </div>
+            </div>
+
+            {/* Rate skeleton */}
+            <div className="pt-1">
+              <div className="h-3 w-12 bg-neutral-200 rounded animate-pulse"></div>
+              <div className="h-8 w-32 bg-neutral-200 rounded animate-pulse mt-1"></div>
+              <div className="h-3 w-8 bg-neutral-200 rounded animate-pulse mt-1"></div>
+            </div>
+          </div>
+
+          {/* Measurements skeleton */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="rounded p-4 bg-white">
+              <div className="h-4 w-24 bg-neutral-200 rounded animate-pulse mb-3"></div>
+              <div className="grid grid-cols-2 gap-y-2">
+                {Array.from({ length: 8 }).map((_, idx) => (
+                  <div key={idx} className="h-4 bg-neutral-200 rounded animate-pulse"></div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded p-4 bg-white">
+              <div className="h-4 w-16 bg-neutral-200 rounded animate-pulse mb-3"></div>
+              <div className="h-4 w-full bg-neutral-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+
+          {/* Add Ons skeleton */}
+          <div className="rounded p-4 bg-white">
+            <div className="h-4 w-20 bg-neutral-200 rounded animate-pulse mb-3"></div>
+            <div className="space-y-2">
+              {Array.from({ length: 4 }).map((_, idx) => (
+                <div key={idx} className="h-4 w-full bg-neutral-200 rounded animate-pulse"></div>
+              ))}
+            </div>
+          </div>
+
+          {/* Related gowns skeleton */}
+          <div>
+            <div className="h-4 w-32 bg-neutral-200 rounded animate-pulse mb-3"></div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {Array.from({ length: 3 }).map((_, idx) => (
+                <div key={idx} className="group">
+                  <div className="relative w-full aspect-[3/4] overflow-hidden rounded bg-neutral-200 animate-pulse"></div>
+                  <div className="h-4 w-full bg-neutral-200 rounded animate-pulse mt-2"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -71,50 +222,102 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
   }
 
   return (
-    <div className="mx-auto max-w-6xl p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-10">
-      <div>
+    <div className="mx-auto max-w-6xl p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-10 animate-fade-in">
+      <div className="animate-slide-in-left">
         <div className="mb-4 text-xs">
-          <Link href="/collections/all" className="text-neutral-500 hover:text-neutral-800">Collections</Link>
+          <Link href="/collections/all" className="text-neutral-500 hover:text-neutral-800 transition-colors duration-200">Collections</Link>
           <span className="mx-2 text-neutral-400">/</span>
           <span className="text-neutral-800">{gown.name}</span>
         </div>
-        <div className="relative w-full aspect-[3/4] overflow-hidden rounded-lg bg-neutral-100 shadow-sm">
+        <div className="relative w-full aspect-[3/4] overflow-hidden rounded-sm bg-neutral-100 shadow-sm group">
           <Image
-            src={isPixie ? gown.pixiePicture : gown.longGownPicture}
+            src={getCurrentImage().startsWith('http') ? getCurrentImage() : 'https:' + getCurrentImage()}
             alt={gown.name}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
           />
+          {/* Navigation arrows if multiple images */}
+          {getCurrentImages().length > 1 && (
+            <>
+              <button
+                onClick={() => setSelectedImageIndex(prev => prev > 0 ? prev - 1 : getCurrentImages().length - 1)}
+                className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-all duration-200 hover:scale-110 opacity-0 group-hover:opacity-100"
+                aria-label="Previous image"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setSelectedImageIndex(prev => prev < getCurrentImages().length - 1 ? prev + 1 : 0)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-all duration-200 hover:scale-110 opacity-0 group-hover:opacity-100"
+                aria-label="Next image"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
         </div>
-        <div className="mt-4 grid grid-cols-4 gap-3">
-          {[gown.longGownPicture, gown.filipinianaPicture, gown.pixiePicture, gown.trainPicture].map((src, idx) => (
-            <button
-              key={idx}
-              onClick={() => setIsPixie(idx === 2)}
-              className="relative aspect-square overflow-hidden rounded bg-white hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-300"
-              aria-label="Change preview"
-            >
-              {/* Using next/image for thumbnails for consistency */}
-              <Image src={src} alt="thumb" fill className="object-cover" sizes="120px" />
-            </button>
-          ))}
-        </div>
+        
+
+        {/* Thumbnail grid for current image type */}
+        {getCurrentImages().length > 1 && (
+          <div className="mt-3 grid grid-cols-4 gap-2">
+            {getCurrentImages().map((src, idx) => {
+              // Filter out null or invalid URLs
+              if (!src || src === 'null' || src.trim() === '') {
+                return null;
+              }
+              return (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedImageIndex(idx)}
+                  className={`relative aspect-square overflow-hidden rounded-sm bg-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-neutral-300 transition-all duration-200 hover:scale-105 ${
+                    selectedImageIndex === idx ? 'ring-2 ring-black scale-105' : ''
+                  }`}
+                  aria-label={`Select image ${idx + 1}`}
+                >
+                  <Image 
+                    src={src.startsWith('http') ? src : 'https:' + src} 
+                    alt={`${gown.name} ${idx + 1}`} 
+                    fill 
+                    className="object-cover transition-transform duration-200" 
+                    sizes="120px" 
+                  />
+                </button>
+              );
+            }).filter(Boolean)}
+          </div>
+        )}
       </div>
 
-      <div className="space-y-5 md:sticky md:top-24 md:pt-10 self-start">
-        <div>
-          <p className="mt-1 text-sm text-neutral-600">{gown.collection}</p>
+      <div className="space-y-5 md:sticky md:top-24 md:pt-10 self-start animate-slide-in-right">
+        <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          <p className="mt-1 text-sm text-neutral-600">{gown.collection.join(', ')}</p>
           <h1 className="text-6xl font-semibold tracking-tight font-serif">{gown.name}</h1>
           <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
-            {gown.tags.map((t) => (
-              <span key={t} className="rounded-full border px-3 py-1 bg-white/60 tracking-wide uppercase text-neutral-700">{t}</span>
+            {gown.tags.slice(0, 4).map((t, index) => (
+              <span 
+                key={t} 
+                className="rounded-full border px-3 py-1 bg-white/60 tracking-wide uppercase text-neutral-700 hover:bg-white/80 transition-colors duration-200 animate-fade-in-up"
+                style={{ animationDelay: `${0.2 + index * 0.1}s` }}
+              >
+                {t}
+              </span>
             ))}
+            {gown.tags.length > 4 && (
+              <span className="rounded-full border px-3 py-1 bg-white/60 tracking-wide uppercase text-neutral-500 hover:bg-white/80 transition-colors duration-200 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+                +{gown.tags.length - 4} more
+              </span>
+            )}
           </div>
         </div>
 
-        <div className="rounded p-4 space-y-4 bg-white shadow-sm">
+        <div className="rounded p-4 space-y-4 bg-white shadow-sm animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
           <div>
             <div className="text-[11px] tracking-wide uppercase text-neutral-500 mb-2">Location</div>
             <div className="inline-flex rounded-full bg-neutral-50 p-1">
@@ -126,7 +329,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                 <button
                   key={k}
                   onClick={() => setLocation(k)}
-                  className={`px-3 py-1.5 text-sm rounded-full transition ${location === k ? "bg-white shadow-sm" : "text-neutral-600"}`}
+                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${location === k ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"}`}
                 >
                   {l}
                 </button>
@@ -137,34 +340,82 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
           <div>
             <div className="text-[11px] tracking-wide uppercase text-neutral-500 mb-2">Version</div>
             <div className="inline-flex rounded-full bg-neutral-50 p-1">
-              {([
-                { v: false, l: "Standard" },
-                { v: true, l: "Pixie" },
-              ] as { v: boolean; l: string }[]).map(({ v, l }) => (
+              {/* Show Long Gown if pictures exist */}
+              {gown.longGownPictures.length > 0 && (
                 <button
-                  key={l}
-                  onClick={() => setIsPixie(v)}
-                  className={`px-3 py-1.5 text-sm rounded-full transition ${isPixie === v ? "bg-white shadow-sm" : "text-neutral-600"}`}
+                  onClick={() => {
+                    setSelectedImageType('longGown');
+                    setSelectedImageIndex(0);
+                    setIsPixie(false);
+                  }}
+                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${
+                    selectedImageType === 'longGown' && !isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                  }`}
                 >
-                  {l}
+                  Long Gown
                 </button>
-              ))}
+              )}
+              {/* Show Filipiniana if pictures exist */}
+              {gown.filipinianaPictures.length > 0 && (
+                <button
+                  onClick={() => {
+                    setSelectedImageType('filipiniana');
+                    setSelectedImageIndex(0);
+                    setIsPixie(false);
+                  }}
+                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${
+                    selectedImageType === 'filipiniana' && !isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                  }`}
+                >
+                  Filipiniana
+                </button>
+              )}
+              {/* Show Pixie if pictures exist */}
+              {gown.pixiePictures.length > 0 && (
+                <button
+                  onClick={() => {
+                    setSelectedImageType('pixie');
+                    setSelectedImageIndex(0);
+                    setIsPixie(true);
+                  }}
+                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${
+                    selectedImageType === 'pixie' && isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                  }`}
+                >
+                  Pixie
+                </button>
+              )}
+              {/* Show Train if pictures exist */}
+              {gown.trainPictures.length > 0 && (
+                <button
+                  onClick={() => {
+                    setSelectedImageType('train');
+                    setSelectedImageIndex(0);
+                    setIsPixie(false);
+                  }}
+                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${
+                    selectedImageType === 'train' && !isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                  }`}
+                >
+                  Train
+                </button>
+              )}
             </div>
           </div>
 
-          <div className="pt-1">
+          <div className="pt-1 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <div className="text-[11px] tracking-wide uppercase text-neutral-500">Rate</div>
-            <div className="mt-1 text-3xl font-semibold">₱{rate.toLocaleString()}</div>
+            <div className="mt-1 text-3xl font-semibold transition-all duration-300">₱{rate.toLocaleString()}</div>
             <div className="text-xs text-neutral-500">PHP</div>
           </div>
 
-          <button className="w-full rounded-full bg-black text-white py-3 text-sm tracking-wide hover:opacity-90">
+          {/* <button className="w-full rounded-full bg-black text-white py-3 text-sm tracking-wide hover:opacity-90">
             Book Now
-          </button>
+          </button> */}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="rounded p-4 bg-white">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+          <div className="rounded p-4 bg-white hover:shadow-md transition-shadow duration-200">
             <h3 className="text-sm font-semibold mb-3 tracking-wide">Measurements</h3>
             <dl className="grid grid-cols-2 gap-y-2 text-sm">
               <dt className="opacity-70">Bust</dt><dd>{gown.bust}</dd>
@@ -173,22 +424,22 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
               <dt className="opacity-70">Backing</dt><dd>{gown.backing}</dd>
             </dl>
           </div>
-          <div className="rounded p-4 bg-white">
-            <h3 className="text-sm font-semibold mb-3 tracking-wide">Skirt</h3>
-            <p className="text-sm">{gown.skirt}</p>
+          <div className="rounded p-4 bg-white hover:shadow-md transition-shadow duration-200">
+            <h3 className="text-sm font-semibold mb-3 tracking-wide">Skirt Style</h3>
+            <p className="text-sm">{gown.skirtStyle.join(', ')}</p>
           </div>
         </div>
 
-        <div className="rounded p-4 bg-white">
+        <div className="rounded p-4 bg-white hover:shadow-md transition-shadow duration-200 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
           <h3 className="text-sm font-semibold mb-3 tracking-wide">Add Ons</h3>
           <ul className="list-disc pl-5 text-sm space-y-1">
-            {gown.addOns.map((a) => (
-              <li key={a}>{a}</li>
+            {gown.addOns.map((a, index) => (
+              <li key={a} className="animate-fade-in-up" style={{ animationDelay: `${0.7 + index * 0.1}s` }}>{a}</li>
             ))}
           </ul>
         </div>
 
-        <RelatedGowns relatedGownIds={gown.relatedGownIds} />
+        <RelatedGowns relatedGownIds={gown.relatedGowns} />
       </div>
     </div>
   );
@@ -224,8 +475,15 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
   if (loading) {
     return (
       <div>
-        <h3 className="text-sm font-semibold mb-3 tracking-wide">Related Gowns</h3>
-        <p className="text-sm opacity-70">Loading...</p>
+        <div className="h-4 w-32 bg-neutral-200 rounded animate-pulse mb-3"></div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {Array.from({ length: 3 }).map((_, idx) => (
+            <div key={idx} className="group">
+              <div className="relative w-full aspect-[3/4] overflow-hidden rounded bg-neutral-200 animate-pulse"></div>
+              <div className="h-4 w-full bg-neutral-200 rounded animate-pulse mt-2"></div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -235,15 +493,25 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
   }
 
   return (
-    <div>
+    <div className="animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
       <h3 className="text-sm font-semibold mb-3 tracking-wide">Related Gowns</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {relatedGowns.map((gown) => (
-          <Link key={gown.id} href={`/gown/${gown.id}`} className="block group">
-            <div className="relative w-full aspect-[3/4] overflow-hidden rounded bg-neutral-50 group-hover:shadow-sm">
-              <Image src={gown.longGownPicture} alt={gown.name} fill className="object-cover" sizes="200px" />
+        {relatedGowns.map((gown, index) => (
+          <Link key={gown.id} href={`/gown/${gown.id}`} className="block group animate-fade-in-up" style={{ animationDelay: `${0.9 + index * 0.1}s` }}>
+            <div className="relative w-full aspect-[3/4] overflow-hidden rounded bg-neutral-50 group-hover:shadow-lg transition-all duration-300">
+              <Image 
+                src={
+                  gown.longGownPictures.length > 0 && gown.longGownPictures[0] && gown.longGownPictures[0] !== 'null'
+                    ? (gown.longGownPictures[0].startsWith('http') ? gown.longGownPictures[0] : 'https:' + gown.longGownPictures[0])
+                    : '/assets/sample_gown-1.jpg'
+                } 
+                alt={gown.name} 
+                fill 
+                className="object-cover transition-transform duration-300 group-hover:scale-105" 
+                sizes="200px" 
+              />
             </div>
-            <div className="mt-2 text-sm group-hover:underline">{gown.name}</div>
+            <div className="mt-2 text-sm group-hover:underline transition-all duration-200">{gown.name}</div>
           </Link>
         ))}
       </div>

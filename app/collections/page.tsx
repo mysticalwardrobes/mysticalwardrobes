@@ -59,7 +59,7 @@ const collections: Collection[] = [
   },
   {
     name: "Cultural and Mythic Icons",
-    slug: "cultural-mythic-icons",
+    slug: "cultural-and-mythic-icons",
     description: "These gowns pay homage to mythological figures, beloved characters, and cultural masterpieces. Each creation reimagines legends through fashion—blending tradition and fantasy into couture.",
     image: "/assets/collections/cultural-mythic.jpg"
   }

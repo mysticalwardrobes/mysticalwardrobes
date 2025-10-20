@@ -18,9 +18,9 @@ export default function Header() {
       <nav className="container mx-auto px-12 py-4 flex justify-between items-center ">
         {/* Company Logo */}
         <div className="flex-shrink-0">
-          <Link href="/" className="font-bold text-gray-800 flex items-center space-x-2 justify-center">
-            <Image className="w-6 h-6 md:w-10 md:h-10" src={Logo} alt="Mystical Logo"/>
-            <h1 className=" font-vegawanty text-xl md:text-4xl text-foreground">Mystical Wardrobes</h1>
+          <Link href="/" className="font-bold text-gray-800 flex items-center space-x-2 justify-center group transition-all duration-300 hover:scale-105">
+            <Image className="w-6 h-6 md:w-10 md:h-10 transition-transform duration-300 group-hover:rotate-12" src={Logo} alt="Mystical Logo"/>
+            <h1 className="font-vegawanty text-xl md:text-4xl text-foreground transition-colors duration-300 group-hover:text-gray-900">Mystical Wardrobes</h1>
           </Link>
         </div>
 
@@ -28,10 +28,10 @@ export default function Header() {
         <div className="md:hidden">
           <button
             onClick={toggleMobileMenu}
-            className="hover:text-foreground focus:outline-none focus:text-foreground"
+            className="hover:text-gray-900 focus:outline-none focus:text-gray-900 transition-colors duration-300 p-2 rounded-lg hover:bg-gray-100"
           >
             <svg
-              className="h-6 w-6"
+              className={`h-6 w-6 transition-transform duration-300 ${isMobileMenuOpen ? 'rotate-180' : ''}`}
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -50,52 +50,84 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8 text-foreground font-manrope">
-          <Link href="/" className="hover:text-gray-900">
+          <Link href="/" className="relative group transition-colors duration-300 hover:text-gray-900">
             Home
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
           </Link>
 
-            <Link href="/collections" className="hover:text-gray-900">
-              Collections
-            </Link>
+          <Link href="/collections" className="relative group transition-colors duration-300 hover:text-gray-900">
+            Collections
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
+          </Link>
 
-          <Link href="/addons" className=" hover:text-gray-900">
+          <Link href="/addons" className="relative group transition-colors duration-300 hover:text-gray-900">
             Add Ons
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
           </Link>
-          <Link href="/promqueens" className=" hover:text-gray-900">
+          <Link href="/promqueens" className="relative group transition-colors duration-300 hover:text-gray-900">
             Prom Queens
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
           </Link>
-          <Link href="/about" className=" hover:text-gray-900">
+          <Link href="/about" className="relative group transition-colors duration-300 hover:text-gray-900">
             About
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
           </Link>
-          <Link href="/contact" className=" hover:text-gray-900">
+          <Link href="/contact" className="relative group transition-colors duration-300 hover:text-gray-900">
             Contact
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
           </Link>
         </div>
       </nav>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden px-4 pb-4 space-y-2 font-manrope">
-          <Link href="/" className="block  hover:text-gray-900">
+      <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+        isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+      }`}>
+        <div className="px-4 pb-4 space-y-2 font-manrope">
+          <Link 
+            href="/" 
+            className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
+            style={{ animationDelay: isMobileMenuOpen ? '0.1s' : '0s' }}
+          >
             Home
           </Link>
-          <Link href="/collections" className="block hover:text-gray-900">
+          <Link 
+            href="/collections" 
+            className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
+            style={{ animationDelay: isMobileMenuOpen ? '0.2s' : '0s' }}
+          >
             Collections
           </Link>
-          <Link href="/addons" className="block  hover:text-gray-900">
+          <Link 
+            href="/addons" 
+            className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
+            style={{ animationDelay: isMobileMenuOpen ? '0.3s' : '0s' }}
+          >
             Add Ons
           </Link>
-          <Link href="/promqueens" className="block  hover:text-gray-900">
+          <Link 
+            href="/promqueens" 
+            className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
+            style={{ animationDelay: isMobileMenuOpen ? '0.4s' : '0s' }}
+          >
             Prom Queens
           </Link>
-          <Link href="/about" className="block  hover:text-gray-900">
+          <Link 
+            href="/about" 
+            className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
+            style={{ animationDelay: isMobileMenuOpen ? '0.5s' : '0s' }}
+          >
             About
           </Link>
-          <Link href="/contact" className="block  hover:text-gray-900">
+          <Link 
+            href="/contact" 
+            className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
+            style={{ animationDelay: isMobileMenuOpen ? '0.6s' : '0s' }}
+          >
             Contact
           </Link>
         </div>
-      )}
+      </div>
     </header>
   );
 }

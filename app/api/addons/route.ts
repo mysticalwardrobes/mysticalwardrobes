@@ -69,6 +69,7 @@ export async function GET(request: NextRequest) {
       const luzonRate = ensureNumber(fields.luzonRate) ?? 0;
       const outsideLuzonRate = ensureNumber(fields.outsideLuzonRate) ?? 0;
       const forSale = ensureNumber(fields.forSale);
+      
       const pictures = normalizeAssetUrls(fields.pictures);
 
       return {

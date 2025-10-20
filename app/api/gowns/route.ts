@@ -42,6 +42,16 @@ const extractAssetUrl = (value: unknown): string | null => {
   return ensureString((file as { url?: unknown }).url);
 };
 
+const normalizeAssetUrls = (value: unknown): string[] => {
+  const collect = Array.isArray(value) ? value : value != null ? [value] : [];
+
+  const urls = collect
+    .map((item) => extractAssetUrl(item))
+    .filter((url): url is string => typeof url === 'string');
+
+  return urls;
+};
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -57,6 +67,7 @@ export async function GET(request: NextRequest) {
     // Fetch gowns from Contentful
     const response = await client.getEntries({
       content_type: 'gown',
+      include: 10, // Include linked assets (images)
     });
 
     // Transform Contentful entries to our Gown interface
@@ -64,56 +75,72 @@ export async function GET(request: NextRequest) {
       const fields = isRecord(item.fields) ? (item.fields as Record<string, unknown>) : {};
 
       const name = ensureString(fields.name) ?? 'Untitled Gown';
-      const collection = ensureString(fields.collection) ?? 'Unknown Collection';
+      const collection = ensureStringArray(fields.collection);
+      const bestFor = ensureStringArray(fields.bestFor);
       const tags = ensureStringArray(fields.tags);
-      const skirt = ensureString(fields.skirt) ?? '';
+      const color = ensureStringArray(fields.color);
+      const skirtStyle = ensureStringArray(fields.skirtStyle);
       const metroManilaRate = ensureNumber(fields.metroManilaRate) ?? 0;
       const luzonRate = ensureNumber(fields.luzonRate) ?? 0;
       const outsideLuzonRate = ensureNumber(fields.outsideLuzonRate) ?? 0;
       const pixieMetroManilaRate = ensureNumber(fields.pixieMetroManilaRate) ?? 0;
       const pixieLuzonRate = ensureNumber(fields.pixieLuzonRate) ?? 0;
       const pixieOutsideLuzonRate = ensureNumber(fields.pixieOutsideLuzonRate) ?? 0;
+      const forSaleRateLong = ensureNumber(fields.forSaleRateLong) ?? 0;
+      const forSaleRatePixie = ensureNumber(fields.forSaleRatePixie) ?? 0;
       const bust = ensureString(fields.bust) ?? '';
       const waist = ensureString(fields.waist) ?? '';
       const arms = ensureString(fields.arms) ?? '';
       const backing = ensureString(fields.backing) ?? '';
       const addOns = ensureStringArray(fields.addOns);
-      const relatedGownIds = ensureStringArray(fields.relatedGownIds);
+      const relatedGowns = ensureStringArray(fields.relatedGowns);
 
-      // Extract image URLs
-      const longGownPicture = extractAssetUrl(fields.longGownPicture) ?? '/assets/sample_gown-1.jpg';
-      const filipinianaPicture = extractAssetUrl(fields.filipinianaPicture) ?? '/assets/sample_gown-1.jpg';
-      const pixiePicture = extractAssetUrl(fields.pixiePicture) ?? '/assets/sample_gown-1.jpg';
-      const trainPicture = extractAssetUrl(fields.trainPicture) ?? '/assets/sample_gown-1.jpg';
+      // Extract image URLs (handle arrays of images)
+      const longGownPictures = normalizeAssetUrls(fields.longGownPicture);
+      const filipinianaPictures = normalizeAssetUrls(fields.filipinianaPicture);
+      const pixiePictures = normalizeAssetUrls(fields.pixiePicture);
+      const trainPictures = normalizeAssetUrls(fields.trainPicture);
 
       return {
         id: String(item.sys.id),
         name,
         collection,
+        bestFor,
         tags,
-        skirt,
+        color,
+        skirtStyle,
         metroManilaRate,
         luzonRate,
         outsideLuzonRate,
         pixieMetroManilaRate,
         pixieLuzonRate,
         pixieOutsideLuzonRate,
+        forSaleRateLong,
+        forSaleRatePixie,
         bust,
         waist,
         arms,
         backing,
-        longGownPicture,
-        filipinianaPicture,
-        pixiePicture,
-        trainPicture,
+        longGownPictures,
+        filipinianaPictures,
+        pixiePictures,
+        trainPictures,
         addOns,
-        relatedGownIds,
+        relatedGowns,
       };
     });
 
     // Filter by collection
     if (collection && collection !== 'all') {
-      gowns = gowns.filter(gown => gown.collection.toLowerCase() === collection.toLowerCase());
+      console.log(`Filtering by collection: "${collection}"`);
+      const allCollections = gowns.flatMap(g => g.collection);
+      console.log(`Available collections:`, [...new Set(allCollections)]);
+      
+      gowns = gowns.filter(gown => 
+        gown.collection.some(c => c.toLowerCase().trim() === collection.toLowerCase().trim())
+      );
+      
+      console.log(`Found ${gowns.length} gowns in collection "${collection}"`);
     }
 
     // Filter by tags
@@ -126,23 +153,26 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Filter by price range (using Metro Manila rate as default)
+    // Filter by price range (using Metro Manila rate as default, fallback to pixie rate)
     if (minPrice || maxPrice) {
       const min = minPrice ? parseInt(minPrice) : 0;
       const max = maxPrice ? parseInt(maxPrice) : Infinity;
       
       gowns = gowns.filter(gown => {
-        const price = gown.metroManilaRate;
+        const price = gown.metroManilaRate > 0 ? gown.metroManilaRate : gown.pixieMetroManilaRate;
         return price >= min && price <= max;
       });
     }
 
-    // Search by name or collection
+    // Search by name, collection, bestFor, color, or tags
     if (search) {
       const searchLower = search.toLowerCase();
       gowns = gowns.filter(gown => 
         gown.name.toLowerCase().includes(searchLower) ||
-        gown.collection.toLowerCase().includes(searchLower) ||
+        gown.collection.some(c => c.toLowerCase().includes(searchLower)) ||
+        gown.bestFor.some(b => b.toLowerCase().includes(searchLower)) ||
+        gown.color.some(c => c.toLowerCase().includes(searchLower)) ||
+        gown.skirtStyle.some(s => s.toLowerCase().includes(searchLower)) ||
         gown.tags.some(tag => tag.toLowerCase().includes(searchLower))
       );
     }
@@ -150,13 +180,25 @@ export async function GET(request: NextRequest) {
     // Sort
     switch (sortBy) {
       case 'price-low-high':
-        gowns.sort((a, b) => a.metroManilaRate - b.metroManilaRate);
+        gowns.sort((a, b) => {
+          const priceA = a.metroManilaRate > 0 ? a.metroManilaRate : a.pixieMetroManilaRate;
+          const priceB = b.metroManilaRate > 0 ? b.metroManilaRate : b.pixieMetroManilaRate;
+          return priceA - priceB;
+        });
         break;
       case 'price-high-low':
-        gowns.sort((a, b) => b.metroManilaRate - a.metroManilaRate);
+        gowns.sort((a, b) => {
+          const priceA = a.metroManilaRate > 0 ? a.metroManilaRate : a.pixieMetroManilaRate;
+          const priceB = b.metroManilaRate > 0 ? b.metroManilaRate : b.pixieMetroManilaRate;
+          return priceB - priceA;
+        });
         break;
       case 'collection':
-        gowns.sort((a, b) => a.collection.localeCompare(b.collection));
+        gowns.sort((a, b) => {
+          const aCollection = a.collection.join(', ');
+          const bCollection = b.collection.join(', ');
+          return aCollection.localeCompare(bCollection);
+        });
         break;
       case 'name':
       default:
@@ -170,6 +212,16 @@ export async function GET(request: NextRequest) {
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     const paginatedGowns = gowns.slice(startIndex, endIndex);
+
+    // If requesting collections list, return available collections
+    if (searchParams.get('listCollections') === 'true') {
+      const allCollections = gowns.flatMap(g => g.collection);
+      const availableCollections = [...new Set(allCollections)].sort();
+      return NextResponse.json({
+        collections: availableCollections,
+        total: availableCollections.length
+      });
+    }
 
     return NextResponse.json({
       items: paginatedGowns,
