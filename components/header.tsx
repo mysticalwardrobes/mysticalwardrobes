@@ -15,12 +15,12 @@ export default function Header() {
 
   return (
     <header className="bg-background shadow-md py-4">
-      <nav className="container mx-auto px-12 py-4 flex justify-between items-center ">
+      <nav className="container mx-auto px-6 py-2 md:px-12 md:py-4 flex justify-between items-center ">
         {/* Company Logo */}
         <div className="flex-shrink-0">
           <Link href="/" className="font-bold text-gray-800 flex items-center space-x-2 justify-center group transition-all duration-300 hover:scale-105">
             <Image className="w-6 h-6 md:w-10 md:h-10 transition-transform duration-300 group-hover:rotate-12" src={Logo} alt="Mystical Logo"/>
-            <h1 className="font-vegawanty text-xl md:text-4xl text-foreground transition-colors duration-300 group-hover:text-gray-900">Mystical Wardrobes</h1>
+            <h1 className="font-vegawanty text-xl md:text-4xl text-foreground transition-colors duration-300 group-hover:text-foreground-darker">Mystical Wardrobes</h1>
           </Link>
         </div>
 
@@ -28,7 +28,7 @@ export default function Header() {
         <div className="md:hidden">
           <button
             onClick={toggleMobileMenu}
-            className="hover:text-gray-900 focus:outline-none focus:text-gray-900 transition-colors duration-300 p-2 rounded-lg hover:bg-gray-100"
+            className="hover:text-foreground-darker focus:outline-none focus:text-foreground-darker transition-colors duration-300 p-2 rounded-lg hover:bg-gray-100"
           >
             <svg
               className={`h-6 w-6 transition-transform duration-300 ${isMobileMenuOpen ? 'rotate-180' : ''}`}
@@ -50,31 +50,31 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8 text-foreground font-manrope">
-          <Link href="/" className="relative group transition-colors duration-300 hover:text-gray-900">
+          <Link href="/" className="relative group transition-colors duration-300 hover:text-foreground-darker">
             Home
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
 
-          <Link href="/collections" className="relative group transition-colors duration-300 hover:text-gray-900">
+          <Link href="/collections" className="relative group transition-colors duration-300 hover:text-foreground-darker">
             Collections
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
 
-          <Link href="/addons" className="relative group transition-colors duration-300 hover:text-gray-900">
+          <Link href="/addons" className="relative group transition-colors duration-300 hover:text-foreground-darker">
             Add Ons
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
-          <Link href="/promqueens" className="relative group transition-colors duration-300 hover:text-gray-900">
+          <Link href="/promqueens" className="relative group transition-colors duration-300 hover:text-foreground-darker">
             Prom Queens
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
-          <Link href="/about" className="relative group transition-colors duration-300 hover:text-gray-900">
+          <Link href="/about" className="relative group transition-colors duration-300 hover:text-foreground-darker">
             About
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
-          <Link href="/contact" className="relative group transition-colors duration-300 hover:text-gray-900">
+          <Link href="/contact" className="relative group transition-colors duration-300 hover:text-foreground-darker">
             Contact
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
         </div>
       </nav>

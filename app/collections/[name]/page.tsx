@@ -3,7 +3,21 @@
 import { useAtom } from "jotai";
 import Image from "next/image";
 import Link from "next/link";
-import { filterDrawerAtom, priceRangeAtom, sortByAtom } from "./filters.store";
+import { 
+  filterDrawerAtom, 
+  priceRangeAtom, 
+  sortByAtom,
+  selectedTagsAtom,
+  selectedColorsAtom,
+  selectedBestForAtom,
+  selectedSkirtStylesAtom,
+  tagsSearchAtom,
+  colorsSearchAtom,
+  TAG_OPTIONS,
+  COLOR_OPTIONS,
+  BEST_FOR_OPTIONS,
+  SKIRT_STYLE_OPTIONS
+} from "./filters.store";
 import { Gown } from "@/app/api/gowns/model";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -25,8 +39,6 @@ const sortOptions = [
   { value: "price-high-low", label: "Price: High to Low" },
   { value: "collection", label: "Collection" },
 ];
-
-const tagOptions = ["Great Gatsby", "Gala", "Vintage", "Heavenly"];
 
 // Collection mapping from URL parameter to display name
 const collectionMapping: Record<string, string> = {
@@ -64,17 +76,32 @@ const getCollectionDescription = (displayName: string): string => {
 interface FilterCheckboxGroupProps {
   title: string;
   options: string[];
+  selectedValues: string[];
+  onSelectionChange: (values: string[]) => void;
 }
 
-function FilterCheckboxGroup({ title, options }: FilterCheckboxGroupProps) {
+function FilterCheckboxGroup({ title, options, selectedValues, onSelectionChange }: FilterCheckboxGroupProps) {
+  const handleCheckboxChange = (option: string, checked: boolean) => {
+    if (checked) {
+      onSelectionChange([...selectedValues, option]);
+    } else {
+      onSelectionChange(selectedValues.filter(value => value !== option));
+    }
+  };
+
   return (
     <section className="space-y-3 border-b border-secondary/20 pb-6">
       <h2 className="font-vegawanty text-sm font-semibold uppercase tracking-wider">{title}</h2>
-      <div className="space-y-2">
+      <div className="space-y-2 max-h-48 overflow-y-auto">
         {options.map((option) => (
-          <label key={option} className="flex items-center gap-3 text-sm text-secondary">
-            <input type="checkbox" className="h-4 w-4 rounded border-secondary/40 text-secondary focus:ring-secondary" />
-            <span>{option}</span>
+          <label key={option} className="flex items-center gap-3 text-sm text-secondary cursor-pointer hover:text-secondary/80 transition-colors duration-200">
+            <input 
+              type="checkbox" 
+              checked={selectedValues.includes(option)}
+              onChange={(e) => handleCheckboxChange(option, e.target.checked)}
+              className="h-4 w-4 rounded border-secondary/40 text-secondary focus:ring-secondary focus:ring-2" 
+            />
+            <span className="select-none">{option}</span>
           </label>
         ))}
       </div>
@@ -82,8 +109,96 @@ function FilterCheckboxGroup({ title, options }: FilterCheckboxGroupProps) {
   );
 }
 
+interface SearchableFilterGroupProps {
+  title: string;
+  options: string[];
+  selectedValues: string[];
+  onSelectionChange: (values: string[]) => void;
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+}
+
+function SearchableFilterGroup({ 
+  title, 
+  options, 
+  selectedValues, 
+  onSelectionChange, 
+  searchValue, 
+  onSearchChange 
+}: SearchableFilterGroupProps) {
+  const handleCheckboxChange = (option: string, checked: boolean) => {
+    if (checked) {
+      onSelectionChange([...selectedValues, option]);
+    } else {
+      onSelectionChange(selectedValues.filter(value => value !== option));
+    }
+  };
+
+  // Filter options based on search
+  const filteredOptions = options.filter(option =>
+    option.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  return (
+    <section className="space-y-3 border-b border-secondary/20 pb-6">
+      <h2 className="font-vegawanty text-sm font-semibold uppercase tracking-wider">{title}</h2>
+      
+      {/* Search input */}
+      <div className="relative">
+        <input
+          type="text"
+          placeholder={`Search ${title.toLowerCase()}...`}
+          value={searchValue}
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="w-full rounded border border-secondary/30 bg-white px-3 py-2 pl-8 text-sm focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50"
+        />
+        <svg 
+          className="absolute left-2.5 top-2.5 h-4 w-4 text-secondary/50" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+
+      {/* Selected count indicator */}
+      {selectedValues.length > 0 && (
+        <div className="text-xs text-secondary/70">
+          {selectedValues.length} selected
+        </div>
+      )}
+
+      {/* Options list */}
+      <div className="space-y-2 max-h-48 overflow-y-auto">
+        {filteredOptions.length === 0 ? (
+          <p className="text-sm text-secondary/60 italic">No {title.toLowerCase()} found</p>
+        ) : (
+          filteredOptions.map((option) => (
+            <label key={option} className="flex items-center gap-3 text-sm text-secondary cursor-pointer hover:text-secondary/80 transition-colors duration-200">
+              <input 
+                type="checkbox" 
+                checked={selectedValues.includes(option)}
+                onChange={(e) => handleCheckboxChange(option, e.target.checked)}
+                className="h-4 w-4 rounded border-secondary/40 text-secondary focus:ring-secondary focus:ring-2" 
+              />
+              <span className="select-none">{option}</span>
+            </label>
+          ))
+        )}
+      </div>
+    </section>
+  );
+}
+
 function FiltersPanel() {
   const [priceRange, setPriceRange] = useAtom(priceRangeAtom);
+  const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
+  const [selectedColors, setSelectedColors] = useAtom(selectedColorsAtom);
+  const [selectedBestFor, setSelectedBestFor] = useAtom(selectedBestForAtom);
+  const [selectedSkirtStyles, setSelectedSkirtStyles] = useAtom(selectedSkirtStylesAtom);
+  const [tagsSearch, setTagsSearch] = useAtom(tagsSearchAtom);
+  const [colorsSearch, setColorsSearch] = useAtom(colorsSearchAtom);
 
   const handleMinChange = (value: number) => {
     setPriceRange(([, max]) => {
@@ -154,46 +269,44 @@ function FiltersPanel() {
       </section>
 
       <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-        <FilterCheckboxGroup title="Sleeves" options={["Standard", "Filipiniana"]} />
-      </div>
-      <div className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-        <FilterCheckboxGroup title="Skirt" options={["Flowy/Fairytale Gown", "Mid to Ball Gown", "Trails", "Pixie Versions"]} />
-      </div>
-      <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-        <FilterCheckboxGroup title="Waistline" options={["Natural Waist", "Empire", "Drop Waist", "Corseted"]} />
-      </div>
-
-      <section className="space-y-3 border-b border-secondary/20 pb-6 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-        <h2 className="font-vegawanty text-sm font-semibold uppercase tracking-wider">Color</h2>
-        <select className="w-full rounded border border-secondary/30 bg-white px-3 py-2 text-sm focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50">
-          <option value="all">All</option>
-          <option value="blush">Blush</option>
-          <option value="champagne">Champagne</option>
-          <option value="ivory">Ivory</option>
-          <option value="pastel">Pastels</option>
-        </select>
-      </section>
-
-      <section className="space-y-3 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-        <h2 className="font-vegawanty text-sm font-semibold uppercase tracking-wider">Tags</h2>
-        <input
-          type="search"
-          placeholder="Search tags..."
-          className="w-full rounded border border-secondary/30 bg-white px-3 py-2 text-sm focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50"
+        <FilterCheckboxGroup 
+          title="Best For" 
+          options={BEST_FOR_OPTIONS}
+          selectedValues={selectedBestFor}
+          onSelectionChange={setSelectedBestFor}
         />
-        <div className="flex flex-wrap gap-2">
-          {tagOptions.map((tag, index) => (
-            <button
-              key={tag}
-              type="button"
-              className="rounded-full border border-secondary/30 bg-white px-3 py-1 text-xs font-medium text-secondary transition-all duration-200 hover:border-secondary hover:scale-105 animate-fade-in-up"
-              style={{ animationDelay: `${0.7 + index * 0.1}s` }}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-      </section>
+      </div>
+      
+      <div className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+        <FilterCheckboxGroup 
+          title="Skirt Style" 
+          options={SKIRT_STYLE_OPTIONS}
+          selectedValues={selectedSkirtStyles}
+          onSelectionChange={setSelectedSkirtStyles}
+        />
+      </div>
+
+      <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+        <SearchableFilterGroup 
+          title="Color" 
+          options={COLOR_OPTIONS}
+          selectedValues={selectedColors}
+          onSelectionChange={setSelectedColors}
+          searchValue={colorsSearch}
+          onSearchChange={setColorsSearch}
+        />
+      </div>
+
+      <div className="animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+        <SearchableFilterGroup 
+          title="Tags" 
+          options={TAG_OPTIONS}
+          selectedValues={selectedTags}
+          onSelectionChange={setSelectedTags}
+          searchValue={tagsSearch}
+          onSearchChange={setTagsSearch}
+        />
+      </div>
     </div>
   );
 }
@@ -206,6 +319,10 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useAtom(filterDrawerAtom);
   const [sortBy, setSortBy] = useAtom(sortByAtom);
   const [priceRange] = useAtom(priceRangeAtom);
+  const [selectedTags] = useAtom(selectedTagsAtom);
+  const [selectedColors] = useAtom(selectedColorsAtom);
+  const [selectedBestFor] = useAtom(selectedBestForAtom);
+  const [selectedSkirtStyles] = useAtom(selectedSkirtStylesAtom);
   
   const [gowns, setGowns] = useState<Gown[]>([]);
   const [loading, setLoading] = useState(true);
@@ -233,6 +350,20 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
       }
       if (priceRange[1] < 4000) {
         searchParams.set('maxPrice', priceRange[1].toString());
+      }
+      
+      // Add new filter parameters
+      if (selectedTags.length > 0) {
+        selectedTags.forEach(tag => searchParams.append('tags', tag));
+      }
+      if (selectedColors.length > 0) {
+        selectedColors.forEach(color => searchParams.append('colors', color));
+      }
+      if (selectedBestFor.length > 0) {
+        selectedBestFor.forEach(bestFor => searchParams.append('bestFor', bestFor));
+      }
+      if (selectedSkirtStyles.length > 0) {
+        selectedSkirtStyles.forEach(style => searchParams.append('skirtStyles', style));
       }
       
       // Add sorting
@@ -296,12 +427,12 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
 
   useEffect(() => {
     fetchGowns();
-  }, [name, displayName, sortBy, priceRange, currentPage]);
+  }, [name, displayName, sortBy, priceRange, selectedTags, selectedColors, selectedBestFor, selectedSkirtStyles, currentPage]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [name, displayName, sortBy, priceRange]);
+  }, [name, displayName, sortBy, priceRange, selectedTags, selectedColors, selectedBestFor, selectedSkirtStyles]);
 
   return (
     <main className="bg-background py-10 text-secondary md:py-16">

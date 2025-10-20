@@ -56,7 +56,10 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const collection = searchParams.get('collection');
-    const tags = searchParams.get('tags');
+    const tags = searchParams.getAll('tags');
+    const colors = searchParams.getAll('colors');
+    const bestFor = searchParams.getAll('bestFor');
+    const skirtStyles = searchParams.getAll('skirtStyles');
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
     const sortBy = searchParams.get('sortBy') || 'name';
@@ -144,11 +147,37 @@ export async function GET(request: NextRequest) {
     }
 
     // Filter by tags
-    if (tags) {
-      const tagArray = tags.split(',').map(tag => tag.trim().toLowerCase());
+    if (tags.length > 0) {
       gowns = gowns.filter(gown => 
-        tagArray.some(tag => 
-          gown.tags.some(gownTag => gownTag.toLowerCase().includes(tag))
+        tags.some(tag => 
+          gown.tags.some(gownTag => gownTag.toLowerCase().includes(tag.toLowerCase()))
+        )
+      );
+    }
+
+    // Filter by colors
+    if (colors.length > 0) {
+      gowns = gowns.filter(gown => 
+        colors.some(color => 
+          gown.color.some(gownColor => gownColor.toLowerCase().includes(color.toLowerCase()))
+        )
+      );
+    }
+
+    // Filter by bestFor
+    if (bestFor.length > 0) {
+      gowns = gowns.filter(gown => 
+        bestFor.some(bf => 
+          gown.bestFor.some(gownBestFor => gownBestFor.toLowerCase().includes(bf.toLowerCase()))
+        )
+      );
+    }
+
+    // Filter by skirt styles
+    if (skirtStyles.length > 0) {
+      gowns = gowns.filter(gown => 
+        skirtStyles.some(style => 
+          gown.skirtStyle.some(gownStyle => gownStyle.toLowerCase().includes(style.toLowerCase()))
         )
       );
     }

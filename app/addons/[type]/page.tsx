@@ -51,7 +51,7 @@ function FiltersPanel({ type }: { type: string }) {
 
   return (
     <div className="space-y-6 text-secondary">
-      <section className="space-y-4 border-b border-secondary/20 pb-6">
+      <section className="space-y-4 border-b border-secondary/20 pb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
         <div className="flex items-center justify-between">
           <h2 className="font-vegawanty text-sm font-semibold uppercase tracking-wider">Price</h2>
           <span className="font-manrope text-xs text-secondary/70">Php</span>
@@ -66,7 +66,7 @@ function FiltersPanel({ type }: { type: string }) {
               step={50}
               value={priceRange[0]}
               onChange={(event) => handleMinChange(Number(event.target.value))}
-              className="accent-secondary"
+              className="accent-secondary transition-all duration-200 hover:accent-secondary/80"
             />
             <input
               aria-label="Maximum price"
@@ -76,7 +76,7 @@ function FiltersPanel({ type }: { type: string }) {
               step={50}
               value={priceRange[1]}
               onChange={(event) => handleMaxChange(Number(event.target.value))}
-              className="accent-secondary"
+              className="accent-secondary transition-all duration-200 hover:accent-secondary/80"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -87,7 +87,7 @@ function FiltersPanel({ type }: { type: string }) {
               max={2000}
               value={priceRange[0]}
               onChange={(event) => handleMinChange(Number(event.target.value))}
-              className="w-full rounded border border-secondary/30 bg-white px-3 py-2 text-sm focus:border-secondary focus:outline-none"
+              className="w-full rounded border border-secondary/30 bg-white px-3 py-2 text-sm focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50"
             />
             <span className="text-xs font-medium text-secondary/60">to</span>
             <input
@@ -97,30 +97,31 @@ function FiltersPanel({ type }: { type: string }) {
               max={2000}
               value={priceRange[1]}
               onChange={(event) => handleMaxChange(Number(event.target.value))}
-              className="w-full rounded border border-secondary/30 bg-white px-3 py-2 text-sm focus:border-secondary focus:outline-none"
+              className="w-full rounded border border-secondary/30 bg-white px-3 py-2 text-sm focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50"
             />
           </div>
         </div>
       </section>
 
-      <section className="space-y-3 border-b border-secondary/20 pb-6">
+      <section className="space-y-3 border-b border-secondary/20 pb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
         <h2 className="font-vegawanty text-sm font-semibold uppercase tracking-wider">Category</h2>
         <div className="space-y-2">
           <Link
             href="/addons"
-            className="block text-sm text-secondary hover:text-secondary/90 transition-colors"
+            className="block text-sm text-secondary hover:text-secondary/90 transition-colors duration-200 hover:translate-x-1"
           >
             All Add-Ons
           </Link>
-          {['crown', 'hood', 'petticoat', 'gloves', 'fan', 'mask', 'necklace', 'umbrella'].map((category) => (
+          {['crown', 'hood', 'petticoat', 'gloves', 'fan', 'mask', 'necklace', 'umbrella'].map((category, index) => (
             <Link
               key={category}
               href={`/addons/${category}`}
-              className={`block text-sm capitalize transition-colors ${
+              className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${
                 category === type 
                   ? 'text-secondary font-semibold' 
                   : 'text-secondary/70 hover:text-secondary/90'
               }`}
+              style={{ animationDelay: `${0.3 + index * 0.05}s` }}
             >
               {category}{type === 'gloves' ? '' : 's'}
             </Link>
@@ -228,7 +229,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
     <main className="bg-background py-10 text-secondary md:py-16">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-5 sm:px-6 lg:flex-row lg:px-8">
         <aside className="hidden w-full max-w-xs shrink-0 lg:block">
-          <div className="bg-white p-6">
+          <div className="bg-white p-6 animate-slide-in-left">
             <div className="mb-6">
               <h1 className="font-vegawanty text-lg font-semibold uppercase tracking-widest text-secondary">Filters</h1>
             </div>
@@ -236,8 +237,8 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
           </div>
         </aside>
 
-        <div className="flex-1 space-y-8">
-          <header className="space-y-3 text-center lg:text-left">
+        <div className="flex-1 space-y-8 animate-slide-in-right">
+          <header className="space-y-3 text-center lg:text-left animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             <p className="font-manrope text-xs uppercase tracking-[0.4em] text-secondary/70">Add-Ons</p>
             <div className="flex items-center justify-center gap-3 lg:justify-start">
               <h1 className="font-vegawanty text-4xl text-foreground sm:text-5xl capitalize">
@@ -249,7 +250,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
             </p>
           </header>
 
-          <div className="flex flex-col gap-4 bg-white/90 py-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 bg-white/90 py-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             <div className="flex items-center justify-between sm:justify-start sm:gap-12">
               <p className="font-manrope text-xs text-secondary/80 sm:text-sm">
                 Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, totalItems)} of {totalItems} {type}s
@@ -257,7 +258,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
               <button
                 type="button"
                 onClick={toggleFilterDrawer}
-                className="inline-flex items-center gap-2 rounded-full border border-secondary/30 px-3 py-1.5 text-xs font-medium text-secondary transition hover:border-secondary hover:text-secondary/90 lg:hidden"
+                className="inline-flex items-center gap-2 rounded-full border border-secondary/30 px-3 py-1.5 text-xs font-medium text-secondary transition-all duration-200 hover:border-secondary hover:text-secondary/90 hover:scale-105 lg:hidden"
               >
                 <span className="h-2 w-2 rounded-full bg-secondary" />
                 Filters
@@ -271,7 +272,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                 id="sort-by"
                 value={sortBy}
                 onChange={(event) => setSortBy(event.target.value)}
-                className="w-40 rounded border border-secondary/30 bg-white px-3 py-2 text-sm text-secondary focus:border-secondary focus:outline-none"
+                className="w-40 rounded border border-secondary/30 bg-white px-3 py-2 text-sm text-secondary focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -283,7 +284,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
           </div>
 
           {addOns.length === 0 ? (
-            <div className="text-center py-20">
+            <div className="text-center py-20 animate-fade-in-up">
               <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-secondary/10 mx-auto">
                 <span className="font-vegawanty text-2xl font-semibold text-secondary">{getTypeIcon(type).charAt(0)}</span>
               </div>
@@ -293,14 +294,15 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8">
               {addOns.map((addon, index) => (
                 <motion.article
                   key={addon.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="group flex h-full flex-col overflow-hidden bg-white transition hover:-translate-y-1"
+                  className="group flex h-full flex-col overflow-hidden bg-white transition-all duration-300 hover:-translate-y-2 hover:shadow-lg animate-fade-in-up"
+                  style={{ animationDelay: `${0.3 + index * 0.1}s` }}
                 >
                   <Link href={`/addons/${addon.type}/${addon.id}`} className="flex h-full flex-col">
                     <div className="relative aspect-[4/5] w-full overflow-hidden bg-secondary/10">
@@ -309,7 +311,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                           src={'https:' + addon.pictures[0]}
                           alt={addon.name}
                           fill
-                          className="object-cover transition duration-500 group-hover:scale-105"
+                          className="object-cover transition-transform duration-500 group-hover:scale-110"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
                       ) : (
@@ -324,7 +326,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                       )}
                     </div>
                     <div className="flex flex-1 flex-col justify-between gap-0.5 px-1 py-2 md:gap-1 md:py-4">
-                      <h2 className="font-manrope text-base font-semibold text-secondary sm:text-lg">{addon.name}</h2>
+                      <h2 className="font-manrope text-base font-semibold text-secondary sm:text-lg group-hover:text-secondary/80 transition-colors duration-200">{addon.name}</h2>
                       <div className="space-y-1">
                         <p className="font-manrope text-sm uppercase tracking-[0.35em] text-secondary/70">
                           From ₱{addon.metroManilaRate.toLocaleString()}
@@ -347,11 +349,11 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
 
           {/* Pagination Controls */}
           {totalItems > ITEMS_PER_PAGE && (
-            <div className="flex items-center justify-center gap-2 pt-8">
+            <div className="flex items-center justify-center gap-2 pt-8 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
               <button
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="flex items-center gap-1 rounded-full border border-secondary/30 px-3 py-2 text-sm font-medium text-secondary transition hover:border-secondary hover:text-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-1 rounded-full border border-secondary/30 px-3 py-2 text-sm font-medium text-secondary transition-all duration-200 hover:border-secondary hover:text-secondary/90 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -374,7 +376,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                         )}
                         <button
                           onClick={() => setCurrentPage(page)}
-                          className={`rounded-full px-3 py-2 text-sm font-medium transition ${
+                          className={`rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 ${
                             page === currentPage
                               ? 'bg-secondary text-white'
                               : 'text-secondary hover:bg-secondary/10'
@@ -390,7 +392,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
               <button
                 onClick={() => setCurrentPage(prev => Math.min(Math.ceil(totalItems / ITEMS_PER_PAGE), prev + 1))}
                 disabled={currentPage >= Math.ceil(totalItems / ITEMS_PER_PAGE)}
-                className="flex items-center gap-1 rounded-full border border-secondary/30 px-3 py-2 text-sm font-medium text-secondary transition hover:border-secondary hover:text-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-1 rounded-full border border-secondary/30 px-3 py-2 text-sm font-medium text-secondary transition-all duration-200 hover:border-secondary hover:text-secondary/90 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -403,15 +405,15 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
       </div>
 
       {isFilterDrawerOpen && (
-        <div className="fixed inset-0 z-50 flex lg:hidden" aria-modal="true" role="dialog">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={toggleFilterDrawer} />
-          <div className="relative z-10 h-full w-5/6 max-w-sm bg-background shadow-xl">
+        <div className="fixed inset-0 z-50 flex lg:hidden animate-fade-in" aria-modal="true" role="dialog">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300" onClick={toggleFilterDrawer} />
+          <div className="relative z-10 h-full w-5/6 max-w-sm bg-background shadow-xl animate-slide-in-right">
             <div className="flex items-center justify-between border-b border-secondary/20 px-4 py-4">
               <h2 className="font-manrope text-base font-semibold uppercase tracking-wider text-secondary">Filters</h2>
               <button
                 type="button"
                 onClick={toggleFilterDrawer}
-                className="rounded-full border border-secondary/30 px-3 py-1 text-xs font-medium text-secondary transition hover:border-secondary"
+                className="rounded-full border border-secondary/30 px-3 py-1 text-xs font-medium text-secondary transition-all duration-200 hover:border-secondary hover:scale-105"
               >
                 Close
               </button>
