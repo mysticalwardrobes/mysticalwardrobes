@@ -24,6 +24,31 @@ const ensureStringArray = (value: unknown): string[] => {
   return [];
 };
 
+// Accepts either an array of strings (ids) or an array of linked entries
+// and returns an array of entry IDs
+const extractIdArray = (value: unknown): string[] => {
+  if (!Array.isArray(value)) return [];
+
+  const ids: string[] = [];
+  for (const item of value) {
+    const asString = ensureString(item);
+    if (asString) {
+      ids.push(asString);
+      continue;
+    }
+
+    if (isRecord(item) && 'sys' in item) {
+      const sys = (item as { sys?: unknown }).sys;
+      if (isRecord(sys) && 'id' in sys) {
+        const id = ensureString((sys as Record<string, unknown>).id);
+        if (id) ids.push(id);
+        continue;
+      }
+    }
+  }
+  return ids;
+};
+
 const extractAssetUrl = (value: unknown): string | null => {
   if (!isRecord(value) || !('fields' in value)) {
     return null;
@@ -95,7 +120,8 @@ export async function GET(request: NextRequest) {
       const waist = ensureString(fields.waist) ?? '';
       const arms = ensureString(fields.arms) ?? '';
       const backing = ensureString(fields.backing) ?? '';
-      const addOns = ensureStringArray(fields.addOns);
+      // Add-ons may be Symbols or Entry links; normalize to entry IDs
+      const addOns = extractIdArray(fields.addOns);
       const relatedGowns = ensureStringArray(fields.relatedGowns);
 
       // Extract image URLs (handle arrays of images)

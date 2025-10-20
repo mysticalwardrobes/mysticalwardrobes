@@ -15,13 +15,55 @@ const ensureNumber = (value: unknown): number | null => {
   return typeof value === 'number' && !isNaN(value) ? value : null;
 };
 
-const ensureStringArray = (value: unknown): string[] => {
-  if (Array.isArray(value)) {
-    return value
-      .map(item => ensureString(item))
-      .filter((item): item is string => item !== null);
+// Accepts either an array of strings or an array of linked entries and
+// returns an array of strings using the linked entry's `fields.name` when present
+const extractStringArray = (value: unknown): string[] => {
+  if (!Array.isArray(value)) return [];
+
+  const result: string[] = [];
+  for (const item of value) {
+    const asString = ensureString(item);
+    if (asString) {
+      result.push(asString);
+      continue;
+    }
+
+    if (isRecord(item)) {
+      // Contentful SDK resolves links to entries when include > 0
+      const fields = (item as { fields?: unknown }).fields;
+      if (isRecord(fields) && 'name' in fields) {
+        const name = ensureString((fields as Record<string, unknown>).name);
+        if (name) result.push(name);
+        continue;
+      }
+    }
   }
-  return [];
+  return result;
+};
+
+// Accepts either an array of strings (ids) or an array of linked entries
+// and returns an array of entry IDs
+const extractIdArray = (value: unknown): string[] => {
+  if (!Array.isArray(value)) return [];
+
+  const ids: string[] = [];
+  for (const item of value) {
+    const asString = ensureString(item);
+    if (asString) {
+      ids.push(asString);
+      continue;
+    }
+
+    if (isRecord(item) && 'sys' in item) {
+      const sys = (item as { sys?: unknown }).sys;
+      if (isRecord(sys) && 'id' in sys) {
+        const id = ensureString((sys as Record<string, unknown>).id);
+        if (id) ids.push(id);
+        continue;
+      }
+    }
+  }
+  return ids;
 };
 
 const extractAssetUrl = (value: unknown): string | null => {
@@ -54,6 +96,14 @@ const normalizeAssetUrls = (value: unknown): string[] => {
     );
 
   return urls;
+};
+
+// Strict string-array extractor (for fields guaranteed to be Symbol[])
+const ensureStringArray = (value: unknown): string[] => {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => ensureString(item))
+    .filter((v): v is string => v !== null);
 };
 
 export async function GET(
@@ -95,8 +145,10 @@ export async function GET(
     const waist = ensureString(fields.waist) ?? '';
     const arms = ensureString(fields.arms) ?? '';
     const backing = ensureString(fields.backing) ?? '';
-    const addOns = ensureStringArray(fields.addOns);
-    const relatedGowns = ensureStringArray(fields.relatedGowns);
+    // Add-ons may be Symbols or Entry links; normalize to entry IDs
+    const addOns = extractIdArray(fields.addOns);
+    // Related gowns are typically Entry links; normalize to IDs
+    const relatedGowns = extractIdArray(fields.relatedGowns);
 
     // Extract image URLs (handle arrays of images)
     const longGownPictures = normalizeAssetUrls(fields.longGownPicture);

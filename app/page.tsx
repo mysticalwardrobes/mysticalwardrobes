@@ -9,12 +9,15 @@ import Logo4fg from "@/public/assets/Mystical-Wardrobes-Logo-04-foreground.svg"
 import Icon6 from "@/public/assets/symbols/Mystical-Wardrobes-Icons-09-06.svg"
 
 import premium from "@/public/assets/collections/Premium.png";
+import explore_accessories from "@/public/assets/addons/Explore.jpg";
 import sampleGown1 from "@/public/assets/sample_gown-1.jpg";
 import Logo from "@/public/assets/Mystical-Wardrobes-Logo-02-foreground.svg"
 
 import FadeInOnScroll from "@/components/FadeInOnScroll";
 import ExpandableText from "@/components/ExpandableText";
 import type { Review as ReviewResponse } from "@/app/api/reviews/model";
+import type { Gown } from "@/app/api/gowns/model";
+import { useRouter } from "next/navigation";
 
 
 export default function Home() {
@@ -45,6 +48,8 @@ export default function Home() {
 
 
 function Hero() {
+  const router = useRouter();
+  
   return (
     <div 
       className="w-full h-fit bg-cover bg-top pl-5 pr-28 py-16 space-y-3 md:pl-16 md:pr-20 md:py-36 flex flex-col items-start justify-center text-left text-background font-manrope" 
@@ -56,12 +61,13 @@ function Hero() {
         color="text-background"
       />
       <div className="w-full flex flex-row items-center justify-start space-x-4 mt-5">
-        <button className="font-manrope text-sm md:text-lg bg-primary text-secondary hover:text-white bg-white border-2 border-white rounded px-4 py-2 hover:bg-secondary transition-colors duration-300">
+        <button className="font-manrope text-sm md:text-lg bg-primary text-secondary hover:text-white bg-white border-2 border-white rounded px-4 py-2 hover:bg-secondary transition-colors duration-300" 
+        onClick={() => router.push('/collections')}>
           Browse Our Gowns
         </button>
-        <button className="font-manrope text-sm md:text-lg bg-transparent border-2 border-background text-background px-4 py-2 rounded hover:bg-white hover:text-secondary transition-colors duration-300">
+        {/* <button className="font-manrope text-sm md:text-lg bg-transparent border-2 border-background text-background px-4 py-2 rounded hover:bg-white hover:text-secondary transition-colors duration-300">
           Book a Fitting
-        </button>
+        </button> */}
       </div>
     </div>
   )
@@ -460,7 +466,7 @@ function Collections() {
     <div className="w-full h-fit flex flex-col md:flex-row md:gap-10 md:px-16 md:py-12 items-center justify-start md:justify-evenly px-6 py-4 space-y-6 bg-background">
       <div className="flex flex-col items-center justify-center">
         <Image src={Icon6} alt="Icon 6" className="w-24 h-24 md:w-40 md:h-40 mb-[-10px]"/>
-        <h2 className="font-vegawanty text-5xl md:text-7xl">Collections</h2>
+        <h2 className="font-vegawanty text-5xl md:text-7xl">Explore</h2>
         <p className="font-manrope text-md md:text-lg text-foreground/80 text-center max-w-2xl mt-2">
           Explore our curated collections that blend fantasy and fashion, each piece crafted to inspire and enchant.
         </p>
@@ -471,21 +477,21 @@ function Collections() {
           style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${sampleGown1.src})` }}
           href="/collections"
         >
-          MODERN GLAMOUR
+          Rental Gowns
+        </a>
+        <a
+          className="row-span-1 h-72 md:h-full col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
+          style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${explore_accessories.src})` }}
+          href="/addons"
+        >
+          Accessories
         </a>
         <a
           className="row-span-1 h-72 md:h-full col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
           style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${premium.src})` }}
           href="/collections"
         >
-          FAIRYTALE FANTASY
-        </a>
-        <a
-          className="row-span-1 h-72 md:h-full col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
-          style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${premium.src})` }}
-          href="/collections"
-        >
-          ROYAL HISTORICAL
+          Custom Made Gowns
         </a>
       </div>
     </div>
@@ -493,6 +499,41 @@ function Collections() {
 }
 
 function Featured() {
+  const [featuredGowns, setFeaturedGowns] = useState<Gown[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchFeaturedGowns = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        // Fetch the first 3 gowns as featured gowns
+        const response = await fetch('/api/gowns?limit=3&sortBy=name');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch featured gowns');
+        }
+        
+        const data = await response.json();
+        setFeaturedGowns(data.items || []);
+      } catch (err) {
+        console.error('Error fetching featured gowns:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load featured gowns');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFeaturedGowns();
+  }, []);
+
+  const handleGownClick = (gownId: string) => {
+    router.push(`/gown/${gownId}`);
+  };
+
   return (
     <div className="w-full h-fit flex flex-col items-center justify-center py-12 px-6 bg-tertiary lg:flex-row-reverse lg:justify-between lg:gap-5 lg:px-16 lg:py-8 space-y-6">
       {/* featured gowns header */}
@@ -501,7 +542,6 @@ function Featured() {
         <div className="w-fit flex flex-col items-center justify-center lg:items-start">
           <div className="w-fit flex flex-row items-center justify-center">
             <h1 className="font-vegawanty text-6xl lg:text-7xl text-background mt-3">Featured</h1>
-            {/* Adjust width/height to use valid Tailwind classes */}
             <Image src={Logo} alt="Mystical Wardrobes Logo" className="w-12 h-12 ml-2" />
           </div>
           <div className="w-full flex flex-row items-start justify-end mt-[-15px] lg:mr-32">
@@ -509,11 +549,9 @@ function Featured() {
           </div>
         </div>
 
-        
-        <p className=" font-manrope text-md md:text-lg text-background/80 text-center max-w-3xl hidden lg:block">
-        Discover our latest gown arrivals! Be among the first to experience the magic of these brand-new designs and step into a world of enchantment...
-      </p>
-
+        <p className="font-manrope text-md md:text-lg text-background/80 text-center max-w-3xl hidden lg:block">
+          Discover our latest gown arrivals! Be among the first to experience the magic of these brand-new designs and step into a world of enchantment...
+        </p>
       </div>
 
       <p className="font-manrope text-md md:text-lg text-background text-center max-w-2xl lg:hidden">
@@ -522,68 +560,144 @@ function Featured() {
 
       {/* Featured gowns card container */}
       <FadeInOnScroll className="w-full h-fit flex flex-col gap-6 mt-6 lg:flex-row lg:gap-4 lg:h-96 justify-center items-center" delay={0.1}>
-        {sampleFeaturedGowns.map((gown, index) => (
-            <FeaturedGownsCard
+        {isLoading ? (
+          // Loading skeleton
+          Array.from({ length: 3 }).map((_, index) => (
+            <div
               key={index}
-              gownImage={gown.gownImage}
-              gownName={gown.gownName}
-              gownDescription={gown.gownDescription}
-              gownLink={gown.gownLink}
+              className="w-full h-72 lg:h-full lg:w-60 bg-background/20 animate-pulse rounded-lg shadow-lg"
             />
-          ))}
+          ))
+        ) : error ? (
+          // Error state
+          <div className="w-full max-w-2xl text-center py-12">
+            <p className="font-manrope text-background/80 text-lg mb-4">
+              Unable to load featured gowns at the moment.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="font-manrope text-sm bg-background text-tertiary px-6 py-2 rounded hover:bg-background/90 transition-colors duration-300"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : featuredGowns.length === 0 ? (
+          // Empty state
+          <div className="w-full max-w-2xl text-center py-12">
+            <p className="font-manrope text-background/80 text-lg">
+              No featured gowns available at the moment. Check back soon for new arrivals!
+            </p>
+          </div>
+        ) : (
+          // Featured gowns
+          featuredGowns.map((gown) => (
+            <FeaturedGownsCard
+              key={gown.id}
+              gown={gown}
+              onClick={() => handleGownClick(gown.id)}
+            />
+          ))
+        )}
       </FadeInOnScroll>
-      
     </div>
   )
 }
 
-const sampleFeaturedGowns: FeaturedGownsCardProps[] = [
-  {
-    gownImage: sampleGown1.src,
-    gownName: "Mystical Elegance",
-    gownDescription: "A stunning gown that captures the essence of fantasy with intricate details and flowing fabrics.",
-    gownLink: "/gowns/mystical-elegance"
-  },
-  {    
-    gownImage: premium.src,
-    gownName: "Enchanted",
-    gownDescription: "An ethereal gown that transports you to a world of dreams with its delicate lace and shimmering accents.",
-    gownLink: "/gowns/enchanted-dream"
-  },
-  {   
-    gownImage: premium.src,
-    gownName: "Celestial Beauty",
-    gownDescription: "A gown that embodies the stars, featuring celestial patterns and a radiant silhouette.",
-    gownLink: "/gowns/celestial-beauty"
-  },
-]
-
 interface FeaturedGownsCardProps {
-  gownImage: string;
-  gownName: string;
-  gownDescription: string;
-  gownLink: string;
+  gown: Gown;
+  onClick: () => void;
 }
 
 function FeaturedGownsCard(props: FeaturedGownsCardProps) {
-  const { gownImage, gownName, gownDescription, gownLink } = props;
+  const { gown, onClick } = props;
+  
+  // Get the first available image from the gown
+  const gownImage = gown.longGownPictures[0] || 
+                   gown.filipinianaPictures[0] || 
+                   gown.pixiePictures[0] || 
+                   gown.trainPictures[0] || 
+                   sampleGown1.src;
+  
+  // Create a description from available data
+  const description = gown.collection.length > 0 
+    ? `From our ${gown.collection[0]} collection. ${gown.bestFor.length > 0 ? `Perfect for ${gown.bestFor[0]}.` : ''}`
+    : 'A beautiful gown from our collection.';
+  
+  // Format price for display
+  const price = gown.metroManilaRate > 0 ? gown.metroManilaRate : gown.pixieMetroManilaRate;
+  const formattedPrice = price > 0 ? `₱${price.toLocaleString()}` : '';
+
   return (
-    <div className="row-span-1 h-72 lg:h-full lg:w-60 col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105 shadow-lg group" style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${gownImage})` }}>
-      <a className="h-full w-full flex flex-col items-center justify-end transition-transform duration-300 group-hover:scale-105"
-        href={gownLink}
-      >
-        <div className="h-full py-5 flex flex-col items-center justify-end px-4">
-          <h2 className="text-2xl md:text-3xl mb-2">{gownName}</h2>
-          <p
-            className="font-manrope text-sm lg:text-md text-background text-center max-h-0 opacity-0 overflow-hidden transition-all duration-300 group-hover:max-h-40 group-hover:opacity-100"
-          >
-            {gownDescription}
-          </p>
+    <div 
+      className="relative w-full h-72 lg:h-full lg:w-60 col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-center transition-all duration-300 hover:scale-105 shadow-xl group cursor-pointer rounded-lg overflow-hidden"
+      style={{ 
+        backgroundImage: `linear-gradient(to top, rgba(99, 102, 83, 0.8), rgba(99, 102, 83, 0.3), transparent), url(${gownImage})` 
+      }}
+      onClick={onClick}
+    >
+      <div className="h-full w-full flex flex-col items-center justify-end transition-transform duration-300 group-hover:scale-105">
+        <div className="h-full py-5 flex flex-col items-center justify-end px-4 w-full">
+          <div className="text-center">
+            <h2 className="text-2xl md:text-3xl mb-2 font-vegawanty drop-shadow-lg">
+              {gown.name}
+            </h2>
+            
+            {/* Collection badge */}
+            {gown.collection.length > 0 && (
+              <div className="mb-2">
+                <span className="inline-block bg-background/20 backdrop-blur-sm text-background text-xs px-2 py-1 rounded-full font-manrope">
+                  {gown.collection[0]}
+                </span>
+              </div>
+            )}
+            
+            {/* Price */}
+            {/* {formattedPrice && (
+              <div className="mb-3">
+                <span className="text-lg font-manrope font-semibold drop-shadow-lg">
+                  {formattedPrice}
+                </span>
+              </div>
+            )} */}
+            
+            {/* Description */}
+            <p className="font-manrope text-sm lg:text-md text-background text-center max-h-0 opacity-0 overflow-hidden transition-all duration-300 group-hover:max-h-40 group-hover:opacity-100 drop-shadow-lg">
+              {description}
+            </p>
+          </div>
+          
+          {/* Hover overlay with more details */}
+          <div className="absolute inset-0 bg-tertiary/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
+            <h3 className="text-xl font-vegawanty text-background mb-2 text-center">
+              {gown.name}
+            </h3>
+            
+            {gown.collection.length > 0 && (
+              <p className="text-sm font-manrope text-background/80 mb-2 text-center">
+                {gown.collection.join(', ')}
+              </p>
+            )}
+            
+            {gown.color.length > 0 && (
+              <p className="text-sm font-manrope text-background/80 mb-2 text-center">
+                Available in: {gown.color.join(', ')}
+              </p>
+            )}
+            
+            {formattedPrice && (
+              <p className="text-lg font-manrope font-semibold text-background mb-3">
+                {formattedPrice}
+              </p>
+            )}
+            
+            <button className="bg-background text-tertiary px-4 py-2 rounded font-manrope text-sm hover:bg-background/90 transition-colors duration-300">
+              View Details
+            </button>
+          </div>
         </div>
-      </a>
+      </div>
     </div>
   );
-  
 }
 
 

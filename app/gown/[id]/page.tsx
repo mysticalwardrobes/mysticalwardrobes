@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 import { Gown } from "@/app/api/gowns/model";
+import { AddOn } from "@/app/api/addons/model";
 import React from "react";
 
 type Props = {
@@ -222,6 +223,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
   }
 
   return (
+    <>
     <div className="mx-auto max-w-6xl p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-10 animate-fade-in">
       <div className="animate-slide-in-left">
         <div className="mb-4 text-xs">
@@ -318,26 +320,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
         </div>
 
         <div className="rounded p-4 space-y-4 bg-white shadow-sm animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-          <div>
-            <div className="text-[11px] tracking-wide uppercase text-neutral-500 mb-2">Location</div>
-            <div className="inline-flex rounded-full bg-neutral-50 p-1">
-              {([
-                { k: "METRO_MANILA", l: "Metro Manila" },
-                { k: "LUZON", l: "Luzon" },
-                { k: "OUTSIDE_LUZON", l: "Outside Luzon" },
-              ] as { k: LocationKey; l: string }[]).map(({ k, l }) => (
-                <button
-                  key={k}
-                  onClick={() => setLocation(k)}
-                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${location === k ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"}`}
-                >
-                  {l}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
+        <div>
             <div className="text-[11px] tracking-wide uppercase text-neutral-500 mb-2">Version</div>
             <div className="inline-flex rounded-full bg-neutral-50 p-1">
               {/* Show Long Gown if pictures exist */}
@@ -402,11 +385,31 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
               )}
             </div>
           </div>
+          
+          <div>
+            <div className="text-[11px] tracking-wide uppercase text-neutral-500 mb-2">Location</div>
+            <div className="inline-flex rounded-full bg-neutral-50 p-1">
+              {([
+                { k: "METRO_MANILA", l: "Metro Manila" },
+                { k: "LUZON", l: "Luzon" },
+                { k: "OUTSIDE_LUZON", l: "Outside Luzon" },
+              ] as { k: LocationKey; l: string }[]).map(({ k, l }) => (
+                <button
+                  key={k}
+                  onClick={() => setLocation(k)}
+                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${location === k ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"}`}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          
 
           <div className="pt-1 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <div className="text-[11px] tracking-wide uppercase text-neutral-500">Rate</div>
             <div className="mt-1 text-3xl font-semibold transition-all duration-300">₱{rate.toLocaleString()}</div>
-            <div className="text-xs text-neutral-500">PHP</div>
           </div>
 
           {/* <button className="w-full rounded-full bg-black text-white py-3 text-sm tracking-wide hover:opacity-90">
@@ -424,24 +427,22 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
               <dt className="opacity-70">Backing</dt><dd>{gown.backing}</dd>
             </dl>
           </div>
-          <div className="rounded p-4 bg-white hover:shadow-md transition-shadow duration-200">
-            <h3 className="text-sm font-semibold mb-3 tracking-wide">Skirt Style</h3>
-            <p className="text-sm">{gown.skirtStyle.join(', ')}</p>
-          </div>
         </div>
 
-        <div className="rounded p-4 bg-white hover:shadow-md transition-shadow duration-200 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-          <h3 className="text-sm font-semibold mb-3 tracking-wide">Add Ons</h3>
-          <ul className="list-disc pl-5 text-sm space-y-1">
-            {gown.addOns.map((a, index) => (
-              <li key={a} className="animate-fade-in-up" style={{ animationDelay: `${0.7 + index * 0.1}s` }}>{a}</li>
-            ))}
-          </ul>
-        </div>
-
-        <RelatedGowns relatedGownIds={gown.relatedGowns} />
+        {/* Related gowns moved to bottom */}
       </div>
     </div>
+    
+    {/* Related Add-Ons Section */}
+    <div className="mx-auto max-w-6xl p-4 md:p-8">
+      <RelatedAddOns suggestedAddOns={gown.addOns} />
+    </div>
+
+    {/* Related Gowns Section moved to bottom */}
+    <div className="mx-auto max-w-6xl p-4 md:p-8">
+      <RelatedGowns relatedGownIds={gown.relatedGowns} />
+    </div>
+    </>
   );
 }
 
@@ -474,13 +475,14 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
 
   if (loading) {
     return (
-      <div>
-        <div className="h-4 w-32 bg-neutral-200 rounded animate-pulse mb-3"></div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {Array.from({ length: 3 }).map((_, idx) => (
+      <div className="animate-fade-in-up" style={{ animationDelay: '1.0s' }}>
+        <div className="h-4 w-48 bg-neutral-200 rounded animate-pulse mb-6"></div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, idx) => (
             <div key={idx} className="group">
-              <div className="relative w-full aspect-[3/4] overflow-hidden rounded bg-neutral-200 animate-pulse"></div>
+              <div className="relative w-full aspect-[4/5] overflow-hidden rounded bg-neutral-200 animate-pulse"></div>
               <div className="h-4 w-full bg-neutral-200 rounded animate-pulse mt-2"></div>
+              <div className="h-3 w-24 bg-neutral-200 rounded animate-pulse mt-1"></div>
             </div>
           ))}
         </div>
@@ -493,12 +495,22 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
   }
 
   return (
-    <div className="animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
-      <h3 className="text-sm font-semibold mb-3 tracking-wide">Related Gowns</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+    <div className="animate-fade-in-up" style={{ animationDelay: '1.0s' }}>
+      <div className="mb-8 text-center">
+        <h2 className="font-vegawanty text-3xl text-foreground sm:text-4xl mb-2">Related Gowns</h2>
+        <p className="font-manrope text-sm text-secondary/70">
+          You may also like these gowns
+        </p>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {relatedGowns.map((gown, index) => (
-          <Link key={gown.id} href={`/gown/${gown.id}`} className="block group animate-fade-in-up" style={{ animationDelay: `${0.9 + index * 0.1}s` }}>
-            <div className="relative w-full aspect-[3/4] overflow-hidden rounded bg-neutral-50 group-hover:shadow-lg transition-all duration-300">
+          <Link 
+            key={gown.id} 
+            href={`/gown/${gown.id}`} 
+            className="group block animate-fade-in-up" 
+            style={{ animationDelay: `${1.1 + index * 0.05}s` }}
+          >
+            <div className="relative w-full aspect-[4/5] overflow-hidden rounded-sm bg-neutral-50 group-hover:shadow-lg transition-all duration-300">
               <Image 
                 src={
                   gown.longGownPictures.length > 0 && gown.longGownPictures[0] && gown.longGownPictures[0] !== 'null'
@@ -507,12 +519,219 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
                 } 
                 alt={gown.name} 
                 fill 
-                className="object-cover transition-transform duration-300 group-hover:scale-105" 
-                sizes="200px" 
+                className="object-cover transition-transform duration-500 group-hover:scale-105" 
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" 
               />
             </div>
-            <div className="mt-2 text-sm group-hover:underline transition-all duration-200">{gown.name}</div>
+            <div className="mt-3">
+              <h4 className="font-vegawanty text-lg text-foreground group-hover:text-secondary transition-colors duration-200">
+                {gown.name}
+              </h4>
+            </div>
           </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
+  const [addOnsByCategory, setAddOnsByCategory] = useState<Record<string, AddOn[]>>({});
+  const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const fetchSuggestedAddOns = async () => {
+      try {
+        setLoading(true);
+        
+        if (!suggestedAddOns || suggestedAddOns.length === 0) {
+          setAddOnsByCategory({});
+          setLoading(false);
+          return;
+        }
+
+        // Fetch each suggested add-on by ID
+        const addOnPromises = suggestedAddOns.map((addOnId) => 
+          fetch(`/api/addons/${addOnId}`)
+            .then((res) => (res.ok ? res.json() : null))
+            .catch(() => null)
+        );
+        const fetchedAddOns = (await Promise.all(addOnPromises)).filter(Boolean) as AddOn[];
+
+        // Group fetched add-ons by category (type)
+        const grouped = fetchedAddOns.reduce((acc, addon) => {
+          if (!acc[addon.type]) {
+            acc[addon.type] = [];
+          }
+          acc[addon.type].push(addon);
+          return acc;
+        }, {} as Record<string, AddOn[]>);
+
+        setAddOnsByCategory(grouped);
+      } catch (err) {
+        console.error('Failed to fetch suggested add-ons:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSuggestedAddOns();
+  }, [suggestedAddOns]);
+
+  const getCategoryDisplayName = (type: string) => {
+    const names: Record<string, string> = {
+      crown: 'Crowns',
+      hood: 'Hoods',
+      petticoat: 'Petticoats',
+      gloves: 'Gloves',
+      fan: 'Fans',
+      mask: 'Masks',
+      necklace: 'Necklaces',
+      umbrella: 'Umbrellas'
+    };
+    return names[type] || type.charAt(0).toUpperCase() + type.slice(1) + 's';
+  };
+
+  const getCategoryDescription = (type: string) => {
+    const descriptions: Record<string, string> = {
+      crown: 'Regal and enchanting crowns for your magical moments',
+      hood: 'Dramatic hoods with elegant details and flowing fabrics',
+      petticoat: 'Perfect petticoats to create the ideal silhouette',
+      gloves: 'Elegant gloves to complete your sophisticated look',
+      fan: 'Beautiful fans for a touch of vintage elegance',
+      mask: 'Mysterious masks for your masquerade moments',
+      necklace: 'Stunning necklaces to add sparkle to your ensemble',
+      umbrella: 'Elegant umbrellas for a romantic and dreamy touch'
+    };
+    return descriptions[type] || 'Beautiful accessories to complete your look';
+  };
+
+  if (loading) {
+    return (
+      <div className="animate-fade-in-up" style={{ animationDelay: '1.0s' }}>
+        <div className="h-4 w-48 bg-neutral-200 rounded animate-pulse mb-6"></div>
+        <div className="space-y-8">
+          {Array.from({ length: 3 }).map((_, categoryIndex) => (
+            <div key={categoryIndex}>
+              <div className="h-6 w-32 bg-neutral-200 rounded animate-pulse mb-4"></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 3 }).map((_, itemIndex) => (
+                  <div key={itemIndex} className="group">
+                    <div className="relative w-full aspect-[4/5] overflow-hidden rounded bg-neutral-200 animate-pulse"></div>
+                    <div className="h-4 w-full bg-neutral-200 rounded animate-pulse mt-2"></div>
+                    <div className="h-3 w-24 bg-neutral-200 rounded animate-pulse mt-1"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const categories = Object.keys(addOnsByCategory);
+  if (categories.length === 0) {
+    return (
+      <div className="animate-fade-in-up" style={{ animationDelay: '1.0s' }}>
+        <div className="mb-8 text-center">
+          <h2 className="font-vegawanty text-3xl text-foreground sm:text-4xl mb-2">Suggested Add-Ons</h2>
+          <p className="font-manrope text-sm text-secondary/70">
+            No specific add-ons are suggested for this gown, but you can explore our full collection
+          </p>
+          <Link 
+            href="/addons"
+            className="inline-block mt-4 px-6 py-2 bg-secondary text-white rounded-full hover:bg-secondary/90 transition-all duration-200 hover:scale-105"
+          >
+            Browse All Add-Ons
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="animate-fade-in-up" style={{ animationDelay: '1.0s' }}>
+      <div className="mb-8 text-center">
+        <h2 className="font-vegawanty text-3xl text-foreground sm:text-4xl mb-2">Suggested Add-Ons</h2>
+        <p className="font-manrope text-sm text-secondary/70">
+          Complete your magical look with these recommended accessories for this gown
+        </p>
+      </div>
+      
+      <div className="space-y-12">
+        {categories.map((category, categoryIndex) => (
+          <div key={category} className="animate-fade-in-up" style={{ animationDelay: `${1.1 + categoryIndex * 0.1}s` }}>
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-vegawanty text-2xl text-foreground capitalize">
+                  {getCategoryDisplayName(category)}
+                </h3>
+                <button
+                  onClick={() => setExpanded(prev => ({ ...prev, [category]: !prev[category] }))}
+                  className="font-manrope text-sm text-secondary hover:text-secondary/80 transition-colors duration-200 hover:underline"
+                >
+                  {expanded[category] ? 'See less' : 'See more'}
+                </button>
+              </div>
+              <p className="font-manrope text-sm text-secondary/70">
+                {getCategoryDescription(category)}
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {(expanded[category] ? addOnsByCategory[category] : addOnsByCategory[category].slice(0, 6)).map((addon, itemIndex) => (
+                <Link 
+                  key={addon.id} 
+                  href={`/addons/${addon.type}/${addon.id}`} 
+                  className="group block animate-fade-in-up" 
+                  style={{ animationDelay: `${1.2 + categoryIndex * 0.1 + itemIndex * 0.05}s` }}
+                >
+                  <div className="relative w-full aspect-[4/5] overflow-hidden rounded-sm bg-neutral-50 group-hover:shadow-lg transition-all duration-300">
+                    {addon.pictures && addon.pictures.length > 0 ? (
+                      <Image
+                        src={'https:' + addon.pictures[0]}
+                        alt={addon.name}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center bg-secondary/10">
+                        <div className="text-center">
+                          <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-secondary/20 mx-auto">
+                            <span className="font-vegawanty text-xl font-semibold text-secondary">
+                              {getCategoryDisplayName(category).charAt(0)}
+                            </span>
+                          </div>
+                          <p className="font-manrope text-sm text-secondary/70">Image coming soon</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mt-3">
+                    <h4 className="font-vegawanty text-lg text-foreground group-hover:text-secondary transition-colors duration-200">
+                      {addon.name}
+                    </h4>
+                    <div className="mt-1 flex items-center justify-between">
+                      <span className="font-manrope text-sm font-semibold text-secondary">
+                        From ₱{addon.metroManilaRate.toLocaleString()}
+                      </span>
+                      {addon.forSale && (
+                        <span className="font-manrope text-xs text-secondary/60 line-through">
+                          ₱{addon.forSale.toLocaleString()}
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1 font-manrope text-xs text-secondary/70 line-clamp-2">
+                      {addon.description}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
     </div>
