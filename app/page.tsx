@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import type { PanInfo } from "framer-motion";
 import Image from "next/image";
@@ -18,7 +18,79 @@ import ExpandableText from "@/components/ExpandableText";
 import type { Review as ReviewResponse } from "@/app/api/reviews/model";
 import type { Gown } from "@/app/api/gowns/model";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
+// Collections data
+interface Collection {
+  name: string;
+  description: string;
+  slug: string;
+  image: string;
+}
+
+const collections: Collection[] = [
+  {
+    name: "All Collections",
+    slug: "all",
+    description: "Explore our complete range of gowns across all collections.",
+    image: "/assets/collections/all-collections.jpg"
+  },
+  {
+    name: "Modern Glamour",
+    slug: "modern-glamour",
+    description: "Where elegance meets bold sophistication.",
+    image: "/assets/collections/modern-glamour.jpg"
+  },
+  {
+    name: "Royal Historical Eras",
+    slug: "royal-historical-eras",
+    description: "A tribute to timeless grandeur and aristocratic charm.",
+    image: "/assets/collections/royal-historical.jpg"
+  },
+  {
+    name: "Fairytale Fantasy",
+    slug: "fairytale-fantasy",
+    description: "Where imagination and magic come alive.",
+    image: "/assets/collections/fairytale-fantasy.jpg"
+  },
+  {
+    name: "Nature Seasonal Realms",
+    slug: "nature-seasonal-realms",
+    description: "A reflection of nature's elegance and ever-changing beauty.",
+    image: "/assets/collections/nature-seasonal.jpg"
+  },
+  {
+    name: "Celestial Dreamlike",
+    slug: "celestial-dreamlike",
+    description: "For those who shine among the stars.",
+    image: "/assets/collections/celestial-dreamlike.jpg"
+  },
+  {
+    name: "Ocean Realm",
+    slug: "ocean-realm",
+    description: "Born from the depths of legend and the beauty of the sea.",
+    image: "/assets/collections/ocean-realm.jpg"
+  },
+  {
+    name: "Cultural and Mythic Icons",
+    slug: "cultural-and-mythic-icons",
+    description: "These gowns pay homage to mythological figures and cultural masterpieces.",
+    image: "/assets/collections/cultural-mythic.jpg"
+  }
+];
+
+// Fallback images for collections
+const fallbackImages = [
+  "/assets/sample_gown-1.jpg",
+  "/assets/collections/Premium.png"
+];
+
+// Helper function to chunk array
+const chunkArray = <T,>(arr: T[], size: number): T[][] => {
+  return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+    arr.slice(i * size, i * size + size)
+  );
+};
 
 export default function Home() {
   return (
@@ -463,39 +535,102 @@ function ReviewCard(props: ReviewCardProps) {
 
 function Collections() {
   return (
-    <div className="w-full h-fit flex flex-col md:flex-row md:gap-10 md:px-16 md:py-12 items-center justify-start md:justify-evenly px-6 py-4 space-y-6 bg-background">
-      <div className="flex flex-col items-center justify-center">
-        <Image src={Icon6} alt="Icon 6" className="w-24 h-24 md:w-40 md:h-40 mb-[-10px]"/>
-        <h2 className="font-vegawanty text-5xl md:text-7xl">Explore</h2>
-        <p className="font-manrope text-md md:text-lg text-foreground/80 text-center max-w-2xl mt-2">
-          Explore our curated collections that blend fantasy and fashion, each piece crafted to inspire and enchant.
-        </p>
+    <div className="w-full bg-background">
+      {/* Explore Section */}
+      <div className="w-full h-fit flex flex-col md:flex-row md:gap-10 md:px-16 md:py-12 items-center justify-start md:justify-evenly px-6 py-4 space-y-6">
+        <div className="flex flex-col items-center justify-center">
+          <Image src={Icon6} alt="Icon 6" className="w-24 h-24 md:w-40 md:h-40 mb-[-10px]"/>
+          <h2 className="font-vegawanty text-5xl md:text-7xl">Explore</h2>
+          <p className="font-manrope text-md md:text-lg text-foreground/80 text-center max-w-2xl mt-2">
+            Explore our curated collections that blend fantasy and fashion, each piece crafted to inspire and enchant.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 md:columns-4 h-full md:h-72 lg:h-[500px] gap-4 w-full max-w-3xl">
+          <a
+            className="row-span-1 h-72 md:h-full md:row-span-2 col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
+            style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${sampleGown1.src})` }}
+            href="/collections"
+          >
+            Rental Gowns
+          </a>
+          <a
+            className="row-span-1 h-72 md:h-full col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
+            style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${explore_accessories.src})` }}
+            href="/addons"
+          >
+            Accessories
+          </a>
+          <a
+            className="row-span-1 h-72 md:h-full col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
+            style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${premium.src})` }}
+            href="/collections"
+          >
+            Custom Made Gowns
+          </a>
+        </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 md:columns-4 h-full md:h-72 lg:h-[500px] gap-4 w-full max-w-3xl">
-        <a
-          className="row-span-1 h-72 md:h-full md:row-span-2 col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
-          style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${sampleGown1.src})` }}
-          href="/collections"
-        >
-          Rental Gowns
-        </a>
-        <a
-          className="row-span-1 h-72 md:h-full col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
-          style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${explore_accessories.src})` }}
-          href="/addons"
-        >
-          Accessories
-        </a>
-        <a
-          className="row-span-1 h-72 md:h-full col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
-          style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${premium.src})` }}
-          href="/collections"
-        >
-          Custom Made Gowns
-        </a>
+
+      {/* Collections Horizontal Scroll Section */}
+      <div className="w-full py-8 md:py-12">
+        <div className="px-6 md:px-16">
+          <h2 className="font-manrope text-3xl md:text-4xl font-light text-foreground mb-6">Collections</h2>
+        </div>
+        
+        {/* Horizontal scrollable container */}
+        <div className="relative px-6 md:px-16">
+          <div 
+            className="flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {collections.map((collection) => {
+              // Use fallback image if needed
+              const imageSrc = collection.image.startsWith('/assets/collections/') && 
+                !collection.image.includes('Premium.png') 
+                ? fallbackImages[0]
+                : collection.image;
+              
+              return (
+                <Link
+                  key={collection.slug}
+                  href={`/collections/${collection.slug}`}
+                  className="group flex-shrink-0 w-48 md:w-56 snap-start"
+                >
+                  <div className="relative aspect-[3/4] w-full overflow-hidden bg-neutral-100 transition-transform duration-300 group-hover:scale-[1.02]">
+                    <Image
+                      src={imageSrc}
+                      alt={collection.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 192px, 224px"
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    <h3 className="font-manrope text-base md:text-lg text-foreground font-light">
+                      {collection.name}
+                    </h3>
+                    <svg 
+                      className="w-5 h-5 text-foreground transition-transform group-hover:translate-x-1 flex-shrink-0 ml-2" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </div>
+      
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
-  )
+  );
 }
 
 function Featured() {
@@ -565,7 +700,7 @@ function Featured() {
           Array.from({ length: 3 }).map((_, index) => (
             <div
               key={index}
-              className="w-full h-72 lg:h-full lg:w-60 bg-background/20 animate-pulse rounded-lg shadow-lg"
+              className="w-full h-72 lg:h-full lg:w-60 bg-background/20 animate-pulse shadow-lg"
             />
           ))
         ) : error ? (
@@ -629,7 +764,7 @@ function FeaturedGownsCard(props: FeaturedGownsCardProps) {
 
   return (
     <div 
-      className="relative w-full h-72 lg:h-full lg:w-60 col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-center transition-all duration-300 hover:scale-105 shadow-xl group cursor-pointer rounded-lg overflow-hidden"
+      className="relative w-full h-72 lg:h-full lg:w-60 col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-center transition-all duration-300 hover:scale-105 shadow-xl group cursor-pointer overflow-hidden"
       style={{ 
         backgroundImage: `linear-gradient(to top, rgba(99, 102, 83, 0.8), rgba(99, 102, 83, 0.3), transparent), url(${gownImage})` 
       }}
@@ -661,9 +796,9 @@ function FeaturedGownsCard(props: FeaturedGownsCardProps) {
             )} */}
             
             {/* Description */}
-            <p className="font-manrope text-sm lg:text-md text-background text-center max-h-0 opacity-0 overflow-hidden transition-all duration-300 group-hover:max-h-40 group-hover:opacity-100 drop-shadow-lg">
+            {/* <p className="font-manrope text-sm lg:text-md text-background text-center max-h-0 opacity-0 overflow-hidden transition-all duration-300 group-hover:max-h-40 group-hover:opacity-100 drop-shadow-lg">
               {description}
-            </p>
+            </p> */}
           </div>
           
           {/* Hover overlay with more details */}
