@@ -505,74 +505,74 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
           </div>
         </div>
 
-        {/* Measurements Section - Improved */}
+        {/* Measurements Section - Table Format */}
         <div className="rounded p-5 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold tracking-wide uppercase text-neutral-700">Measurements</h3>
             {getAvailableSizes() > 1 && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-neutral-500">Size {selectedSizeOption + 1} of {getAvailableSizes()}</span>
-                <button
-                  onClick={() => setSelectedSizeOption((prev) => (prev + 1) % getAvailableSizes())}
-                  className="p-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors duration-200"
-                  aria-label="Toggle size option"
-                >
-                  <svg className="h-4 w-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                </button>
+              <div className="inline-flex rounded-full bg-neutral-50 p-1">
+                {Array.from({ length: getAvailableSizes() }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedSizeOption(index)}
+                    className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${
+                      selectedSizeOption === index ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                    }`}
+                  >
+                    Size {index + 1}
+                  </button>
+                ))}
               </div>
             )}
           </div>
-          <dl className="grid grid-cols-2 gap-4 text-sm">
-            {/* Bust */}
-            <div className="space-y-1">
-              <dt className="text-xs uppercase tracking-wide text-neutral-500">Bust</dt>
-              <dd className="font-medium text-neutral-800 text-base">
-                {getMeasurementForSize(gown.bust, selectedSizeOption)}
-                {getMeasurementForSize(gown.bust, selectedSizeOption) !== '-' && (
-                  <span className="text-xs text-neutral-500 ml-1">in</span>
-                )}
-              </dd>
-            </div>
-            
-            {/* Waist */}
-            <div className="space-y-1">
-              <dt className="text-xs uppercase tracking-wide text-neutral-500">Waist</dt>
-              <dd className="font-medium text-neutral-800 text-base">
-                {getMeasurementForSize(gown.waist, selectedSizeOption)}
-                {getMeasurementForSize(gown.waist, selectedSizeOption) !== '-' && (
-                  <span className="text-xs text-neutral-500 ml-1">in</span>
-                )}
-              </dd>
-            </div>
-            
-            {/* Length */}
-            {gown.lenght && (
-              <div className="space-y-1 col-span-2">
-                <dt className="text-xs uppercase tracking-wide text-neutral-500">Length</dt>
-                <dd className="font-medium text-neutral-800 text-base">
-                  {(() => {
-                    const lengths = gown.lenght.split('/').map(l => l.trim());
-                    if (lengths.length === 1) {
-                      return `Long Gown: ${lengths[0]} <span className="text-xs text-neutral-500 ml-1">in</span>`;
-                    } else if (lengths.length === 2) {
-                      if (lengths[0] === '-') {
-                        return `Pixie: ${lengths[1]} <span className="text-xs text-neutral-500 ml-1">in</span>`;
+          
+          {/* Measurements Table */}
+          <div className="overflow-hidden border border-neutral-200 rounded-sm">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-neutral-50">
+                  <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center border-r border-neutral-200">Bust</th>
+                  <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center border-r border-neutral-200">Waist</th>
+                  <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center">Length</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="bg-white">
+                  <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
+                    {getMeasurementForSize(gown.bust, selectedSizeOption)}
+                    {getMeasurementForSize(gown.bust, selectedSizeOption) !== '-' && (
+                      <span className="text-xs text-neutral-500 ml-1">in</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
+                    {getMeasurementForSize(gown.waist, selectedSizeOption)}
+                    {getMeasurementForSize(gown.waist, selectedSizeOption) !== '-' && (
+                      <span className="text-xs text-neutral-500 ml-1">in</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center">
+                    {gown.lenght && (() => {
+                      const lengths = gown.lenght.split('/').map(l => l.trim());
+                      if (lengths.length === 1) {
+                        return `${lengths[0]} <span className="text-xs text-neutral-500 ml-1">in</span>`;
+                      } else if (lengths.length === 2) {
+                        if (lengths[0] === '-') {
+                          return `Pixie: ${lengths[1]} <span className="text-xs text-neutral-500 ml-1">in</span>`;
+                        }
+                        return (
+                          <div className="space-y-1">
+                            <div>Long Gown: {lengths[0]} <span className="text-xs text-neutral-500 ml-1">in</span></div>
+                            <div>Pixie: {lengths[1]} <span className="text-xs text-neutral-500 ml-1">in</span></div>
+                          </div>
+                        );
                       }
-                      return (
-                        <div className="space-y-1">
-                          <div>Long Gown: {lengths[0]} <span className="text-xs text-neutral-500 ml-1">in</span></div>
-                          <div>Pixie: {lengths[1]} <span className="text-xs text-neutral-500 ml-1">in</span></div>
-                        </div>
-                      );
-                    }
-                    return gown.lenght;
-                  })()}
-                </dd>
-              </div>
-            )}
-          </dl>
+                      return gown.lenght;
+                    })()}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Related gowns moved to bottom */}
