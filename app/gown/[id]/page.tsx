@@ -23,6 +23,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
   const [isPixie, setIsPixie] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedImageType, setSelectedImageType] = useState<'longGown' | 'filipiniana' | 'pixie' | 'train'>('longGown');
+  const [selectedSizeOption, setSelectedSizeOption] = useState(0);
 
   useEffect(() => {
     const fetchGown = async () => {
@@ -109,6 +110,18 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
     ];
   };
 
+  const getAvailableSizes = () => {
+    if (!gown) return 1;
+    const bustSizes = gown.bust.split('/').length;
+    const waistSizes = gown.waist.split('/').length;
+    return Math.max(bustSizes, waistSizes);
+  };
+
+  const getMeasurementForSize = (measurement: string, sizeIndex: number) => {
+    const measurements = measurement.split('/').map(m => m.trim());
+    return measurements[sizeIndex] || measurements[0] || '-';
+  };
+
   if (loading) {
     return (
       <div className="mx-auto max-w-6xl p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -170,19 +183,36 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
             </div>
           </div>
 
-          {/* Measurements skeleton */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="rounded p-4 bg-white">
-              <div className="h-4 w-24 bg-neutral-200 rounded animate-pulse mb-3"></div>
-              <div className="grid grid-cols-2 gap-y-2">
-                {Array.from({ length: 8 }).map((_, idx) => (
-                  <div key={idx} className="h-4 bg-neutral-200 rounded animate-pulse"></div>
-                ))}
-              </div>
+          {/* Gown Details skeleton */}
+          <div className="rounded p-5 bg-white">
+            <div className="h-4 w-28 bg-neutral-200 rounded animate-pulse mb-4"></div>
+            <div className="space-y-3">
+              {Array.from({ length: 4 }).map((_, idx) => (
+                <div key={idx}>
+                  <div className="h-3 w-16 bg-neutral-200 rounded animate-pulse mb-2"></div>
+                  <div className="flex gap-2">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i} className="h-6 w-16 bg-neutral-200 rounded-full animate-pulse"></div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="rounded p-4 bg-white">
-              <div className="h-4 w-16 bg-neutral-200 rounded animate-pulse mb-3"></div>
-              <div className="h-4 w-full bg-neutral-200 rounded animate-pulse"></div>
+          </div>
+
+          {/* Measurements skeleton */}
+          <div className="rounded p-5 bg-white">
+            <div className="flex items-center justify-between mb-4">
+              <div className="h-4 w-28 bg-neutral-200 rounded animate-pulse"></div>
+              <div className="h-6 w-24 bg-neutral-200 rounded animate-pulse"></div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {Array.from({ length: 2 }).map((_, idx) => (
+                <div key={idx} className="space-y-1">
+                  <div className="h-3 w-12 bg-neutral-200 rounded animate-pulse"></div>
+                  <div className="h-5 w-20 bg-neutral-200 rounded animate-pulse"></div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -417,16 +447,126 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
           </button> */}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-          <div className="rounded p-4 bg-white hover:shadow-md transition-shadow duration-200">
-            <h3 className="text-sm font-semibold mb-3 tracking-wide">Measurements</h3>
-            <dl className="grid grid-cols-2 gap-y-2 text-sm">
-              <dt className="opacity-70">Bust</dt><dd>{gown.bust}</dd>
-              <dt className="opacity-70">Waist</dt><dd>{gown.waist}</dd>
-              <dt className="opacity-70">Arms</dt><dd>{gown.arms}</dd>
-              <dt className="opacity-70">Backing</dt><dd>{gown.backing}</dd>
-            </dl>
+        {/* Gown Details Section */}
+        <div className="rounded p-5 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+          <h3 className="text-sm font-semibold mb-4 tracking-wide uppercase text-neutral-700">Gown Details</h3>
+          <div className="space-y-3">
+            {/* Color */}
+            {gown.color.length > 0 && (
+              <div>
+                <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Color</dt>
+                <dd className="flex flex-wrap gap-1.5">
+                  {gown.color.map((c) => (
+                    <span 
+                      key={c} 
+                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200"
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </dd>
+              </div>
+            )}
+            
+            {/* Skirt Style */}
+            {gown.skirtStyle.length > 0 && (
+              <div>
+                <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Skirt Style</dt>
+                <dd className="flex flex-wrap gap-1.5">
+                  {gown.skirtStyle.map((style) => (
+                    <span 
+                      key={style} 
+                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200"
+                    >
+                      {style}
+                    </span>
+                  ))}
+                </dd>
+              </div>
+            )}
+            
+            {/* Best For */}
+            {gown.bestFor.length > 0 && (
+              <div>
+                <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Best For</dt>
+                <dd className="flex flex-wrap gap-1.5">
+                  {gown.bestFor.map((bf) => (
+                    <span 
+                      key={bf} 
+                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200"
+                    >
+                      {bf}
+                    </span>
+                  ))}
+                </dd>
+              </div>
+            )}
+            
+            {/* Length */}
+            {gown.lenght && (
+              <div>
+                <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Length</dt>
+                <dd className="text-sm text-neutral-700">
+                  {(() => {
+                    const lengths = gown.lenght.split('/').map(l => l.trim());
+                    if (lengths.length === 1) {
+                      return `Long Gown: ${lengths[0]}`;
+                    } else if (lengths.length === 2) {
+                      if (lengths[0] === '-') {
+                        return `Pixie: ${lengths[1]}`;
+                      }
+                      return `Long Gown: ${lengths[0]} / Pixie: ${lengths[1]}`;
+                    }
+                    return gown.lenght;
+                  })()}
+                </dd>
+              </div>
+            )}
           </div>
+        </div>
+
+        {/* Measurements Section - Improved */}
+        <div className="rounded p-5 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-semibold tracking-wide uppercase text-neutral-700">Measurements</h3>
+            {getAvailableSizes() > 1 && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-neutral-500">Size {selectedSizeOption + 1} of {getAvailableSizes()}</span>
+                <button
+                  onClick={() => setSelectedSizeOption((prev) => (prev + 1) % getAvailableSizes())}
+                  className="p-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors duration-200"
+                  aria-label="Toggle size option"
+                >
+                  <svg className="h-4 w-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </button>
+              </div>
+            )}
+          </div>
+          <dl className="grid grid-cols-2 gap-4 text-sm">
+            {/* Bust */}
+            <div className="space-y-1">
+              <dt className="text-xs uppercase tracking-wide text-neutral-500">Bust</dt>
+              <dd className="font-medium text-neutral-800 text-base">
+                {getMeasurementForSize(gown.bust, selectedSizeOption)}
+                {getMeasurementForSize(gown.bust, selectedSizeOption) !== '-' && (
+                  <span className="text-xs text-neutral-500 ml-1">in</span>
+                )}
+              </dd>
+            </div>
+            
+            {/* Waist */}
+            <div className="space-y-1">
+              <dt className="text-xs uppercase tracking-wide text-neutral-500">Waist</dt>
+              <dd className="font-medium text-neutral-800 text-base">
+                {getMeasurementForSize(gown.waist, selectedSizeOption)}
+                {getMeasurementForSize(gown.waist, selectedSizeOption) !== '-' && (
+                  <span className="text-xs text-neutral-500 ml-1">in</span>
+                )}
+              </dd>
+            </div>
+          </dl>
         </div>
 
         {/* Related gowns moved to bottom */}
