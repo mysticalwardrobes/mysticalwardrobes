@@ -497,7 +497,7 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
   return (
     <div className="animate-fade-in-up" style={{ animationDelay: '1.0s' }}>
       <div className="mb-8 text-center">
-        <h2 className="font-vegawanty text-3xl text-foreground sm:text-4xl mb-2">Related Gowns</h2>
+        <h2 className="font-vegawanty text-3xl text-foreground sm:text-4xl mb-2">More Like This</h2>
         <p className="font-manrope text-sm text-secondary/70">
           You may also like these gowns
         </p>
