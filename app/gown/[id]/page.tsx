@@ -502,26 +502,6 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
               </div>
             )}
             
-            {/* Length */}
-            {gown.lenght && (
-              <div>
-                <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Length</dt>
-                <dd className="text-sm text-neutral-700">
-                  {(() => {
-                    const lengths = gown.lenght.split('/').map(l => l.trim());
-                    if (lengths.length === 1) {
-                      return `Long Gown: ${lengths[0]}`;
-                    } else if (lengths.length === 2) {
-                      if (lengths[0] === '-') {
-                        return `Pixie: ${lengths[1]}`;
-                      }
-                      return `Long Gown: ${lengths[0]} / Pixie: ${lengths[1]}`;
-                    }
-                    return gown.lenght;
-                  })()}
-                </dd>
-              </div>
-            )}
           </div>
         </div>
 
@@ -566,6 +546,32 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                 )}
               </dd>
             </div>
+            
+            {/* Length */}
+            {gown.lenght && (
+              <div className="space-y-1 col-span-2">
+                <dt className="text-xs uppercase tracking-wide text-neutral-500">Length</dt>
+                <dd className="font-medium text-neutral-800 text-base">
+                  {(() => {
+                    const lengths = gown.lenght.split('/').map(l => l.trim());
+                    if (lengths.length === 1) {
+                      return `Long Gown: ${lengths[0]} <span className="text-xs text-neutral-500 ml-1">in</span>`;
+                    } else if (lengths.length === 2) {
+                      if (lengths[0] === '-') {
+                        return `Pixie: ${lengths[1]} <span className="text-xs text-neutral-500 ml-1">in</span>`;
+                      }
+                      return (
+                        <div className="space-y-1">
+                          <div>Long Gown: {lengths[0]} <span className="text-xs text-neutral-500 ml-1">in</span></div>
+                          <div>Pixie: {lengths[1]} <span className="text-xs text-neutral-500 ml-1">in</span></div>
+                        </div>
+                      );
+                    }
+                    return gown.lenght;
+                  })()}
+                </dd>
+              </div>
+            )}
           </dl>
         </div>
 
