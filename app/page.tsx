@@ -297,8 +297,8 @@ function ReviewsSection() {
       </div>
 
       {isLoading ? (
-        <div className="mt-12 flex w-full max-w-5xl items-center justify-center">
-          <div className="h-72 w-full max-w-3xl animate-pulse rounded-3xl bg-foreground/10" />
+        <div className="mt-12 flex w-full max-w-3xl items-center justify-center">
+          <div className="h-80 w-full animate-pulse rounded-3xl bg-foreground/10" />
         </div>
       ) : error ? (
         <div className="mt-12 w-full max-w-3xl rounded-2xl border border-secondary/30 bg-secondary/5 px-6 py-12 text-center font-manrope text-foreground">
@@ -310,8 +310,8 @@ function ReviewsSection() {
         </div>
       ) : (
         <>
-          <div className="relative mt-12 w-full max-w-5xl">
-            <div className="relative min-h-[420px] md:min-h-[460px]">
+          <div className="relative mt-12 w-full max-w-3xl">
+            <div className="relative min-h-[360px] md:min-h-[380px]">
               {displayedCards.map(({ review, position }) => (
                 <ReviewCard
                   key={`${review.id}-${position}`}
@@ -321,31 +321,10 @@ function ReviewsSection() {
                 />
               ))}
             </div>
-
-            {showNavigation && (
-              <div className="pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-between px-2 md:px-4">
-                <button
-                  type="button"
-                  aria-label="Show previous review"
-                  onClick={() => handleMove('previous')}
-                  className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-foreground/30 bg-background/90 text-lg text-foreground shadow-md transition hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 sm:h-12 sm:w-12 sm:text-2xl"
-                >
-                  ?
-                </button>
-                <button
-                  type="button"
-                  aria-label="Show next review"
-                  onClick={() => handleMove('next')}
-                  className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-foreground/30 bg-background/90 text-lg text-foreground shadow-md transition hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 sm:h-12 sm:w-12 sm:text-2xl"
-                >
-                  ?
-                </button>
-              </div>
-            )}
           </div>
 
           {showNavigation && (
-            <div className="mt-14 flex items-center gap-2">
+            <div className="mt-10 flex items-center gap-2">
               {reviews.map((review, index) => {
                 const isActive = index === activeIndex;
 
@@ -435,12 +414,12 @@ function ReviewCard(props: ReviewCardProps) {
         y: isActive ? 0 : 24,
       }}
       transition={CARD_TRANSITION}
-      className={`absolute top-0 left-1/2 w-full max-w-5xl px-0 md:px-4 ${position === 'active' ? 'block' : 'hidden md:block'}`}
+      className={`absolute top-0 left-1/2 w-full max-w-3xl px-0 md:px-4 ${position === 'active' ? 'block' : 'hidden md:block'}`}
       style={{ pointerEvents: isActive ? 'auto' : 'none', zIndex: position === 'active' ? 30 : 10 }}
       aria-hidden={!isActive}
     >
       <div
-        className={`flex h-full flex-col gap-8 rounded border border-foreground/10 bg-white/95 px-6 py-8 shadow-[0_35px_70px_-40px_rgba(99,102,83,0.55)] md:px-8 md:py-you 8 ${hasImages ? 'md:flex-row md:items-start md:gap-10' : ''}`}
+        className={`flex h-full flex-col gap-6 rounded border border-foreground/10 bg-white/95 px-5 py-6 shadow-[0_35px_70px_-40px_rgba(99,102,83,0.55)] md:px-7 md:py-7 ${hasImages ? 'md:flex-row md:items-start md:gap-8' : ''}`}
       >
         {hasImages ? (
           <div className="flex w-full flex-col gap-4 md:w-[44%]">
@@ -514,15 +493,15 @@ function ReviewCard(props: ReviewCardProps) {
         ) : null}
 
         <div className={`flex w-full flex-col justify-between ${hasImages ? 'md:w-[56%]' : ''}`}>
-          <div className="flex flex-col gap-2">
-            <span className="text-4xl text-secondary md:text-4xl">&ldquo;</span>
-            <p className="font-manrope text-base leading-7 text-foreground/90 md:text-md  ">{safeComment}</p>
-            <span className="self-start text-4xl text-secondary md:text-4xl">&rdquo;</span>
+          <div className="flex flex-col gap-1">
+            <span className="text-3xl text-secondary md:text-3xl">&ldquo;</span>
+            <p className="font-manrope text-sm leading-6 text-foreground/90 md:text-base md:leading-7">{safeComment}</p>
+            <span className="self-start text-3xl text-secondary md:text-3xl">&rdquo;</span>
           </div>
-          <div className="mt-6 border-t border-foreground/10 pt-6">
-            <p className="font-vegawanty text-lg text-foreground">{safeName}</p>
+          <div className="mt-5 border-t border-foreground/10 pt-5">
+            <p className="font-vegawanty text-base text-foreground md:text-lg">{safeName}</p>
             {review.gownId ? (
-              <p className="font-manrope text-sm uppercase tracking-widest text-foreground/50">
+              <p className="font-manrope text-xs uppercase tracking-widest text-foreground/50 md:text-sm">
                 Wore gown #{review.gownId}
               </p>
             ) : null}
@@ -573,14 +552,22 @@ function Collections() {
       {/* Collections Horizontal Scroll Section */}
       <div className="w-full py-8 md:py-12">
         <div className="px-6 md:px-16">
-          <h2 className="font-manrope text-3xl md:text-4xl font-light text-foreground mb-6">Collections</h2>
+          <h2 className="font-vegawanty text-4xl md:text-5xl font-light text-foreground mb-2">Collections</h2>
+        <p className="font-manrope text-md md:text-lg text-foreground/70 max-w-2xl mb-6">
+          Discover our signature collections—each one an exclusive curation of enchanting designs to inspire your perfect look.
+        </p>
         </div>
         
         {/* Horizontal scrollable container */}
         <div className="relative px-6 md:px-16">
           <div 
             className="flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            style={{ 
+              scrollSnapType: 'x mandatory',
+              scrollPaddingLeft: '1.5rem',
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none' 
+            }}
           >
             {collections.map((collection) => {
               // Use fallback image if needed
@@ -593,7 +580,8 @@ function Collections() {
                 <Link
                   key={collection.slug}
                   href={`/collections/${collection.slug}`}
-                  className="group flex-shrink-0 w-48 md:w-56 snap-start"
+                  className="group flex-shrink-0 w-48 md:w-56 snap-center"
+                  style={{ scrollSnapAlign: 'center' }}
                 >
                   <div className="relative aspect-[3/4] w-full overflow-hidden bg-neutral-100 transition-transform duration-300 group-hover:scale-[1.02]">
                     <Image
@@ -670,9 +658,9 @@ function Featured() {
   };
 
   return (
-    <div className="w-full h-fit flex flex-col items-center justify-center py-12 px-6 bg-tertiary lg:flex-row-reverse lg:justify-between lg:gap-5 lg:px-16 lg:py-8 space-y-6">
+    <div className="w-full h-fit flex flex-col items-center justify-center py-12 bg-tertiary lg:flex-row-reverse lg:justify-between lg:gap-5 lg:px-16 lg:py-8">
       {/* featured gowns header */}
-      <div className="w-full h-fit flex flex-col items-center justify-center mb-8 mx-0 lg:mr-5">
+      <div className="w-full h-fit flex flex-col items-center justify-center mb-8 mx-0 px-6 lg:mr-5 lg:px-0">
         {/* featured and logo container */}
         <div className="w-fit flex flex-col items-center justify-center lg:items-start">
           <div className="w-fit flex flex-row items-center justify-center">
@@ -689,51 +677,67 @@ function Featured() {
         </p>
       </div>
 
-      <p className="font-manrope text-md md:text-lg text-background text-center max-w-2xl lg:hidden">
+      <p className="font-manrope text-md md:text-lg text-background text-center max-w-2xl px-6 lg:hidden">
         Discover our latest gown arrivals! Be among the first to experience the magic of these brand-new designs and step into a world of enchantment...
       </p>
 
       {/* Featured gowns card container */}
-      <FadeInOnScroll className="w-full h-fit flex flex-col gap-6 mt-6 lg:flex-row lg:gap-4 lg:h-96 justify-center items-center" delay={0.1}>
-        {isLoading ? (
-          // Loading skeleton
-          Array.from({ length: 3 }).map((_, index) => (
-            <div
-              key={index}
-              className="w-full h-72 lg:h-full lg:w-60 bg-background/20 animate-pulse shadow-lg"
-            />
-          ))
-        ) : error ? (
-          // Error state
-          <div className="w-full max-w-2xl text-center py-12">
-            <p className="font-manrope text-background/80 text-lg mb-4">
-              Unable to load featured gowns at the moment.
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="font-manrope text-sm bg-background text-tertiary px-6 py-2 rounded hover:bg-background/90 transition-colors duration-300"
-            >
-              Try Again
-            </button>
-          </div>
-        ) : featuredGowns.length === 0 ? (
-          // Empty state
-          <div className="w-full max-w-2xl text-center py-12">
-            <p className="font-manrope text-background/80 text-lg">
-              No featured gowns available at the moment. Check back soon for new arrivals!
-            </p>
-          </div>
-        ) : (
-          // Featured gowns
-          featuredGowns.map((gown) => (
-            <FeaturedGownsCard
-              key={gown.id}
-              gown={gown}
-              onClick={() => handleGownClick(gown.id)}
-            />
-          ))
-        )}
+      <FadeInOnScroll className="w-full h-fit mt-6" delay={0.1}>
+        <div 
+          className="flex gap-4 lg:gap-4 overflow-x-auto px-6 pb-4 snap-x snap-mandatory scrollbar-hide lg:h-96 lg:justify-center lg:overflow-x-visible lg:px-0"
+          style={{ 
+            scrollSnapType: 'x mandatory',
+            scrollPaddingLeft: '1.5rem',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}
+        >
+          {isLoading ? (
+            // Loading skeleton
+            Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                className="flex-shrink-0 w-64 h-72 lg:h-full lg:w-60 bg-background/20 animate-pulse shadow-lg snap-center"
+              />
+            ))
+          ) : error ? (
+            // Error state
+            <div className="w-full max-w-2xl text-center py-12 px-6">
+              <p className="font-manrope text-background/80 text-lg mb-4">
+                Unable to load featured gowns at the moment.
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="font-manrope text-sm bg-background text-tertiary px-6 py-2 rounded hover:bg-background/90 transition-colors duration-300"
+              >
+                Try Again
+              </button>
+            </div>
+          ) : featuredGowns.length === 0 ? (
+            // Empty state
+            <div className="w-full max-w-2xl text-center py-12 px-6">
+              <p className="font-manrope text-background/80 text-lg">
+                No featured gowns available at the moment. Check back soon for new arrivals!
+              </p>
+            </div>
+          ) : (
+            // Featured gowns
+            featuredGowns.map((gown) => (
+              <FeaturedGownsCard
+                key={gown.id}
+                gown={gown}
+                onClick={() => handleGownClick(gown.id)}
+              />
+            ))
+          )}
+        </div>
       </FadeInOnScroll>
+      
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   )
 }
@@ -764,9 +768,10 @@ function FeaturedGownsCard(props: FeaturedGownsCardProps) {
 
   return (
     <div 
-      className="relative w-full h-72 lg:h-full lg:w-60 col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-center transition-all duration-300 hover:scale-105 shadow-xl group cursor-pointer overflow-hidden"
+      className="relative flex-shrink-0 w-64 h-72 lg:h-full lg:w-60 snap-center flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-center transition-all duration-300 hover:scale-105 shadow-xl group cursor-pointer overflow-hidden"
       style={{ 
-        backgroundImage: `linear-gradient(to top, rgba(99, 102, 83, 0.8), rgba(99, 102, 83, 0.3), transparent), url(${gownImage})` 
+        backgroundImage: `linear-gradient(to top, rgba(99, 102, 83, 0.8), rgba(99, 102, 83, 0.3), transparent), url(${gownImage})`,
+        scrollSnapAlign: 'center'
       }}
       onClick={onClick}
     >
