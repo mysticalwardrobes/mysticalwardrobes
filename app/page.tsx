@@ -297,8 +297,8 @@ function ReviewsSection() {
       </div>
 
       {isLoading ? (
-        <div className="mt-12 flex w-full max-w-3xl items-center justify-center">
-          <div className="h-80 w-full animate-pulse rounded-3xl bg-foreground/10" />
+        <div className="mt-8 md:mt-12 flex w-full max-w-3xl items-center justify-center">
+          <div className="h-72 md:h-80 w-full animate-pulse rounded-3xl bg-foreground/10" />
         </div>
       ) : error ? (
         <div className="mt-12 w-full max-w-3xl rounded-2xl border border-secondary/30 bg-secondary/5 px-6 py-12 text-center font-manrope text-foreground">
@@ -310,8 +310,8 @@ function ReviewsSection() {
         </div>
       ) : (
         <>
-          <div className="relative mt-12 w-full max-w-3xl">
-            <div className="relative min-h-[360px] md:min-h-[380px]">
+          <div className="relative mt-8 md:mt-12 w-full max-w-3xl">
+            <div className="relative min-h-[300px] md:min-h-[380px]">
               {displayedCards.map(({ review, position }) => (
                 <ReviewCard
                   key={`${review.id}-${position}`}
@@ -324,7 +324,7 @@ function ReviewsSection() {
           </div>
 
           {showNavigation && (
-            <div className="mt-10 flex items-center gap-2">
+            <div className="mt-6 md:mt-10 flex items-center gap-2">
               {reviews.map((review, index) => {
                 const isActive = index === activeIndex;
 
@@ -419,11 +419,11 @@ function ReviewCard(props: ReviewCardProps) {
       aria-hidden={!isActive}
     >
       <div
-        className={`flex h-full flex-col gap-6 rounded border border-foreground/10 bg-white/95 px-5 py-6 shadow-[0_35px_70px_-40px_rgba(99,102,83,0.55)] md:px-7 md:py-7 ${hasImages ? 'md:flex-row md:items-start md:gap-8' : ''}`}
+        className={`flex h-full gap-3 rounded border border-foreground/10 bg-white/95 px-4 py-4 shadow-[0_35px_70px_-40px_rgba(99,102,83,0.55)] md:gap-8 md:px-7 md:py-7 ${hasImages ? 'flex-row items-start' : 'flex-col'}`}
       >
         {hasImages ? (
-          <div className="flex w-full flex-col gap-4 md:w-[44%]">
-            <div className="relative aspect-[5/5] w-full overflow-hidden rounded bg-foreground/5">
+          <div className="flex w-[40%] flex-col gap-3 md:gap-4 md:w-[44%]">
+            <div className="relative aspect-square w-full overflow-hidden rounded bg-foreground/5">
               <motion.div
                 key={`${review.id}-${currentImageIndex}`}
                 className="relative h-full w-full"
@@ -452,7 +452,7 @@ function ReviewCard(props: ReviewCardProps) {
                     type="button"
                     aria-label="Show previous photo"
                     onClick={goToPreviousImage}
-                    className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/90 text-lg text-foreground shadow-md transition hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                    className="absolute left-2 md:left-3 top-1/2 flex h-7 w-7 md:h-9 md:w-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/90 text-sm md:text-lg text-foreground shadow-md transition hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
                   >
                     {'<'}
                   </button>
@@ -460,7 +460,7 @@ function ReviewCard(props: ReviewCardProps) {
                     type="button"
                     aria-label="Show next photo"
                     onClick={goToNextImage}
-                    className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/90 text-lg text-foreground shadow-md transition hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                    className="absolute right-2 md:right-3 top-1/2 flex h-7 w-7 md:h-9 md:w-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/90 text-sm md:text-lg text-foreground shadow-md transition hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
                   >
                     {'>'}
                   </button>
@@ -492,16 +492,16 @@ function ReviewCard(props: ReviewCardProps) {
           </div>
         ) : null}
 
-        <div className={`flex w-full flex-col justify-between ${hasImages ? 'md:w-[56%]' : ''}`}>
-          <div className="flex flex-col gap-1">
-            <span className="text-3xl text-secondary md:text-3xl">&ldquo;</span>
-            <p className="font-manrope text-sm leading-6 text-foreground/90 md:text-base md:leading-7">{safeComment}</p>
-            <span className="self-start text-3xl text-secondary md:text-3xl">&rdquo;</span>
+        <div className={`flex flex-col justify-between ${hasImages ? 'w-[60%] md:w-[56%]' : 'w-full'}`}>
+          <div className="flex flex-col gap-0.5 md:gap-1">
+            <span className="text-2xl text-secondary md:text-3xl">&ldquo;</span>
+            <p className="font-manrope text-sm leading-5 text-foreground/90 md:text-base md:leading-7">{safeComment}</p>
+            <span className="self-start text-2xl text-secondary md:text-3xl">&rdquo;</span>
           </div>
-          <div className="mt-5 border-t border-foreground/10 pt-5">
-            <p className="font-vegawanty text-base text-foreground md:text-lg">{safeName}</p>
+          <div className="mt-3 border-t border-foreground/10 pt-3 md:mt-5 md:pt-5">
+            <p className="font-vegawanty text-sm text-foreground md:text-lg">{safeName}</p>
             {review.gownId ? (
-              <p className="font-manrope text-xs uppercase tracking-widest text-foreground/50 md:text-sm">
+              <p className="font-manrope text-[10px] uppercase tracking-widest text-foreground/50 md:text-sm">
                 Wore gown #{review.gownId}
               </p>
             ) : null}
