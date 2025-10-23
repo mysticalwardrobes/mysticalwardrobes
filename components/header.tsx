@@ -8,9 +8,14 @@ import Logo from "@/public/assets/Mystical-Wardrobes-Logo-02.svg"
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isFaqsDropdownOpen, setIsFaqsDropdownOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const toggleFaqsDropdown = () => {
+    setIsFaqsDropdownOpen(!isFaqsDropdownOpen);
   };
 
   return (
@@ -76,10 +81,53 @@ export default function Header() {
             Contact
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
-          <Link href="/faqs" className="relative group transition-colors duration-300 hover:text-foreground-darker">
-            FAQs
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
-          </Link>
+          
+          {/* FAQs & Guides Dropdown */}
+          <div className="relative group">
+            <button
+              onClick={toggleFaqsDropdown}
+              className="relative transition-colors duration-300 hover:text-foreground-darker flex items-center gap-1"
+            >
+              FAQs & Guides
+              <svg 
+                className={`w-4 h-4 transition-transform duration-300 ${isFaqsDropdownOpen ? 'rotate-180' : ''}`}
+                fill="none" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path d="M19 9l-7 7-7-7"></path>
+              </svg>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
+            </button>
+            
+            {/* Dropdown Menu */}
+            <div className={`absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 ${isFaqsDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+              <Link 
+                href="/faqs" 
+                className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
+                onClick={() => setIsFaqsDropdownOpen(false)}
+              >
+                FAQs
+              </Link>
+              <Link 
+                href="/rental-terms" 
+                className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
+                onClick={() => setIsFaqsDropdownOpen(false)}
+              >
+                Rental Terms
+              </Link>
+              <Link 
+                href="/custom-made-terms" 
+                className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
+                onClick={() => setIsFaqsDropdownOpen(false)}
+              >
+                Custom Made Terms
+              </Link>
+            </div>
+          </div>
         </div>
       </nav>
 
@@ -130,13 +178,61 @@ export default function Header() {
           >
             Contact
           </Link>
-          <Link 
-            href="/faqs" 
-            className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
-            style={{ animationDelay: isMobileMenuOpen ? '0.7s' : '0s' }}
-          >
-            FAQs
-          </Link>
+          
+          {/* FAQs & Guides Mobile Dropdown */}
+          <div style={{ animationDelay: isMobileMenuOpen ? '0.7s' : '0s' }}>
+            <button
+              onClick={toggleFaqsDropdown}
+              className="w-full text-left py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2 flex items-center justify-between"
+            >
+              FAQs & Guides
+              <svg 
+                className={`w-4 h-4 transition-transform duration-300 ${isFaqsDropdownOpen ? 'rotate-180' : ''}`}
+                fill="none" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            
+            {/* Mobile Dropdown Items */}
+            <div className={`overflow-hidden transition-all duration-300 ${isFaqsDropdownOpen ? 'max-h-48' : 'max-h-0'}`}>
+              <Link 
+                href="/faqs" 
+                className="block py-2 px-6 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100"
+                onClick={() => {
+                  setIsFaqsDropdownOpen(false);
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                FAQs
+              </Link>
+              <Link 
+                href="/rental-terms" 
+                className="block py-2 px-6 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100"
+                onClick={() => {
+                  setIsFaqsDropdownOpen(false);
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                Rental Terms
+              </Link>
+              <Link 
+                href="/custom-made-terms" 
+                className="block py-2 px-6 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100"
+                onClick={() => {
+                  setIsFaqsDropdownOpen(false);
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                Custom Made Terms
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </header>
