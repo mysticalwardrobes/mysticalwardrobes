@@ -11,7 +11,8 @@ import Icon6 from "@/public/assets/symbols/Mystical-Wardrobes-Icons-09-06.svg"
 import premium from "@/public/assets/collections/Premium.png";
 import explore_accessories from "@/public/assets/addons/Explore.jpg";
 import sampleGown1 from "@/public/assets/sample_gown-1.jpg";
-import Logo from "@/public/assets/Mystical-Wardrobes-Logo-02-foreground.svg"
+import LogoDarker from "@/public/LogoDarker.svg"
+
 
 import FadeInOnScroll from "@/components/FadeInOnScroll";
 import ExpandableText from "@/components/ExpandableText";
@@ -513,6 +514,39 @@ function ReviewCard(props: ReviewCardProps) {
 }
 
 function Collections() {
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const [showLeftArrow, setShowLeftArrow] = React.useState(false);
+  const [showRightArrow, setShowRightArrow] = React.useState(true);
+
+  const handleScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setShowLeftArrow(scrollLeft > 0);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+  };
+
+  React.useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      handleScroll();
+      container.addEventListener('scroll', handleScroll);
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
+
   return (
     <div className="w-full bg-background">
       {/* Explore Section */}
@@ -560,7 +594,34 @@ function Collections() {
         
         {/* Horizontal scrollable container */}
         <div className="relative px-6 md:px-16">
+          {/* Left Arrow - Desktop Only */}
+          {showLeftArrow && (
+            <button
+              onClick={scrollLeft}
+              aria-label="Scroll left"
+              className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-background/90 text-foreground shadow-lg transition-all duration-300 hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
+
+          {/* Right Arrow - Desktop Only */}
+          {showRightArrow && (
+            <button
+              onClick={scrollRight}
+              aria-label="Scroll right"
+              className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-10 h-10 w-10 items-center justify-center rounded-full bg-background/90 text-foreground shadow-lg transition-all duration-300 hover:bg-secondary hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
+
           <div 
+            ref={scrollContainerRef}
             className="flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide"
             style={{ 
               scrollSnapType: 'x mandatory',
@@ -658,26 +719,26 @@ function Featured() {
   };
 
   return (
-    <div className="w-full h-fit flex flex-col items-center justify-center py-12 bg-tertiary lg:flex-row-reverse lg:justify-between lg:gap-5 lg:px-16 lg:py-8">
+    <div className="w-full h-fit flex flex-col items-center justify-center py-12 lg:flex-row-reverse lg:justify-between lg:gap-5 lg:px-16 lg:py-8" style={{ background: 'linear-gradient(135deg, #f4c4b0 0%, #f5e6d3 40%, #e8d4d8 70%, #d9b8c4 100%)' }}>
       {/* featured gowns header */}
       <div className="w-full h-fit flex flex-col items-center justify-center mb-8 mx-0 px-6 lg:mr-5 lg:px-0">
         {/* featured and logo container */}
         <div className="w-fit flex flex-col items-center justify-center lg:items-start">
           <div className="w-fit flex flex-row items-center justify-center">
-            <h1 className="font-vegawanty text-6xl lg:text-7xl text-background mt-3">Featured</h1>
-            <Image src={Logo} alt="Mystical Wardrobes Logo" className="w-12 h-12 ml-2" />
+            <h1 className="font-vegawanty text-6xl lg:text-7xl text-foreground-darker mt-3">Featured</h1>
+            <Image src={LogoDarker} alt="Mystical Wardrobes Logo" className="w-12 h-12 ml-2" />
           </div>
           <div className="w-full flex flex-row items-start justify-end mt-[-15px] lg:mr-32">
-            <h1 className="font-vegawanty text-5xl sm:text-4xl md:text-6xl text-background">gowns</h1>
+            <h1 className="font-vegawanty text-5xl sm:text-4xl md:text-6xl text-foreground-darker">gowns</h1>
           </div>
         </div>
 
-        <p className="font-manrope text-md md:text-lg text-background/80 text-center max-w-3xl hidden lg:block">
+        <p className="font-manrope text-md md:text-lg text-foreground-darker/80 text-center max-w-3xl hidden lg:block">
           Discover our latest gown arrivals! Be among the first to experience the magic of these brand-new designs and step into a world of enchantment...
         </p>
       </div>
 
-      <p className="font-manrope text-md md:text-lg text-background text-center max-w-2xl px-6 lg:hidden">
+      <p className="font-manrope text-md md:text-lg text-foreground-darker/80 text-center max-w-2xl px-6 lg:hidden">
         Discover our latest gown arrivals! Be among the first to experience the magic of these brand-new designs and step into a world of enchantment...
       </p>
 
@@ -703,7 +764,7 @@ function Featured() {
           ) : error ? (
             // Error state
             <div className="w-full max-w-2xl text-center py-12 px-6">
-              <p className="font-manrope text-background/80 text-lg mb-4">
+              <p className="font-manrope text-foreground-darker/80 text-lg mb-4">
                 Unable to load featured gowns at the moment.
               </p>
               <button
