@@ -6,6 +6,7 @@ import { useMemo, useState, useEffect } from "react";
 import { Gown } from "@/app/api/gowns/model";
 import { AddOn } from "@/app/api/addons/model";
 import React from "react";
+import { div } from "framer-motion/client";
 
 type Props = {
   params: { id: string };
@@ -554,10 +555,15 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                     {gown.lenght && (() => {
                       const lengths = gown.lenght.split('/').map(l => l.trim());
                       if (lengths.length === 1) {
-                        return `${lengths[0]} <span className="text-xs text-neutral-500 ml-1">in</span>`;
+                        return (<div>
+                          {`${lengths[0]} `}<span className="text-xs text-neutral-500 ml-1">in</span>
+                        </div>);
                       } else if (lengths.length === 2) {
                         if (lengths[0] === '-') {
-                          return `Pixie: ${lengths[1]} <span className="text-xs text-neutral-500 ml-1">in</span>`;
+                          return (<div>
+                            {`Pixie: ${lengths[1]} `}<span className="text-xs text-neutral-500 ml-1">in</span>
+                          </div>
+                          );
                         }
                         return (
                           <div className="space-y-1">
