@@ -549,7 +549,7 @@ function Collections() {
           <a
             className="row-span-1 h-72 md:h-full md:row-span-2 col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
             style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${sampleGown1.src})` }}
-            href="/collections"
+            href="/collections/all"
           >
             Rental Gowns
           </a>
