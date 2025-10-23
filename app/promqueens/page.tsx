@@ -136,7 +136,7 @@ function GallerySkeleton() {
   ];
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
       {Array.from({ length: 12 }).map((_, index) => {
         const randomHeight = heightVariations[index % heightVariations.length];
         return (
@@ -192,7 +192,7 @@ export default function PromQueensPage() {
     default: 4,
     1200: 3,
     768: 2,
-    640: 1
+    640: 2
   };
 
   if (loading) {

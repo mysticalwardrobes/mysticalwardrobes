@@ -88,27 +88,40 @@ export default function RentalTermsPage() {
               </h2>
               <div className="space-y-4 text-secondary/80">
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Fitting Fee</h3>
-                  <p className="leading-relaxed">
-                    There is a fitting fee of <strong>₱800</strong>, which includes ₱300 for staff assistance and ₱500 which is deductible from your rental balance. This fee is non-refundable for any missed appointments.
-                  </p>
+                  <h3 className="font-semibold text-foreground mb-2">Fitting Fees</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b-2 border-foreground/20">
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Fee Type</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Amount</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Notes</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Initial Fitting Fee</td>
+                          <td className="py-3 px-4">₱800</td>
+                          <td className="py-3 px-4">₱300 staff assistance + ₱500 deductible from rental balance</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Rescheduling Fee</td>
+                          <td className="py-3 px-4">₱300</td>
+                          <td className="py-3 px-4">Per rescheduled appointment</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Time Extension</td>
+                          <td className="py-3 px-4">₱300</td>
+                          <td className="py-3 px-4">Up to 30 minutes extra (subject to availability)</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Rescheduling</h3>
+                  <h3 className="font-semibold text-foreground mb-2">Session Details</h3>
                   <p className="leading-relaxed">
-                    A <strong>₱300 fee</strong> is payable each time a fitting slot is moved.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Session Duration</h3>
-                  <p className="leading-relaxed">
-                    Standard fitting time is 30 minutes. An extension of up to 30 minutes may be allowed if there is no next client booked after your slot, for a ₱300 extension fee.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Number of Gowns</h3>
-                  <p className="leading-relaxed">
-                    Only 3–4 gowns will be prepared per session.
+                    Standard fitting time is 30 minutes. Only 3–4 gowns will be prepared per session.
                   </p>
                 </div>
                 <div>
@@ -158,27 +171,46 @@ export default function RentalTermsPage() {
               </h2>
               <div className="space-y-4 text-secondary/80">
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Rental Extension</h3>
-                  <p className="leading-relaxed">
-                    If you need more time with the gown beyond your original return date, you can ask in advance to extend your rental. If approved, the cost is <strong>₱1,000 per extra day</strong>. You should message us at least 3 days before your event to check if the gown isn't booked for the next client.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Late Return Fee</h3>
-                  <p className="leading-relaxed">
-                    A late return fee of <strong>₱1,488 per day</strong> will be charged when no extension was requested in advance. This higher fee exists because late returns directly affect our ability to prepare the gown for the next client and cause a measurable loss of income.
-                  </p>
+                  <h3 className="font-semibold text-foreground mb-2">Extension & Late Return Fees</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b-2 border-foreground/20">
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Type</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Fee</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Conditions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Rental Extension</td>
+                          <td className="py-3 px-4">₱1,000/day</td>
+                          <td className="py-3 px-4">
+                            <ul className="list-disc list-inside space-y-1">
+                              <li>Request at least 3 days before event</li>
+                              <li>Subject to availability</li>
+                              <li>Maximum 3 days without prior approval</li>
+                            </ul>
+                          </td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Late Return Fee</td>
+                          <td className="py-3 px-4">₱1,488/day</td>
+                          <td className="py-3 px-4">
+                            <ul className="list-disc list-inside space-y-1">
+                              <li>No advance extension requested</li>
+                              <li>Affects next client booking</li>
+                            </ul>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground mb-2">Return Window (Metro Manila)</h3>
                   <p className="leading-relaxed">
                     The 8:00–9:00 AM time is the start of the return window for Metro Manila. Clients must book the courier back to our agreed return location so that we receive the gown early on the return day. If the item is not received as scheduled, the late return fee applies.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Maximum Extension</h3>
-                  <p className="leading-relaxed">
-                    Rentals cannot be extended beyond 3 days without prior approval.
                   </p>
                 </div>
                 <div>
@@ -211,15 +243,32 @@ export default function RentalTermsPage() {
                   </p>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Rescheduling Fee</h3>
-                  <p className="leading-relaxed">
-                    A rescheduling fee applies: <strong>Metro Manila: ₱2,000</strong>; <strong>Outside Metro Manila: ₱3,000</strong>. This applies even if the event is canceled, as your original slot was already reserved. This option is not available if you decide just 2 days before your scheduled delivery.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Changing Gowns</h3>
-                  <p className="leading-relaxed">
-                    You can change your gown once per booking, subject to availability. If the new gown's rate is higher, the difference must be paid; if lower, no refunds are issued. A changing of gown fee applies: <strong>Metro Manila: ₱2,000</strong>; <strong>Outside Metro Manila: ₱3,000</strong>.
+                  <h3 className="font-semibold text-foreground mb-2">Rescheduling & Changing Gown Fees</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b-2 border-foreground/20">
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Service</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Metro Manila</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Outside Metro Manila</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Rescheduling Fee</td>
+                          <td className="py-3 px-4">₱2,000</td>
+                          <td className="py-3 px-4">₱3,000</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Changing Gown Fee</td>
+                          <td className="py-3 px-4">₱2,000</td>
+                          <td className="py-3 px-4">₱3,000</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="leading-relaxed mt-3 text-sm">
+                    <strong>Note:</strong> Rescheduling is not available if decided just 2 days before scheduled delivery. Gown changes are subject to availability and once per booking only.
                   </p>
                 </div>
               </div>
@@ -234,21 +283,43 @@ export default function RentalTermsPage() {
               </h2>
               <div className="space-y-4 text-secondary/80">
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Damage Assessment</h3>
-                  <p className="leading-relaxed">
-                    Any damage to the gown, whether due to negligence or not, will be assessed upon return and may result in a fee. Fees vary depending on the severity of the damage:
+                  <h3 className="font-semibold text-foreground mb-2">Damage Fees</h3>
+                  <p className="leading-relaxed mb-3">
+                    Any damage to the gown, whether due to negligence or not, will be assessed upon return and may result in a fee:
                   </p>
-                  <ul className="list-disc list-inside ml-4 mt-2 space-y-1">
-                    <li>Minor damage: ₱500 - ₱2,000</li>
-                    <li>Moderate damage: ₱2,000 - ₱5,000</li>
-                    <li>Severe damage: Up to full replacement value</li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Lost or Irreparably Damaged Gowns</h3>
-                  <p className="leading-relaxed">
-                    If the gown is lost, stolen, or damaged beyond repair, you will be charged the full replacement cost of a new, comparable gown, as determined by Mystical Wardrobes.
-                  </p>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b-2 border-foreground/20">
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Damage Level</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Fee Range</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Examples</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Minor Damage</td>
+                          <td className="py-3 px-4">₱500 - ₱2,000</td>
+                          <td className="py-3 px-4">Small tears, minor stains, few missing beads</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Moderate Damage</td>
+                          <td className="py-3 px-4">₱2,000 - ₱5,000</td>
+                          <td className="py-3 px-4">Large tears, significant stains, zipper damage</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Severe Damage</td>
+                          <td className="py-3 px-4">Up to Full Replacement</td>
+                          <td className="py-3 px-4">Irreparable damage, major structural issues</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Lost/Stolen</td>
+                          <td className="py-3 px-4">Full Replacement Cost</td>
+                          <td className="py-3 px-4">Complete loss of gown</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground mb-2">Ownership</h3>

@@ -157,21 +157,37 @@ export default function CustomMadeTermsPage() {
               </h2>
               <div className="space-y-4 text-secondary/80">
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Production Timeline</h3>
-                  <p className="leading-relaxed">
-                    Standard production time is <strong>6-8 weeks</strong> from the date of final design approval and down-payment. Rush orders may be accommodated for an additional fee, subject to availability.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Booking in Advance</h3>
-                  <p className="leading-relaxed">
-                    We recommend booking at least 3 months before your event to allow ample time for design, production, and fittings.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Rush Orders</h3>
-                  <p className="leading-relaxed">
-                    Orders requested with less than 6 weeks until the event date are considered rush orders and will incur a rush fee of <strong>20-30%</strong> of the total cost.
+                  <h3 className="font-semibold text-foreground mb-2">Production Timeline & Rush Fees</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b-2 border-foreground/20">
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Timeline</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Production Time</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Rush Fee</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Standard Order</td>
+                          <td className="py-3 px-4">6-8 weeks</td>
+                          <td className="py-3 px-4">None</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Rush Order (&lt;6 weeks)</td>
+                          <td className="py-3 px-4">4-6 weeks</td>
+                          <td className="py-3 px-4">20-30% of total cost</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Recommended Booking</td>
+                          <td className="py-3 px-4">3+ months before event</td>
+                          <td className="py-3 px-4">None</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="leading-relaxed mt-3 text-sm">
+                    <strong>Note:</strong> Timeline starts from the date of final design approval and down-payment. Rush orders are subject to availability.
                   </p>
                 </div>
                 <div>
@@ -192,18 +208,38 @@ export default function CustomMadeTermsPage() {
               </h2>
               <div className="space-y-4 text-secondary/80">
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Down-Payment</h3>
-                  <p className="leading-relaxed">
-                    A non-refundable down-payment of <strong>50%</strong> is required to confirm your order and begin production.
-                  </p>
-                </div>
-                <div>
                   <h3 className="font-semibold text-foreground mb-2">Payment Schedule</h3>
-                  <ul className="list-disc list-inside ml-4 mt-2 space-y-1">
-                    <li>50% down-payment upon order confirmation</li>
-                    <li>30% upon completion of first fitting</li>
-                    <li>20% final payment before pickup or delivery</li>
-                  </ul>
+                  <p className="leading-relaxed mb-3">
+                    A non-refundable down-payment of 50% is required to confirm your order and begin production.
+                  </p>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b-2 border-foreground/20">
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Payment Stage</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Percentage</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Timing</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Down-Payment</td>
+                          <td className="py-3 px-4">50%</td>
+                          <td className="py-3 px-4">Upon order confirmation (non-refundable)</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Second Payment</td>
+                          <td className="py-3 px-4">30%</td>
+                          <td className="py-3 px-4">Upon completion of first fitting</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Final Payment</td>
+                          <td className="py-3 px-4">20%</td>
+                          <td className="py-3 px-4">Before pickup or delivery</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground mb-2">Payment Methods</h3>
@@ -322,27 +358,45 @@ export default function CustomMadeTermsPage() {
                   </p>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Fittings</h3>
-                  <p className="leading-relaxed">
+                  <h3 className="font-semibold text-foreground mb-2">Fittings & Alterations</h3>
+                  <p className="leading-relaxed mb-3">
                     We typically schedule 1-2 fittings during production. Additional fittings may be arranged if needed.
                   </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Minor Alterations</h3>
-                  <p className="leading-relaxed">
-                    Minor alterations (hemming, taking in/letting out within 2 inches) are included in the price during the production phase.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Post-Delivery Alterations</h3>
-                  <p className="leading-relaxed">
-                    Alterations requested after final delivery will incur additional fees. We are not responsible for alterations done by third parties.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Body Changes</h3>
-                  <p className="leading-relaxed">
-                    Significant weight fluctuations between measurements and final fitting may require additional alterations at an extra cost.
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b-2 border-foreground/20">
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Alteration Type</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Cost</th>
+                          <th className="text-left py-3 px-4 font-semibold text-foreground">Notes</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Minor Alterations</td>
+                          <td className="py-3 px-4">Included</td>
+                          <td className="py-3 px-4">Hemming, taking in/out within 2 inches during production</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Standard Fittings</td>
+                          <td className="py-3 px-4">Included</td>
+                          <td className="py-3 px-4">1-2 fittings during production phase</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Post-Delivery Alterations</td>
+                          <td className="py-3 px-4">Additional Fee</td>
+                          <td className="py-3 px-4">Alterations requested after final delivery</td>
+                        </tr>
+                        <tr className="border-b border-foreground/10">
+                          <td className="py-3 px-4">Major Body Changes</td>
+                          <td className="py-3 px-4">Additional Fee</td>
+                          <td className="py-3 px-4">Significant weight changes requiring extensive alterations</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="leading-relaxed mt-3 text-sm">
+                    <strong>Note:</strong> We are not responsible for alterations done by third parties.
                   </p>
                 </div>
               </div>
