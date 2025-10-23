@@ -133,7 +133,7 @@ export default function Header() {
 
       {/* Mobile Menu */}
       <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-        isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        isMobileMenuOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
       }`}>
         <div className="px-4 pb-4 space-y-2 font-manrope">
           <Link 
@@ -183,7 +183,7 @@ export default function Header() {
           <div style={{ animationDelay: isMobileMenuOpen ? '0.7s' : '0s' }}>
             <button
               onClick={toggleFaqsDropdown}
-              className="w-full text-left py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2 flex items-center justify-between"
+              className="w-full text-left py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2 flex items-center justify-between text-foreground"
             >
               FAQs & Guides
               <svg 
@@ -200,37 +200,39 @@ export default function Header() {
             </button>
             
             {/* Mobile Dropdown Items */}
-            <div className={`overflow-hidden transition-all duration-300 ${isFaqsDropdownOpen ? 'max-h-48' : 'max-h-0'}`}>
-              <Link 
-                href="/faqs" 
-                className="block py-2 px-6 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100"
-                onClick={() => {
-                  setIsFaqsDropdownOpen(false);
-                  setIsMobileMenuOpen(false);
-                }}
-              >
-                FAQs
-              </Link>
-              <Link 
-                href="/rental-terms" 
-                className="block py-2 px-6 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100"
-                onClick={() => {
-                  setIsFaqsDropdownOpen(false);
-                  setIsMobileMenuOpen(false);
-                }}
-              >
-                Rental Terms
-              </Link>
-              <Link 
-                href="/custom-made-terms" 
-                className="block py-2 px-6 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100"
-                onClick={() => {
-                  setIsFaqsDropdownOpen(false);
-                  setIsMobileMenuOpen(false);
-                }}
-              >
-                Custom Made Terms
-              </Link>
+            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isFaqsDropdownOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
+              <div className="mt-1 ml-3 pl-3 border-l-2 border-foreground/20 space-y-1">
+                <Link 
+                  href="/faqs" 
+                  className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"
+                  onClick={() => {
+                    setIsFaqsDropdownOpen(false);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  FAQs
+                </Link>
+                <Link 
+                  href="/rental-terms" 
+                  className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"
+                  onClick={() => {
+                    setIsFaqsDropdownOpen(false);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  Rental Terms
+                </Link>
+                <Link 
+                  href="/custom-made-terms" 
+                  className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"
+                  onClick={() => {
+                    setIsFaqsDropdownOpen(false);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  Custom Made Terms
+                </Link>
+              </div>
             </div>
           </div>
         </div>
