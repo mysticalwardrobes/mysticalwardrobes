@@ -1,6 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { client } from '@/app/api/config';
 import { Gown } from './model';
+import { 
+  REVALIDATE_TIME, 
+  CACHE_DURATION, 
+  CACHE_CONTROL_HEADER,
+  ContentfulEntriesResponse,
+  CacheEntry,
+  isCacheValid,
+  getCacheAge,
+  getCacheExpiry
+} from '@/app/api/cache-config';
+
+// Cache configuration
+export const revalidate = REVALIDATE_TIME;
+
+// In-memory cache for gowns data
+let gownsCache: CacheEntry<ContentfulEntriesResponse> | null = null;
 
 // Helper functions for Contentful data extraction
 const isRecord = (value: unknown): value is Record<string, unknown> => {
@@ -79,6 +95,7 @@ const normalizeAssetUrls = (value: unknown): string[] => {
 
 export async function GET(request: NextRequest) {
   try {
+    const requestStart = Date.now();
     const { searchParams } = new URL(request.url);
     const collection = searchParams.get('collection');
     const tags = searchParams.getAll('tags');
@@ -92,11 +109,47 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '15');
     const search = searchParams.get('search');
 
-    // Fetch gowns from Contentful
-    const response = await client.getEntries({
-      content_type: 'gown',
-      include: 10, // Include linked assets (images)
-    });
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('🔍 NEW GOWNS API REQUEST');
+    console.log(`   Timestamp: ${new Date().toISOString()}`);
+
+    // Check if we have valid cached data
+    const now = Date.now();
+    let response;
+    let dataSource: 'cache' | 'contentful' = 'cache';
+    
+    if (gownsCache && isCacheValid(gownsCache.timestamp)) {
+      // Use cached data
+      response = gownsCache.data;
+      console.log('✅ CACHE HIT: Using cached gowns data');
+      console.log(`   Cache age: ${getCacheAge(gownsCache.timestamp)}s (expires in ${getCacheExpiry(gownsCache.timestamp)}s)`);
+      console.log(`   Total items in cache: ${response.items.length}`);
+    } else {
+      // Fetch fresh data from Contentful
+      const fetchStart = Date.now();
+      response = await client.getEntries({
+        content_type: 'gown',
+        include: 10, // Include linked assets (images)
+      });
+      const fetchDuration = Date.now() - fetchStart;
+      
+      dataSource = 'contentful';
+      
+      // Update cache
+      gownsCache = {
+        data: response,
+        timestamp: now
+      };
+      
+      if (gownsCache) {
+        console.log('🔄 CACHE MISS: Fetched fresh gowns data from Contentful');
+      } else {
+        console.log('🆕 INITIAL FETCH: Fetched gowns data from Contentful');
+      }
+      console.log(`   Fetch duration: ${fetchDuration}ms`);
+      console.log(`   Total items fetched: ${response.items.length}`);
+      console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
+    }
 
     // Transform Contentful entries to our Gown interface
     let gowns: Gown[] = response.items.map((item) => {
@@ -250,12 +303,8 @@ export async function GET(request: NextRequest) {
           return priceB - priceA;
         });
         break;
-      case 'collection':
-        gowns.sort((a, b) => {
-          const aCollection = a.collection.join(', ');
-          const bCollection = b.collection.join(', ');
-          return aCollection.localeCompare(bCollection);
-        });
+      case 'name-desc':
+        gowns.sort((a, b) => b.name.localeCompare(a.name));
         break;
       case 'name':
       default:
@@ -274,13 +323,27 @@ export async function GET(request: NextRequest) {
     if (searchParams.get('listCollections') === 'true') {
       const allCollections = gowns.flatMap(g => g.collection);
       const availableCollections = [...new Set(allCollections)].sort();
-      return NextResponse.json({
+      const collectionsResponse = NextResponse.json({
         collections: availableCollections,
         total: availableCollections.length
       });
+      
+      // Add cache headers
+      collectionsResponse.headers.set('Cache-Control', CACHE_CONTROL_HEADER);
+      
+      // Log collections list request
+      const collectionsRequestTime = Date.now() - requestStart;
+      console.log('📋 COLLECTIONS LIST REQUEST:');
+      console.log(`   Data source: ${dataSource.toUpperCase()}`);
+      console.log(`   Collections found: ${availableCollections.length}`);
+      console.log(`   Collections: ${availableCollections.join(', ')}`);
+      console.log(`   Total request time: ${collectionsRequestTime}ms`);
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      
+      return collectionsResponse;
     }
 
-    return NextResponse.json({
+    const responseData = NextResponse.json({
       items: paginatedGowns,
       total: totalItems,
       page,
@@ -289,6 +352,24 @@ export async function GET(request: NextRequest) {
       hasNextPage: page < totalPages,
       hasPrevPage: page > 1
     });
+
+    // Add cache headers for browser caching
+    responseData.headers.set('Cache-Control', CACHE_CONTROL_HEADER);
+
+    // Log final response details
+    const totalRequestTime = Date.now() - requestStart;
+    console.log('📤 RESPONSE:');
+    console.log(`   Data source: ${dataSource.toUpperCase()}`);
+    console.log(`   Collection filter: ${collection || 'none'}`);
+    console.log(`   Sort by: ${sortBy}`);
+    console.log(`   Page: ${page}/${totalPages}`);
+    console.log(`   Items in response: ${paginatedGowns.length}`);
+    console.log(`   Total matching items: ${totalItems}`);
+    console.log(`   Active filters: tags(${tags.length}), colors(${colors.length}), bestFor(${bestFor.length}), skirtStyles(${skirtStyles.length})`);
+    console.log(`   Total request time: ${totalRequestTime}ms`);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+    return responseData;
   } catch (error) {
     console.error('Error fetching gowns from Contentful:', error);
     return NextResponse.json(

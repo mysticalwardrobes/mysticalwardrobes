@@ -1,6 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { client } from '@/app/api/config';
 import { Gown } from '../model';
+import { 
+  REVALIDATE_TIME, 
+  CACHE_DURATION, 
+  CACHE_CONTROL_HEADER,
+  ContentfulEntryResponse,
+  CacheEntry,
+  isCacheValid,
+  getCacheAge,
+  getCacheExpiry
+} from '@/app/api/cache-config';
+
+// Cache configuration
+export const revalidate = REVALIDATE_TIME;
+
+// In-memory cache for individual gown entries
+const gownCache = new Map<string, CacheEntry<ContentfulEntryResponse>>();
 
 // Helper functions for Contentful data extraction
 const isRecord = (value: unknown): value is Record<string, unknown> => {
@@ -111,12 +127,45 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const requestStart = Date.now();
     const { id } = await params;
 
-    // Fetch gown from Contentful by ID
-    const response = await client.getEntry(id, {
-      include: 10, // Include linked assets (images)
-    });
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('🔍 GOWN DETAIL REQUEST');
+    console.log(`   ID: ${id}`);
+    console.log(`   Timestamp: ${new Date().toISOString()}`);
+
+    // Check if we have valid cached data for this specific gown
+    const now = Date.now();
+    let response;
+    let dataSource: 'cache' | 'contentful' = 'cache';
+    
+    const cachedEntry = gownCache.get(id);
+    if (cachedEntry && isCacheValid(cachedEntry.timestamp)) {
+      // Use cached data
+      response = cachedEntry.data;
+      console.log('✅ CACHE HIT: Using cached gown data');
+      console.log(`   Cache age: ${getCacheAge(cachedEntry.timestamp)}s (expires in ${getCacheExpiry(cachedEntry.timestamp)}s)`);
+    } else {
+      // Fetch fresh data from Contentful
+      const fetchStart = Date.now();
+      response = await client.getEntry(id, {
+        include: 10, // Include linked assets (images)
+      });
+      const fetchDuration = Date.now() - fetchStart;
+      
+      dataSource = 'contentful';
+      
+      // Update cache
+      gownCache.set(id, {
+        data: response,
+        timestamp: now
+      });
+      
+      console.log('🔄 CACHE MISS: Fetched fresh gown from Contentful');
+      console.log(`   Fetch duration: ${fetchDuration}ms`);
+      console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
+    }
 
     if (!response) {
       return NextResponse.json(
@@ -186,9 +235,23 @@ export async function GET(
       relatedGowns,
     };
 
-    return NextResponse.json(gown);
+    const responseData = NextResponse.json(gown);
+
+    // Add cache headers for browser caching
+    responseData.headers.set('Cache-Control', CACHE_CONTROL_HEADER);
+
+    // Log response details
+    const totalRequestTime = Date.now() - requestStart;
+    console.log('📤 RESPONSE:');
+    console.log(`   Data source: ${dataSource.toUpperCase()}`);
+    console.log(`   Gown: ${gown.name}`);
+    console.log(`   Collection: ${gown.collection.join(', ')}`);
+    console.log(`   Total request time: ${totalRequestTime}ms`);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+    return responseData;
   } catch (error) {
-    console.error('Error fetching gown from Contentful:', error);
+    console.error('❌ Error fetching gown from Contentful:', error);
     return NextResponse.json(
       { error: 'Failed to fetch gown' },
       { status: 500 }

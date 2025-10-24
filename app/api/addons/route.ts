@@ -1,6 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { client } from '@/app/api/config';
 import { AddOn } from './model';
+import { 
+  REVALIDATE_TIME, 
+  CACHE_DURATION, 
+  CACHE_CONTROL_HEADER,
+  ContentfulEntriesResponse,
+  CacheEntry,
+  isCacheValid,
+  getCacheAge,
+  getCacheExpiry
+} from '@/app/api/cache-config';
+
+// Cache configuration
+export const revalidate = REVALIDATE_TIME;
+
+// In-memory cache for addons data
+let addonsCache: CacheEntry<ContentfulEntriesResponse> | null = null;
 
 // Helper functions for Contentful data extraction
 const isRecord = (value: unknown): value is Record<string, unknown> => {
@@ -45,6 +61,7 @@ const normalizeAssetUrls = (value: unknown): string[] => {
 
 export async function GET(request: NextRequest) {
   try {
+    const requestStart = Date.now();
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
     const minPrice = searchParams.get('minPrice');
@@ -53,10 +70,46 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '15');
 
-    // Fetch add-ons from Contentful
-    const response = await client.getEntries({
-      content_type: 'addOns', // Make sure this matches your Contentful content type
-    });
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('🔍 NEW ADDONS API REQUEST');
+    console.log(`   Timestamp: ${new Date().toISOString()}`);
+
+    // Check if we have valid cached data
+    const now = Date.now();
+    let response;
+    let dataSource: 'cache' | 'contentful' = 'cache';
+    
+    if (addonsCache && isCacheValid(addonsCache.timestamp)) {
+      // Use cached data
+      response = addonsCache.data;
+      console.log('✅ CACHE HIT: Using cached addons data');
+      console.log(`   Cache age: ${getCacheAge(addonsCache.timestamp)}s (expires in ${getCacheExpiry(addonsCache.timestamp)}s)`);
+      console.log(`   Total items in cache: ${response.items.length}`);
+    } else {
+      // Fetch fresh data from Contentful
+      const fetchStart = Date.now();
+      response = await client.getEntries({
+        content_type: 'addOns', // Make sure this matches your Contentful content type
+      });
+      const fetchDuration = Date.now() - fetchStart;
+      
+      dataSource = 'contentful';
+      
+      // Update cache
+      addonsCache = {
+        data: response,
+        timestamp: now
+      };
+      
+      if (addonsCache) {
+        console.log('🔄 CACHE MISS: Fetched fresh addons data from Contentful');
+      } else {
+        console.log('🆕 INITIAL FETCH: Fetched addons data from Contentful');
+      }
+      console.log(`   Fetch duration: ${fetchDuration}ms`);
+      console.log(`   Total items fetched: ${response.items.length}`);
+      console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
+    }
 
     // Transform Contentful entries to our AddOn interface
     let addOns: AddOn[] = response.items.map((item) => {
@@ -122,7 +175,7 @@ export async function GET(request: NextRequest) {
     const endIndex = startIndex + limit;
     const paginatedAddOns = addOns.slice(startIndex, endIndex);
 
-    return NextResponse.json({
+    const responseData = NextResponse.json({
       items: paginatedAddOns,
       total: totalItems,
       page,
@@ -131,6 +184,23 @@ export async function GET(request: NextRequest) {
       hasNextPage: page < totalPages,
       hasPrevPage: page > 1
     });
+
+    // Add cache headers for browser caching
+    responseData.headers.set('Cache-Control', CACHE_CONTROL_HEADER);
+
+    // Log final response details
+    const totalRequestTime = Date.now() - requestStart;
+    console.log('📤 RESPONSE:');
+    console.log(`   Data source: ${dataSource.toUpperCase()}`);
+    console.log(`   Type filter: ${type || 'all'}`);
+    console.log(`   Sort by: ${sortBy}`);
+    console.log(`   Page: ${page}/${totalPages}`);
+    console.log(`   Items in response: ${paginatedAddOns.length}`);
+    console.log(`   Total matching items: ${totalItems}`);
+    console.log(`   Total request time: ${totalRequestTime}ms`);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+    return responseData;
   } catch (error) {
     console.error('Error fetching add-ons from Contentful:', error);
     return NextResponse.json(
