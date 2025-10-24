@@ -9,7 +9,7 @@ export const DEFAULT_SORT_BY = "best-selling";
 export const TAG_OPTIONS = [
   "Hollywood", "Great Gatsby", "Red Carpet", "Gala", "Glam", "Glitz and Glamour", "Old money",
   "Avant Garde", "Euphoria", "Barbie", "Coquette", "Regal", "Royalty", "Bridgerton", "Regency",
-  "Victorian", "Medieval", "Renaissance", "Baroque", "Rococo", "Vintage", "Enchanted", "Masquerade",
+  "Victorian", "Medieval", "Renaissance", "Baroque", "Roco  co", "Vintage", "Enchanted", "Masquerade",
   "Enchanted Forest and Enchanted Garden", "Garden Glamour", "Fairy and Fairytale", "Ethereal",
   "Goddess", "Fantasy", "Princess", "Alice in the wonderland", "Cottagecore", "Lantern",
   "Caraval and Carnival", "Floral", "Winter / Ice", "Spring Blossom", "Summer", "Autumn",

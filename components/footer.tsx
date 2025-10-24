@@ -22,7 +22,7 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a 
-                href="#" 
+                href="https://www.facebook.com/FairyandDreamyGowns" 
                 className="text-background/70 hover:text-background transition-colors duration-300"
                 aria-label="Facebook"
               >
@@ -31,7 +31,7 @@ export default function Footer() {
                 </svg>
               </a>
                <a 
-                 href="https://www.instagram.com/mysticalwardrobes" 
+                 href="https://www.instagram.com/mystical_wardrobes/" 
                  target="_blank"
                  rel="noopener noreferrer"
                  className="text-background/70 hover:text-background transition-colors duration-300"
@@ -75,8 +75,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/fittings" className="text-background/70 hover:text-background transition-colors duration-300">
-                  Book a Fitting
+                <Link href="/rental-terms" className="text-background/70 hover:text-background transition-colors duration-300">
+                  Rental Terms
+                </Link>
+              </li>
+              <li>
+                <Link href="/custom-made-terms" className="text-background/70 hover:text-background transition-colors duration-300">
+                  Custom Made Terms
                 </Link>
               </li>
             </ul>
@@ -87,27 +92,42 @@ export default function Footer() {
             <h4 className="font-vegawanty text-lg text-background mb-4">Collections</h4>
             <ul className="space-y-2 font-manrope">
               <li>
-                <Link href="/collections/fairy" className="text-background/70 hover:text-background transition-colors duration-300">
+                <Link href="/collections/modern-glamour" className="text-background/70 hover:text-background transition-colors duration-300">
                 Modern Glamour
                 </Link>
               </li>
               <li>
-                <Link href="/collections/disney" className="text-background/70 hover:text-background transition-colors duration-300">
+                <Link href="/collections/royal-historical-eras" className="text-background/70 hover:text-background transition-colors duration-300">
                 Royal Historical Eras
                 </Link>
               </li>
               <li>
-                <Link href="/collections/bridgerton" className="text-background/70 hover:text-background transition-colors duration-300">
+                <Link href="/collections/fairytale-fantasy" className="text-background/70 hover:text-background transition-colors duration-300">
                 Fairytale Fantasy
                 </Link>
               </li>
               <li>
-                <Link href="/collections/mystical" className="text-background/70 hover:text-background transition-colors duration-300">
+                <Link href="/collections/nature-seasonal-realms" className="text-background/70 hover:text-background transition-colors duration-300">
                 Nature Seasonal Realms
                 </Link>
               </li>
               <li>
-                <Link href="/collections/mystical" className="text-background/70 hover:text-background transition-colors duration-300">
+                <Link href="/collections/celestial-dreamlike" className="text-background/70 hover:text-background transition-colors duration-300">
+                Celestial Dreamlike
+                </Link>
+              </li>
+              <li>
+                <Link href="/collections/ocean-realm" className="text-background/70 hover:text-background transition-colors duration-300">
+                Ocean Realm
+                </Link>
+              </li>
+              <li>
+                <Link href="/collections/cultural-and-mythic-icons" className="text-background/70 hover:text-background transition-colors duration-300">
+                Cultural and Mythic Icons
+                </Link>
+              </li>
+              <li>
+                <Link href="/collections/all" className="text-background/70 hover:text-background transition-colors duration-300">
                 View All Collections
                 </Link>
               </li>
