@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { client } from '@/app/api/config';
 import { PromQueen, PromQueensResponse } from './model';
 import { 
-  REVALIDATE_TIME, 
   PROMQUEENS_CACHE_DURATION, 
   CACHE_CONTROL_HEADER,
   ContentfulEntriesResponse,
@@ -13,7 +12,8 @@ import {
 } from '@/app/api/cache-config';
 
 // Cache configuration
-export const revalidate = REVALIDATE_TIME;
+// Note: Must be a literal value for Next.js static analysis (3600 = 1 hour)
+export const revalidate = 3600;
 
 // In-memory cache for promqueens data
 let promqueensCache: CacheEntry<ContentfulEntriesResponse> | null = null;

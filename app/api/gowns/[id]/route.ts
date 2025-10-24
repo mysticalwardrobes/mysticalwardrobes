@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { client } from '@/app/api/config';
 import { Gown } from '../model';
 import { 
-  REVALIDATE_TIME, 
   CACHE_DURATION, 
   CACHE_CONTROL_HEADER,
   ContentfulEntryResponse,
@@ -13,7 +12,8 @@ import {
 } from '@/app/api/cache-config';
 
 // Cache configuration
-export const revalidate = REVALIDATE_TIME;
+// Note: Must be a literal value for Next.js static analysis (3600 = 1 hour)
+export const revalidate = 3600;
 
 // In-memory cache for individual gown entries
 const gownCache = new Map<string, CacheEntry<ContentfulEntryResponse>>();
