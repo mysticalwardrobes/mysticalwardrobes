@@ -35,9 +35,9 @@ interface GownsResponse {
 
 const sortOptions = [
   { value: "name", label: "Name A-Z" },
+  { value: "name-desc", label: "Name Z-A" },
   { value: "price-low-high", label: "Price: Low to High" },
   { value: "price-high-low", label: "Price: High to Low" },
-  { value: "collection", label: "Collection" },
 ];
 
 // Collection mapping from URL parameter to display name
