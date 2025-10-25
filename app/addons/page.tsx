@@ -167,11 +167,8 @@ export default function AddOnsPage() {
                 <div className="p-4">
                   <div className="mb-2 flex items-center justify-between">
                     <h3 className="font-vegawanty text-lg capitalize text-foreground group-hover:text-secondary transition-colors duration-200">
-                      {category.type}s
+                      {category.type}{category.type === 'gloves' ? '' : 's'}
                     </h3>
-                    <span className="rounded-full bg-secondary/10 px-2 py-1 text-xs font-medium text-secondary transition-all duration-200 group-hover:bg-secondary/20 group-hover:scale-105">
-                      {category.count} items
-                    </span>
                   </div>
                   <p className="font-manrope text-sm text-secondary/70 group-hover:text-secondary/80 transition-colors duration-200">
                     {category.description}
