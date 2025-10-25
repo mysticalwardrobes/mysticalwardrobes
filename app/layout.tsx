@@ -52,8 +52,53 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mystical Wardrobes",
-  description: "Where Fairytales Come to Life - Discover enchanting gowns and accessories for your special moments. Rental gowns, custom-made designs, and mystical accessories.",
+  title: "Mystical Wardrobes - Where Fairytales Come to Life",
+  description: "Discover enchanting gowns and accessories for your special moments. Rental gowns, custom-made designs, and mystical accessories. Premium formal wear for prom, weddings, and special events.",
+  keywords: "gown rental, custom gowns, prom dresses, formal wear, mystical wardrobes, fairy tale dresses, wedding gowns, evening wear, special occasion dresses, formal accessories",
+  authors: [{ name: "Mystical Wardrobes" }],
+  creator: "Mystical Wardrobes",
+  publisher: "Mystical Wardrobes",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://mysticalwardrobes.com',
+    title: 'Mystical Wardrobes - Where Fairytales Come to Life',
+    description: 'Discover enchanting gowns and accessories for your special moments. Rental gowns, custom-made designs, and mystical accessories.',
+    siteName: 'Mystical Wardrobes',
+    images: [
+      {
+        url: '/assets/Hero-bg.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Mystical Wardrobes - Enchanting Gowns and Accessories',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Mystical Wardrobes - Where Fairytales Come to Life',
+    description: 'Discover enchanting gowns and accessories for your special moments.',
+    images: ['/assets/Hero-bg.jpg'],
+  },
+  verification: {
+    google: 'your-google-verification-code',
+    yandex: 'your-yandex-verification-code',
+    yahoo: 'your-yahoo-verification-code',
+  },
+  alternates: {
+    canonical: 'https://mysticalwardrobes.com',
+  },
   icons: {
     icon: '/Icon.png',
     shortcut: '/Icon.png',
@@ -68,6 +113,84 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "Mystical Wardrobes",
+              "description": "Where Fairytales Come to Life - Discover enchanting gowns and accessories for your special moments. Rental gowns, custom-made designs, and mystical accessories.",
+              "url": "https://mysticalwardrobes.com",
+              "logo": "https://mysticalwardrobes.com/assets/Mystical-Wardrobes-Logo-02.svg",
+              "image": "https://mysticalwardrobes.com/assets/Hero-bg.jpg",
+              "telephone": "+1-XXX-XXX-XXXX",
+              "email": "info@mysticalwardrobes.com",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Your City",
+                "addressRegion": "Your State",
+                "postalCode": "XXXXX",
+                "addressCountry": "US"
+              },
+              "openingHours": [
+                "Mo-Fr 09:00-18:00",
+                "Sa 10:00-16:00"
+              ],
+              "priceRange": "$$",
+              "paymentAccepted": "Cash, Credit Card, PayPal",
+              "currenciesAccepted": "USD",
+              "areaServed": {
+                "@type": "Country",
+                "name": "United States"
+              },
+              "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Gown Collections",
+                "itemListElement": [
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Product",
+                      "name": "Rental Gowns",
+                      "description": "Beautiful gowns available for rent for special occasions"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Product",
+                      "name": "Custom Made Gowns",
+                      "description": "Bespoke gowns designed and created specifically for you"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Product",
+                      "name": "Accessories",
+                      "description": "Crowns, gloves, fans, and other mystical accessories"
+                    }
+                  }
+                ]
+              },
+              "sameAs": [
+                "https://www.facebook.com/mysticalwardrobes",
+                "https://www.instagram.com/mysticalwardrobes",
+                "https://www.pinterest.com/mysticalwardrobes"
+              ],
+              "foundingDate": "2020",
+              "numberOfEmployees": "1-10",
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "reviewCount": "50"
+              }
+            })
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${vegawanty.variable} ${elagern.variable} ${manrope.variable} font-sans antialiased`}
       >

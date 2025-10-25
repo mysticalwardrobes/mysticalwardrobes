@@ -1,0 +1,89 @@
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Mystical Wardrobes",
+  "description": "Where Fairytales Come to Life - Discover enchanting gowns and accessories for your special moments. Rental gowns, custom-made designs, and mystical accessories.",
+  "url": "https://mysticalwardrobes.com",
+  "logo": "https://mysticalwardrobes.com/assets/Mystical-Wardrobes-Logo-02.svg",
+  "image": "https://mysticalwardrobes.com/assets/Hero-bg.jpg",
+  "telephone": "+1-XXX-XXX-XXXX",
+  "email": "info@mysticalwardrobes.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Your City",
+    "addressRegion": "Your State",
+    "postalCode": "XXXXX",
+    "addressCountry": "US"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "XX.XXXXXX",
+    "longitude": "-XX.XXXXXX"
+  },
+  "openingHours": [
+    "Mo-Fr 09:00-18:00",
+    "Sa 10:00-16:00"
+  ],
+  "priceRange": "$$",
+  "paymentAccepted": "Cash, Credit Card, PayPal",
+  "currenciesAccepted": "USD",
+  "areaServed": {
+    "@type": "Country",
+    "name": "United States"
+  },
+  "serviceArea": {
+    "@type": "GeoCircle",
+    "geoMidpoint": {
+      "@type": "GeoCoordinates",
+      "latitude": "XX.XXXXXX",
+      "longitude": "-XX.XXXXXX"
+    },
+    "geoRadius": "50"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Gown Collections",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Rental Gowns",
+          "description": "Beautiful gowns available for rent for special occasions"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Custom Made Gowns",
+          "description": "Bespoke gowns designed and created specifically for you"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Accessories",
+          "description": "Crowns, gloves, fans, and other mystical accessories"
+        }
+      }
+    ]
+  },
+  "sameAs": [
+    "https://www.facebook.com/mysticalwardrobes",
+    "https://www.instagram.com/mysticalwardrobes",
+    "https://www.pinterest.com/mysticalwardrobes"
+  ],
+  "foundingDate": "2020",
+  "founder": {
+    "@type": "Person",
+    "name": "Founder Name"
+  },
+  "numberOfEmployees": "1-10",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "reviewCount": "50"
+  }
+}

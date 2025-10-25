@@ -1,0 +1,55 @@
+# Robots.txt for Mystical Wardrobes
+# https://mysticalwardrobes.com
+
+User-agent: *
+Allow: /
+
+# Allow all search engines to crawl main pages
+Allow: /collections/
+Allow: /gown/
+Allow: /addons/
+Allow: /promqueens/
+Allow: /faqs/
+Allow: /custom-made-terms/
+Allow: /rental-terms/
+
+# Block admin and API routes
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+
+# Block development and build files
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /.env
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /tsconfig.json
+Disallow: /next.config.ts
+
+# Block temporary and cache files
+Disallow: /tmp/
+Disallow: /cache/
+Disallow: /.cache/
+
+# Block specific file types that don't need indexing
+Disallow: /*.pdf$
+Disallow: /*.txt$
+Disallow: /*.csv$
+
+# Allow important static assets
+Allow: /assets/
+Allow: /fonts/
+Allow: /Icon.png
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.svg$
+Allow: /*.webp$
+
+# Sitemap location
+Sitemap: https://mysticalwardrobes.com/sitemap.xml
+
+# Crawl delay (optional - helps prevent overloading your server)
+Crawl-delay: 1
