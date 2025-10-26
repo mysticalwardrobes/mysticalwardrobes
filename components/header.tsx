@@ -102,6 +102,13 @@ export default function Header() {
               >
                 Add Ons
               </Link>
+              <Link 
+                href="/custom-made-gowns" 
+                className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
+                onClick={() => setIsGownsDropdownOpen(false)}
+              >
+                Custom Made Gowns
+              </Link>
             </div>
           </div>
 
@@ -223,6 +230,16 @@ export default function Header() {
                   }}
                 >
                   Add Ons
+                </Link>
+                <Link 
+                  href="/custom-made-gowns" 
+                  className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"
+                  onClick={() => {
+                    setIsGownsDropdownOpen(false);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  Custom Made Gowns
                 </Link>
               </div>
             </div>

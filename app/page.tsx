@@ -576,7 +576,7 @@ function Collections() {
           <a
             className="row-span-1 h-72 md:h-full col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover bg-top transition-transform duration-300 hover:scale-105"
             style={{ backgroundImage: `linear-gradient(to top, #636653, transparent), url(${premium.src})` }}
-            href="/collections"
+            href="/custom-made-gowns"
           >
             Custom Made Gowns
           </a>
@@ -657,14 +657,6 @@ function Collections() {
                     <h3 className="font-manrope text-base md:text-lg text-foreground font-light">
                       {collection.name}
                     </h3>
-                    <svg 
-                      className="w-5 h-5 text-foreground transition-transform group-hover:translate-x-1 flex-shrink-0 ml-2" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
                   </div>
                 </Link>
               );

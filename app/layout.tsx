@@ -92,9 +92,8 @@ export const metadata: Metadata = {
     images: ['/assets/Hero-bg.jpg'],
   },
   verification: {
-    google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
-    yahoo: 'your-yahoo-verification-code',
+    google: 'x5fGpv6CrB1REo_zH1VEn1uWid6MVNtWmdjwkN-10Es',
+    yandex: '4eb797e089586d4e',
   },
   alternates: {
     canonical: 'https://mysticalwardrobes.com',

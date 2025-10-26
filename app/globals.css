@@ -48,6 +48,21 @@ body {
   }
 }
 
+/* Line clamp utilities */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-none {
+  display: block;
+  -webkit-line-clamp: none;
+  -webkit-box-orient: horizontal;
+  overflow: visible;
+}
+
 @keyframes slide-in-left {
   from {
     opacity: 0;
