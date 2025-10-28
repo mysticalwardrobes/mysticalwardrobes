@@ -71,6 +71,7 @@ export async function GET(request: Request) {
   
   const response = await client.getEntries({
     content_type: 'reviews',
+    limit: 1000, // Maximum allowed by Contentful API to fetch all items
   })
 
   let items: Review[] = response.items.map((item) => {
