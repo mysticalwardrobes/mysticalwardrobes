@@ -112,8 +112,8 @@ export default function Header() {
             </div>
           </div>
 
-          <Link href="/promqueens" className="relative group transition-colors duration-300 hover:text-foreground-darker">
-            Prom Queens
+          <Link href="/portfolio" className="relative group transition-colors duration-300 hover:text-foreground-darker">
+            Portfolio
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
           <Link href="/about" className="relative group transition-colors duration-300 hover:text-foreground-darker">
@@ -246,12 +246,12 @@ export default function Header() {
           </div>
 
           <Link 
-            href="/promqueens" 
+            href="/portfolio" 
             className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
             style={{ animationDelay: isMobileMenuOpen ? '0.3s' : '0s' }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Prom Queens
+            Portfolio
           </Link>
           <Link 
             href="/about" 
