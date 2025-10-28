@@ -116,10 +116,6 @@ export default function Header() {
             Portfolio
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
-          <Link href="/about" className="relative group transition-colors duration-300 hover:text-foreground-darker">
-            About
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
-          </Link>
           <Link href="/contact" className="relative group transition-colors duration-300 hover:text-foreground-darker">
             Contact
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
@@ -254,24 +250,16 @@ export default function Header() {
             Portfolio
           </Link>
           <Link 
-            href="/about" 
-            className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
-            style={{ animationDelay: isMobileMenuOpen ? '0.4s' : '0s' }}
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            About
-          </Link>
-          <Link 
             href="/contact" 
             className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
-            style={{ animationDelay: isMobileMenuOpen ? '0.5s' : '0s' }}
+            style={{ animationDelay: isMobileMenuOpen ? '0.4s' : '0s' }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Contact
           </Link>
           
           {/* FAQs & Guides Mobile Dropdown */}
-          <div style={{ animationDelay: isMobileMenuOpen ? '0.6s' : '0s' }}>
+          <div style={{ animationDelay: isMobileMenuOpen ? '0.5s' : '0s' }}>
             <button
               onClick={toggleFaqsDropdown}
               className="w-full text-left py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2 flex items-center justify-between text-foreground"
