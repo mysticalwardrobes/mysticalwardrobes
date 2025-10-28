@@ -15,13 +15,13 @@ import { client } from './config';
  * Server-side in-memory cache duration for gowns and addons (5 minutes)
  * After this time, data will be refetched from Contentful
  */
-export const CACHE_DURATION = 120 * 60 * 1000; // 5 minutes in milliseconds
+export const CACHE_DURATION = 80 * 60 * 1000; // 5 minutes in milliseconds
 
 /**
  * Server-side in-memory cache duration for promqueens (15 minutes)
  * Longer duration since promqueens data changes less frequently
  */
-export const PROMQUEENS_CACHE_DURATION = 120 * 60 * 1000; // 1 hour in milliseconds
+export const PROMQUEENS_CACHE_DURATION = 80 * 60 * 1000; // 1 hour in milliseconds
 
 /**
  * Server-side in-memory cache duration for custom made gowns (30 minutes)
