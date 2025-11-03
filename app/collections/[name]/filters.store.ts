@@ -2,7 +2,7 @@ import { atom } from "jotai";
 
 export type PriceRange = [number, number];
 
-export const DEFAULT_PRICE_RANGE: PriceRange = [0, 4000];
+export const DEFAULT_PRICE_RANGE: PriceRange = [0, 15000];
 export const DEFAULT_SORT_BY = "best-selling";
 
 // Filter options from Contentful gown content type

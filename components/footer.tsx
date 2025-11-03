@@ -3,8 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/public/assets/Mystical Wardrobes Logo-02 White.svg";
+import { getSpecificCollections } from "@/app/config/collections";
 
 export default function Footer() {
+  const collections = getSpecificCollections();
   return (
     <footer className="bg-secondary text-background">
       <div className="container mx-auto px-12 py-12">
@@ -91,44 +93,19 @@ export default function Footer() {
           <div>
             <h4 className="font-vegawanty text-lg text-background mb-4">Collections</h4>
             <ul className="space-y-2 font-manrope">
-              <li>
-                <Link href="/collections/modern-glamour" className="text-background/70 hover:text-background transition-colors duration-300">
-                Modern Glamour
-                </Link>
-              </li>
-              <li>
-                <Link href="/collections/royal-historical-eras" className="text-background/70 hover:text-background transition-colors duration-300">
-                Royal Historical Eras
-                </Link>
-              </li>
-              <li>
-                <Link href="/collections/fairytale-fantasy" className="text-background/70 hover:text-background transition-colors duration-300">
-                Fairytale Fantasy
-                </Link>
-              </li>
-              <li>
-                <Link href="/collections/nature-seasonal-realms" className="text-background/70 hover:text-background transition-colors duration-300">
-                Nature Seasonal Realms
-                </Link>
-              </li>
-              <li>
-                <Link href="/collections/celestial-dreamlike" className="text-background/70 hover:text-background transition-colors duration-300">
-                Celestial Dreamlike
-                </Link>
-              </li>
-              <li>
-                <Link href="/collections/ocean-realm" className="text-background/70 hover:text-background transition-colors duration-300">
-                Ocean Realm
-                </Link>
-              </li>
-              <li>
-                <Link href="/collections/cultural-and-mythic-icons" className="text-background/70 hover:text-background transition-colors duration-300">
-                Cultural and Mythic Icons
-                </Link>
-              </li>
+              {collections.map((collection) => (
+                <li key={collection.slug}>
+                  <Link 
+                    href={`/collections/${collection.slug}`} 
+                    className="text-background/70 hover:text-background transition-colors duration-300"
+                  >
+                    {collection.name}
+                  </Link>
+                </li>
+              ))}
               <li>
                 <Link href="/collections/all" className="text-background/70 hover:text-background transition-colors duration-300">
-                View All Collections
+                  View All Collections
                 </Link>
               </li>
             </ul>

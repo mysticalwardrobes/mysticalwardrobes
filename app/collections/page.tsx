@@ -5,65 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import CollectionsSkeleton from "@/components/CollectionsSkeleton";
-
-interface Collection {
-  name: string;
-  description: string;
-  slug: string;
-  image: string;
-}
-
-// Collection data from your CSV
-const collections: Collection[] = [
-  {
-    name: "All Collections",
-    slug: "all",
-    description: "Explore our complete range of gowns across all collections. From modern glamour to fairytale fantasy, discover the perfect gown for your magical moment from our entire catalog.",
-    image: "/assets/collections/all-collections.jpg"
-  },
-  {
-    name: "Modern Glamour",
-    slug: "modern-glamour",
-    description: "Where elegance meets bold sophistication. Inspired by red-carpet icons and luxurious soirées, these gowns capture modern beauty, confidence, and shine. Ideal for fashion-forward events and evening galas.",
-    image: "/assets/collections/modern-glamour.jpg"
-  },
-  {
-    name: "Royal Historical Eras",
-    slug: "royal-historical-eras",
-    description: "A tribute to timeless grandeur and aristocratic charm. Inspired by the grand eras that shaped timeless couture—from the opulence of Rococo and Baroque courts to the refined grace of Victorian and Regency society.",
-    image: "/assets/collections/royal-historical.jpg"
-  },
-  {
-    name: "Fairytale Fantasy",
-    slug: "fairytale-fantasy",
-    description: "Where imagination and magic come alive. Romantic, whimsical, and full of wonder, these gowns bring stories to life—woven from dreams, enchantment, and pure fairytale.",
-    image: "/assets/collections/fairytale-fantasy.jpg"
-  },
-  {
-    name: "Nature Seasonal Realms",
-    slug: "nature-seasonal-realms",
-    description: "A reflection of nature's elegance and ever-changing beauty. From the frost of winter to the bloom of spring, this collection is inspired by the seasons' colors, moods, and harmony.",
-    image: "/assets/collections/nature-seasonal.jpg"
-  },
-  {
-    name: "Celestial Dreamlike",
-    slug: "celestial-dreamlike",
-    description: "For those who shine among the stars. Radiant and ethereal, these gowns are inspired by the cosmos—by moonlight, galaxies, and the divine heavens.",
-    image: "/assets/collections/celestial-dreamlike.jpg"
-  },
-  {
-    name: "Ocean Realm",
-    slug: "ocean-realm",
-    description: "Born from the depths of legend and the beauty of the sea. This collection embodies the mystery of sirens and the grace of ocean goddesses—where every gown mirrors the rhythm of the waves.",
-    image: "/assets/collections/ocean-realm.jpg"
-  },
-  {
-    name: "Cultural and Mythic Icons",
-    slug: "cultural-and-mythic-icons",
-    description: "These gowns pay homage to mythological figures, beloved characters, and cultural masterpieces. Each creation reimagines legends through fashion—blending tradition and fantasy into couture.",
-    image: "/assets/collections/cultural-mythic.jpg"
-  }
-];
+import { collections } from "@/app/config/collections";
 
 // Fallback images for collections that don't have specific images yet
 const fallbackImages = [

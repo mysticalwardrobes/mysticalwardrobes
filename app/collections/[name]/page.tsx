@@ -21,6 +21,7 @@ import {
 import { Gown } from "@/app/api/gowns/model";
 import { useEffect, useState } from "react";
 import React from "react";
+import { getCollectionDisplayName, getCollectionDescription } from "@/app/config/collections";
 
 
 interface GownsResponse {
@@ -39,39 +40,6 @@ const sortOptions = [
   { value: "price-low-high", label: "Price: Low to High" },
   { value: "price-high-low", label: "Price: High to Low" },
 ];
-
-// Collection mapping from URL parameter to display name
-const collectionMapping: Record<string, string> = {
-  'modern-glamour': 'Modern Glamour',
-  'royal-historical-eras': 'Royal Historical Eras',
-  'fairytale-fantasy': 'Fairytale Fantasy',
-  'nature-seasonal-realms': 'Nature Seasonal Realms',
-  'celestial-dreamlike': 'Celestial Dreamlike',
-  'ocean-realm': 'Ocean Realm',
-  'cultural-and-mythic-icons': 'Cultural and Mythic Icons',
-  'all': 'All Gowns'
-};
-
-// Collection descriptions mapping
-const collectionDescriptions: Record<string, string> = {
-  'Modern Glamour': 'Where elegance meets bold sophistication. Inspired by red-carpet icons and luxurious soirées, these gowns capture modern beauty, confidence, and shine. Ideal for fashion-forward events and evening galas.',
-  'Royal Historical Eras': 'A tribute to timeless grandeur and aristocratic charm. Inspired by the grand eras that shaped timeless couture—from the opulence of Rococo and Baroque courts to the refined grace of Victorian and Regency society. Each gown reimagines the artistry of the past through corseted silhouettes, intricate details, and lavish fabrics—capturing the romance and nobility of queens, empresses, and heroines from history.',
-  'Fairytale Fantasy': 'Where imagination and magic come alive. Romantic, whimsical, and full of wonder, these gowns bring stories to life—woven from dreams, enchantment, and pure fairytale. Designed for dreamers and believers, every piece captures the feeling of stepping into your own fantasy moment.',
-  'Nature Seasonal Realms': 'A reflection of nature\'s elegance and ever-changing beauty. From the frost of winter to the bloom of spring, this collection is inspired by the seasons\' colors, moods, and harmony. Each gown embodies the softness and vitality of the natural world, creating an organic grace that feels timeless and serene.',
-  'Celestial Dreamlike': 'For those who shine among the stars. Radiant and ethereal, these gowns are inspired by the cosmos—by moonlight, galaxies, and the divine heavens. Flowing fabrics and shimmering tones mirror the night sky, turning every wearer into a celestial vision of grace and light.',
-  'Ocean Realm': 'Born from the depths of legend and the beauty of the sea. This collection embodies the mystery of sirens and the grace of ocean goddesses—where every gown mirrors the rhythm of the waves and the glow of moonlit waters. Designed for those who find strength in serenity, it captures the calm, allure, and eternal magic of the sea.',
-  'Cultural and Mythic Icons': 'These gowns pay homage to mythological figures, beloved characters, and cultural masterpieces. Each creation reimagines legends through fashion—blending tradition and fantasy into couture that transcends eras and cultures alike.'
-};
-
-// Function to get display name from URL parameter
-const getCollectionDisplayName = (urlParam: string): string => {
-  return collectionMapping[urlParam] || urlParam;
-};
-
-// Function to get collection description
-const getCollectionDescription = (displayName: string): string => {
-  return collectionDescriptions[displayName] || 'Prom, Junior-Senior Balls, Graduation ball, Masquerade ball and Public Balls';
-};
 
 interface FilterCheckboxGroupProps {
   title: string;
@@ -192,6 +160,7 @@ function SearchableFilterGroup({
 }
 
 function FiltersPanel() {
+  // Global state from atoms
   const [priceRange, setPriceRange] = useAtom(priceRangeAtom);
   const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
   const [selectedColors, setSelectedColors] = useAtom(selectedColorsAtom);
@@ -200,19 +169,70 @@ function FiltersPanel() {
   const [tagsSearch, setTagsSearch] = useAtom(tagsSearchAtom);
   const [colorsSearch, setColorsSearch] = useAtom(colorsSearchAtom);
 
+  // Local state for temporary filter values
+  const [localPriceRange, setLocalPriceRange] = useState(priceRange);
+  const [localSelectedTags, setLocalSelectedTags] = useState(selectedTags);
+  const [localSelectedColors, setLocalSelectedColors] = useState(selectedColors);
+  const [localSelectedBestFor, setLocalSelectedBestFor] = useState(selectedBestFor);
+  const [localSelectedSkirtStyles, setLocalSelectedSkirtStyles] = useState(selectedSkirtStyles);
+
+  // Sync local state when global state changes (e.g., when cleared)
+  useEffect(() => {
+    setLocalPriceRange(priceRange);
+    setLocalSelectedTags(selectedTags);
+    setLocalSelectedColors(selectedColors);
+    setLocalSelectedBestFor(selectedBestFor);
+    setLocalSelectedSkirtStyles(selectedSkirtStyles);
+  }, [priceRange, selectedTags, selectedColors, selectedBestFor, selectedSkirtStyles]);
+
   const handleMinChange = (value: number) => {
-    setPriceRange(([, max]) => {
+    setLocalPriceRange(([, max]) => {
       const clampedValue = Math.max(0, Math.min(value, max));
       return [clampedValue, max];
     });
   };
 
   const handleMaxChange = (value: number) => {
-    setPriceRange(([min]) => {
-      const clampedValue = Math.min(4000, Math.max(value, min));
+    setLocalPriceRange(([min]) => {
+      const clampedValue = Math.min(15000, Math.max(value, min));
       return [min, clampedValue];
     });
   };
+
+  const handleApplyFilters = () => {
+    setPriceRange(localPriceRange);
+    setSelectedTags(localSelectedTags);
+    setSelectedColors(localSelectedColors);
+    setSelectedBestFor(localSelectedBestFor);
+    setSelectedSkirtStyles(localSelectedSkirtStyles);
+  };
+
+  const handleClearFilters = () => {
+    const defaultPriceRange: [number, number] = [0, 15000];
+    setLocalPriceRange(defaultPriceRange);
+    setLocalSelectedTags([]);
+    setLocalSelectedColors([]);
+    setLocalSelectedBestFor([]);
+    setLocalSelectedSkirtStyles([]);
+    setTagsSearch('');
+    setColorsSearch('');
+    
+    // Also update global state immediately for clear
+    setPriceRange(defaultPriceRange);
+    setSelectedTags([]);
+    setSelectedColors([]);
+    setSelectedBestFor([]);
+    setSelectedSkirtStyles([]);
+  };
+
+  // Check if there are any active filters
+  const hasActiveFilters = 
+    localPriceRange[0] > 0 || 
+    localPriceRange[1] < 15000 || 
+    localSelectedTags.length > 0 || 
+    localSelectedColors.length > 0 || 
+    localSelectedBestFor.length > 0 || 
+    localSelectedSkirtStyles.length > 0;
 
   return (
     <div className="space-y-6 text-secondary">
@@ -227,9 +247,9 @@ function FiltersPanel() {
               aria-label="Minimum price"
               type="range"
               min={0}
-              max={4000}
+              max={15000}
               step={100}
-              value={priceRange[0]}
+              value={localPriceRange[0]}
               onChange={(event) => handleMinChange(Number(event.target.value))}
               className="accent-secondary transition-all duration-200 hover:accent-secondary/80"
             />
@@ -237,9 +257,9 @@ function FiltersPanel() {
               aria-label="Maximum price"
               type="range"
               min={0}
-              max={4000}
+              max={15000}
               step={100}
-              value={priceRange[1]}
+              value={localPriceRange[1]}
               onChange={(event) => handleMaxChange(Number(event.target.value))}
               className="accent-secondary transition-all duration-200 hover:accent-secondary/80"
             />
@@ -249,8 +269,8 @@ function FiltersPanel() {
               type="number"
               inputMode="numeric"
               min={0}
-              max={4000}
-              value={priceRange[0]}
+              max={15000}
+              value={localPriceRange[0]}
               onChange={(event) => handleMinChange(Number(event.target.value))}
               className="w-full rounded border border-secondary/30 bg-white px-3 py-2 text-sm focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50"
             />
@@ -259,8 +279,8 @@ function FiltersPanel() {
               type="number"
               inputMode="numeric"
               min={0}
-              max={4000}
-              value={priceRange[1]}
+              max={15000}
+              value={localPriceRange[1]}
               onChange={(event) => handleMaxChange(Number(event.target.value))}
               className="w-full rounded border border-secondary/30 bg-white px-3 py-2 text-sm focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50"
             />
@@ -272,8 +292,8 @@ function FiltersPanel() {
         <FilterCheckboxGroup 
           title="Best For" 
           options={BEST_FOR_OPTIONS}
-          selectedValues={selectedBestFor}
-          onSelectionChange={setSelectedBestFor}
+          selectedValues={localSelectedBestFor}
+          onSelectionChange={setLocalSelectedBestFor}
         />
       </div>
       
@@ -281,8 +301,8 @@ function FiltersPanel() {
         <FilterCheckboxGroup 
           title="Skirt Style" 
           options={SKIRT_STYLE_OPTIONS}
-          selectedValues={selectedSkirtStyles}
-          onSelectionChange={setSelectedSkirtStyles}
+          selectedValues={localSelectedSkirtStyles}
+          onSelectionChange={setLocalSelectedSkirtStyles}
         />
       </div>
 
@@ -290,8 +310,8 @@ function FiltersPanel() {
         <SearchableFilterGroup 
           title="Color" 
           options={COLOR_OPTIONS}
-          selectedValues={selectedColors}
-          onSelectionChange={setSelectedColors}
+          selectedValues={localSelectedColors}
+          onSelectionChange={setLocalSelectedColors}
           searchValue={colorsSearch}
           onSearchChange={setColorsSearch}
         />
@@ -301,11 +321,29 @@ function FiltersPanel() {
         <SearchableFilterGroup 
           title="Tags" 
           options={TAG_OPTIONS}
-          selectedValues={selectedTags}
-          onSelectionChange={setSelectedTags}
+          selectedValues={localSelectedTags}
+          onSelectionChange={setLocalSelectedTags}
           searchValue={tagsSearch}
           onSearchChange={setTagsSearch}
         />
+      </div>
+
+      {/* Apply and Clear Buttons */}
+      <div className="flex flex-col gap-2 pt-4 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+        <button
+          onClick={handleApplyFilters}
+          className="w-full rounded-lg bg-secondary px-4 py-3 font-manrope text-sm font-semibold uppercase tracking-wider text-white transition-all duration-200 hover:bg-secondary/90 hover:scale-105 hover:shadow-md active:scale-100"
+        >
+          Apply Filters
+        </button>
+        {hasActiveFilters && (
+          <button
+            onClick={handleClearFilters}
+            className="w-full rounded-lg border border-secondary/30 px-4 py-2 font-manrope text-xs font-medium uppercase tracking-wider text-secondary transition-all duration-200 hover:border-secondary hover:bg-secondary/5 hover:scale-105 active:scale-100"
+          >
+            Clear All
+          </button>
+        )}
       </div>
     </div>
   );
@@ -348,7 +386,7 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
       if (priceRange[0] > 0) {
         searchParams.set('minPrice', priceRange[0].toString());
       }
-      if (priceRange[1] < 4000) {
+      if (priceRange[1] < 15000) {
         searchParams.set('maxPrice', priceRange[1].toString());
       }
       
