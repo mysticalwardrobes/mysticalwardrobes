@@ -578,34 +578,29 @@ function  Collections() {
               msOverflowStyle: 'none' 
             }}
           >
-            {collections.map((collection) => {
-              // Use fallback image if needed
-              const imageSrc = collection.image;
-              
-              return (
-                <Link
-                  key={collection.slug}
-                  href={`/collections/${collection.slug}`}
-                  className="group flex-shrink-0 w-48 md:w-56 snap-center"
-                  style={{ scrollSnapAlign: 'center' }}
-                >
-                  <div className="relative aspect-[3/4] w-full overflow-hidden bg-neutral-100 transition-transform duration-300 group-hover:scale-[1.02]">
-                    <Image
-                      src={imageSrc}
-                      alt={collection.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 192px, 224px"
-                    />
-                  </div>
-                  <div className="mt-3 flex items-center justify-between">
-                    <h3 className="font-manrope text-base md:text-lg text-foreground font-light">
-                      {collection.name}
-                    </h3>
-                  </div>
-                </Link>
-              );
-            })}
+            {collections.map((collection) => (
+              <Link
+                key={collection.slug}
+                href={`/collections/${collection.slug}`}
+                className="group flex-shrink-0 w-48 md:w-56 snap-center"
+                style={{ scrollSnapAlign: 'center' }}
+              >
+                <div className="relative aspect-[3/4] w-full overflow-hidden bg-neutral-100 transition-transform duration-300 group-hover:scale-[1.02]">
+                  <Image
+                    src={collection.image}
+                    alt={collection.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 192px, 224px"
+                  />
+                </div>
+                <div className="mt-3 flex items-center justify-between">
+                  <h3 className="font-manrope text-base md:text-lg text-foreground font-light">
+                    {collection.name}
+                  </h3>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>

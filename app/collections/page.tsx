@@ -53,10 +53,7 @@ export default function CollectionsPage() {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {collections.map((collection, index) => {
             // Use fallback image if collection image doesn't exist
-            const imageSrc = collection.image.startsWith('/assets/collections/') && 
-              !collection.image.includes('Premium.png') 
-              ? fallbackImages[index % fallbackImages.length]
-              : collection.image;
+            const imageSrc = collection.image;
 
             return (
               <motion.div
@@ -69,7 +66,7 @@ export default function CollectionsPage() {
                   href={`/collections/${collection.slug}`}
                   className="group flex flex-col h-full overflow-hidden rounded-sm bg-white shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-[2/3] overflow-hidden">
                     <Image
                       src={imageSrc}
                       alt={collection.name}
