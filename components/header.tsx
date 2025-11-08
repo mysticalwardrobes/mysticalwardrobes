@@ -71,7 +71,7 @@ export default function Header() {
               onClick={toggleGownsDropdown}
               className="relative transition-colors duration-300 hover:text-foreground-darker flex items-center gap-1"
             >
-              Gowns
+              Collections
               <svg 
                 className={`w-4 h-4 transition-transform duration-300 ${isGownsDropdownOpen ? 'rotate-180' : ''}`}
                 fill="none" 
@@ -93,7 +93,7 @@ export default function Header() {
                 className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
                 onClick={() => setIsGownsDropdownOpen(false)}
               >
-                Collections
+                Gowns
               </Link>
               <Link 
                 href="/addons" 
@@ -190,7 +190,7 @@ export default function Header() {
               onClick={toggleGownsDropdown}
               className="w-full text-left py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2 flex items-center justify-between text-foreground"
             >
-              Gowns
+              Collections
               <svg 
                 className={`w-4 h-4 transition-transform duration-300 ${isGownsDropdownOpen ? 'rotate-180' : ''}`}
                 fill="none" 
@@ -215,7 +215,7 @@ export default function Header() {
                     setIsMobileMenuOpen(false);
                   }}
                 >
-                  Collections
+                  Gowns
                 </Link>
                 <Link 
                   href="/addons" 

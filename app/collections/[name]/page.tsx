@@ -3,6 +3,7 @@
 import { useAtom } from "jotai";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { 
   filterDrawerAtom, 
   priceRangeAtom, 
@@ -357,10 +358,12 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useAtom(filterDrawerAtom);
   const [sortBy, setSortBy] = useAtom(sortByAtom);
   const [priceRange] = useAtom(priceRangeAtom);
-  const [selectedTags] = useAtom(selectedTagsAtom);
-  const [selectedColors] = useAtom(selectedColorsAtom);
-  const [selectedBestFor] = useAtom(selectedBestForAtom);
-  const [selectedSkirtStyles] = useAtom(selectedSkirtStylesAtom);
+  const [selectedTags, setSelectedTags] = useAtom(selectedTagsAtom);
+  const [selectedColors, setSelectedColors] = useAtom(selectedColorsAtom);
+  const [selectedBestFor, setSelectedBestFor] = useAtom(selectedBestForAtom);
+  const [selectedSkirtStyles, setSelectedSkirtStyles] = useAtom(selectedSkirtStylesAtom);
+  const searchParams = useSearchParams();
+  const serializedParams = searchParams.toString();
   
   const [gowns, setGowns] = useState<Gown[]>([]);
   const [loading, setLoading] = useState(true);
@@ -466,6 +469,18 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
   useEffect(() => {
     fetchGowns();
   }, [name, displayName, sortBy, priceRange, selectedTags, selectedColors, selectedBestFor, selectedSkirtStyles, currentPage]);
+
+  useEffect(() => {
+    const tagParams = searchParams.getAll('tags');
+    const colorParams = searchParams.getAll('colors');
+    const bestForParams = searchParams.getAll('bestFor');
+    const skirtStyleParams = searchParams.getAll('skirtStyles');
+
+    setSelectedTags(tagParams);
+    setSelectedColors(colorParams);
+    setSelectedBestFor(bestForParams);
+    setSelectedSkirtStyles(skirtStyleParams);
+  }, [serializedParams, setSelectedTags, setSelectedColors, setSelectedBestFor, setSelectedSkirtStyles]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
