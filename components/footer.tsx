@@ -8,7 +8,7 @@ import { getSpecificCollections } from "@/app/config/collections";
 export default function Footer() {
   const collections = getSpecificCollections();
   return (
-    <footer className="bg-secondary text-background">
+    <footer className="bg-tertiary text-background">
       <div className="container mx-auto px-12 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
@@ -18,13 +18,18 @@ export default function Footer() {
               <Image className="w-8 h-8" src={Logo} alt="Mystical Logo"/>
               <h3 className="font-vegawanty text-2xl text-background">Mystical Wardrobes</h3>
             </div>
-            <p className="font-manrope text-background/80 mb-4 max-w-md">
+            <p className="font-manrope text-background/80 mb-2max-w-md">
               Where fairytales come to life. We create enchanting gowns that blend fantasy with elegance, 
               crafting unique pieces that inspire your imagination and elevate your wardrobe.
+              
             </p>
+            <p className="font-manrope text-background/60 mb-4 max-w-md">
+            Note: Please message us for booking appointment
+            </p>
+            
             <div className="flex space-x-4">
               <a 
-                href="https://www.facebook.com/FairyandDreamyGowns" 
+                href="https://www.facebook.com/MysticalWardrobes/" 
                 className="text-background/70 hover:text-background transition-colors duration-300"
                 aria-label="Facebook"
               >
@@ -33,7 +38,7 @@ export default function Footer() {
                 </svg>
               </a>
                <a 
-                 href="https://www.instagram.com/mystical_wardrobes/" 
+                 href="https://www.instagram.com/mysticalwardrobes" 
                  target="_blank"
                  rel="noopener noreferrer"
                  className="text-background/70 hover:text-background transition-colors duration-300"
@@ -122,7 +127,7 @@ export default function Footer() {
               </svg>
               <div>
                 <p className="font-manrope text-sm text-background/70">Visit Our Studio</p>
-                <p className="font-manrope text-background">Hulong Duhat, Malabon City</p>
+                <p className="font-manrope text-background">Malabon City, Metro Manila</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
@@ -140,7 +145,7 @@ export default function Footer() {
               </svg>
               <div>
                 <p className="font-manrope text-sm text-background/70">Email Us</p>
-                <p className="font-manrope text-background">mysticalwardrobes07@gmail.com</p>
+                <p className="font-manrope text-background">mysticalwardrobes01@gmail.com</p>
               </div>
             </div>
           </div>
@@ -150,7 +155,7 @@ export default function Footer() {
         <div className="border-t border-background/20 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="font-manrope text-sm text-background/70">
-              © 2021 Mystical Wardrobes. All rights reserved.
+              © 2025 Mystical Wardrobes. All rights reserved.
             </p>
             <div className="flex space-x-6">
               <Link href="/privacy" className="font-manrope text-sm text-background/70 hover:text-background transition-colors duration-300">

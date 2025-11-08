@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { collections, type Collection } from "@/app/config/collections";
 import { featuredGownIds } from "@/app/config/featured";
+import VotingEvent from "@/components/voting/VotingEvent";
 
 // Helper function to chunk array
 const chunkArray = <T,>(arr: T[], size: number): T[][] => {
@@ -52,9 +53,14 @@ export default function Home() {
       <FadeInOnScroll delay={0.1} className="w-full h-fit bg-background">
         <Collections />
       </FadeInOnScroll>
+      <FadeInOnScroll delay={0.2} className="w-full h-fit bg-background">
         <Featured />
+      </FadeInOnScroll>
       <FadeInOnScroll delay={0.2} className="w-full h-fit bg-background">
         <ReviewsSection />
+      </FadeInOnScroll>
+      <FadeInOnScroll delay={0.2} className="w-full h-fit bg-background">
+        <VotingEvent />
       </FadeInOnScroll>
       
     </div>
@@ -638,8 +644,8 @@ function Featured() {
         
         // Filter to only include gowns with IDs in featuredGownIds, maintaining the order
         const featured = featuredGownIds
-          .map(id => allGowns.find((gown: Gown) => gown.id === id))
-          .filter((gown): gown is Gown => gown !== undefined);
+          .map((id: string) => allGowns.find((gown: Gown) => gown.id === id))
+          .filter((gown: Gown | undefined): gown is Gown => gown !== undefined);
         
         setFeaturedGowns(featured);
       } catch (err) {
