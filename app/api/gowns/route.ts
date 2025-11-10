@@ -130,6 +130,7 @@ export async function GET(request: NextRequest) {
       response = await client.getEntries({
         content_type: 'gown',
         include: 10, // Include linked assets (images)
+        limit: 1000, // Maximum allowed by Contentful API to fetch all items
       });
       const fetchDuration = Date.now() - fetchStart;
       

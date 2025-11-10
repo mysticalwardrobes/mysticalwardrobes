@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 import { Gown } from "@/app/api/gowns/model";
 import { AddOn } from "@/app/api/addons/model";
+import { collections as collectionConfig } from "@/app/config/collections";
 import React from "react";
 import { div } from "framer-motion/client";
 
@@ -13,6 +14,20 @@ type Props = {
 };
 
 type LocationKey = "METRO_MANILA" | "LUZON" | "OUTSIDE_LUZON";
+const TAG_PREVIEW_LIMIT = 4;
+const RENTAL_TIMELINES: { key: LocationKey; title: string; duration: string }[] = [
+  { key: "METRO_MANILA", title: "Metro Manila & Greater Metro Manila", duration: "3 days" },
+  { key: "LUZON", title: "Luzon (Outside Metro Manila)", duration: "6-9 days" },
+  { key: "OUTSIDE_LUZON", title: "Outside Luzon & Luzon Islands", duration: "15-16 days" },
+];
+
+const getCollectionSlugFromName = (name: string) => {
+  const match = collectionConfig.find(
+    (collection) => collection.name.toLowerCase() === name.toLowerCase()
+  );
+  if (match) return match.slug;
+  return encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"));
+};
 
 export default function GownPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
@@ -25,6 +40,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedImageType, setSelectedImageType] = useState<'longGown' | 'filipiniana' | 'pixie' | 'train'>('longGown');
   const [selectedSizeOption, setSelectedSizeOption] = useState(0);
+  const [showAllTags, setShowAllTags] = useState(false);
 
   useEffect(() => {
     const fetchGown = async () => {
@@ -74,6 +90,23 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
     if (location === "LUZON") return gown.luzonRate;
     return gown.outsideLuzonRate;
   }, [gown, isPixie, location]);
+
+  const forSaleRate = useMemo(() => {
+    if (!gown) return null;
+    const saleRate = isPixie ? gown.forSaleRatePixie : gown.forSaleRateLong;
+    if (!saleRate || saleRate <= 0) return null;
+    return saleRate;
+  }, [gown, isPixie]);
+
+  const visibleTags = useMemo(() => {
+    if (!gown) return [];
+    if (showAllTags) return gown.tags;
+    return gown.tags.slice(0, TAG_PREVIEW_LIMIT);
+  }, [gown, showAllTags]);
+
+  useEffect(() => {
+    setShowAllTags(false);
+  }, [gown?.id]);
 
   const getCurrentImages = () => {
     if (!gown) return [];
@@ -326,28 +359,51 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
             }).filter(Boolean)}
           </div>
         )}
+
+        <div className="mt-5 text-sm text-neutral-600 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
+          By booking a rental you agree to our{" "}
+          <Link
+            href="/rental-terms"
+            className="font-semibold text-secondary underline underline-offset-4 transition-colors duration-200 hover:text-secondary/80"
+          >
+            Rental Terms
+          </Link>.
+        </div>
       </div>
 
       <div className="space-y-5 md:sticky md:top-24 md:pt-10 self-start animate-slide-in-right">
         <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-          <p className="mt-1 text-sm text-neutral-600">{gown.collection.join(', ')}</p>
           <h1 className="text-6xl font-semibold tracking-tight font-serif">{gown.name}</h1>
-          <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
-            {gown.tags.slice(0, 4).map((t, index) => (
-              <span 
-                key={t} 
-                className="rounded-full border px-3 py-1 bg-white/60 tracking-wide uppercase text-neutral-700 hover:bg-white/80 transition-colors duration-200 animate-fade-in-up"
-                style={{ animationDelay: `${0.2 + index * 0.1}s` }}
-              >
-                {t}
-              </span>
-            ))}
-            {gown.tags.length > 4 && (
-              <span className="rounded-full border px-3 py-1 bg-white/60 tracking-wide uppercase text-neutral-500 hover:bg-white/80 transition-colors duration-200 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-                +{gown.tags.length - 4} more
-              </span>
-            )}
-          </div>
+          {gown.tags.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+              {visibleTags.map((t, index) => (
+                <Link
+                  key={`${t}-${index}`}
+                  href={{ pathname: "/collections/all", query: { tags: t } }}
+                  className="rounded-full border px-3 py-1 bg-white/60 tracking-wide uppercase text-neutral-700 hover:bg-white/80 transition-colors duration-200 animate-fade-in-up focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                  style={{ animationDelay: `${0.2 + index * 0.05}s` }}
+                >
+                  {t}
+                </Link>
+              ))}
+              {gown.tags.length > TAG_PREVIEW_LIMIT && (
+                <button
+                  type="button"
+                  onClick={() => setShowAllTags((prev) => !prev)}
+                  className="rounded-full border px-3 py-1 bg-white text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 uppercase text-[11px] font-medium animate-fade-in-up"
+                  style={{ animationDelay: `${0.2 + visibleTags.length * 0.05}s` }}
+                  aria-expanded={showAllTags}
+                >
+                  {showAllTags ? "Show Less Tags" : "View All Tags"}
+                </button>
+              )}
+            </div>
+          )}
+          {gown.tags.length > TAG_PREVIEW_LIMIT && showAllTags && (
+            <p className="mt-2 text-xs text-neutral-500 max-w-md animate-fade-in-up" style={{ animationDelay: `${0.2 + visibleTags.length * 0.05 + 0.05}s` }}>
+              Note: These tags are our recommended themes, but you're not limited by them. Any gown can be styled to fit your event - feel free to explore and choose what matches your vision.
+            </p>
+          )}
         </div>
 
         <div className="rounded p-4 space-y-4 bg-white shadow-sm animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
@@ -436,12 +492,50 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
             </div>
           </div>
 
-          
+        <div className="mt-3 rounded-md border border-neutral-200 bg-neutral-50/80 p-3 transition-all duration-200 animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
+          <div className="text-[11px] tracking-wide uppercase text-neutral-500">Rental Timeline</div>
+          <div className="mt-2 space-y-2">
+            {RENTAL_TIMELINES.map(({ key, title, duration }) => {
+              const isActive = key === location;
+              return (
+                <div
+                  key={key}
+                  className={`flex items-center justify-between gap-3 rounded-md border px-3 py-2 text-xs transition-all duration-200 ${
+                    isActive
+                      ? "border-neutral-300 bg-white shadow-sm text-neutral-800"
+                      : "border-transparent bg-white/30 text-neutral-500 hover:border-neutral-200 hover:bg-white/70 hover:text-neutral-700"
+                  }`}
+                >
+                  <span className="tracking-wide uppercase">{title}</span>
+                  <span
+                    className={`text-sm font-semibold ${
+                      isActive ? "text-secondary" : "text-neutral-500"
+                    }`}
+                  >
+                    {duration}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
           <div className="pt-1 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <div className="text-[11px] tracking-wide uppercase text-neutral-500">Rate</div>
             <div className="mt-1 text-3xl font-semibold transition-all duration-300">₱{rate.toLocaleString()}</div>
           </div>
+
+          {forSaleRate !== null && (
+            <div className="pt-4 mt-4 border-t border-neutral-200 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+              <div className="flex items-center gap-2">
+                <div className="text-[11px] tracking-wide uppercase text-neutral-500">For Sale</div>
+              </div>
+              <div className="mt-2 text-3xl font-semibold text-foreground transition-all duration-300">
+                ₱{forSaleRate.toLocaleString()}
+              </div>
+              <div className="text-xs text-neutral-500 mt-1">One-time purchase price</div>
+            </div>
+          )}
 
           {/* <button className="w-full rounded-full bg-black text-white py-3 text-sm tracking-wide hover:opacity-90">
             Book Now
@@ -452,18 +546,37 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
         <div className="rounded p-5 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
           <h3 className="text-sm font-semibold mb-4 tracking-wide uppercase text-neutral-700">Gown Details</h3>
           <div className="space-y-3">
+            {/* Collection */}
+            {gown.collection.length > 0 && (
+              <div>
+                <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Collection</dt>
+                <dd className="flex flex-wrap gap-1.5">
+                  {gown.collection.map((collectionName, index) => (
+                    <Link
+                      key={`${collectionName}-${index}`}
+                      href={`/collections/${getCollectionSlugFromName(collectionName)}`}
+                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                    >
+                      {collectionName}
+                    </Link>
+                  ))}
+                </dd>
+              </div>
+            )}
+
             {/* Color */}
             {gown.color.length > 0 && (
               <div>
                 <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Color</dt>
                 <dd className="flex flex-wrap gap-1.5">
-                  {gown.color.map((c) => (
-                    <span 
-                      key={c} 
-                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200"
+                  {gown.color.map((c, index) => (
+                    <Link 
+                      key={`${c}-${index}`} 
+                      href={{ pathname: "/collections/all", query: { colors: c } }}
+                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
                     >
                       {c}
-                    </span>
+                    </Link>
                   ))}
                 </dd>
               </div>
@@ -474,13 +587,14 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
               <div>
                 <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Skirt Style</dt>
                 <dd className="flex flex-wrap gap-1.5">
-                  {gown.skirtStyle.map((style) => (
-                    <span 
-                      key={style} 
-                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200"
+                  {gown.skirtStyle.map((style, index) => (
+                    <Link 
+                      key={`${style}-${index}`} 
+                      href={{ pathname: "/collections/all", query: { skirtStyles: style } }}
+                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
                     >
                       {style}
-                    </span>
+                    </Link>
                   ))}
                 </dd>
               </div>
@@ -491,13 +605,14 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
               <div>
                 <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Best For</dt>
                 <dd className="flex flex-wrap gap-1.5">
-                  {gown.bestFor.map((bf) => (
-                    <span 
-                      key={bf} 
-                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200"
+                  {gown.bestFor.map((bf, index) => (
+                    <Link 
+                      key={`${bf}-${index}`} 
+                      href={{ pathname: "/collections/all", query: { bestFor: bf } }}
+                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
                     >
                       {bf}
-                    </span>
+                    </Link>
                   ))}
                 </dd>
               </div>
@@ -578,6 +693,36 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <div className="mt-6 rounded-md border border-neutral-200 bg-neutral-50/80 p-4 space-y-3">
+            <p className="text-sm text-neutral-700">
+              If the sizing isn't the right fit, kindly reach out to us via{' '}
+              <Link
+                href="https://www.instagram.com/mysticalwardrobes"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-secondary underline underline-offset-4 hover:text-secondary/80"
+              >
+                Instagram
+              </Link>{' '}
+              or{' '}
+              <Link
+                href="https://www.facebook.com/MysticalWardrobes/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-secondary underline underline-offset-4 hover:text-secondary/80"
+              >
+                Facebook
+              </Link>{' '}
+              so we can assist you.
+            </p>
+            <Link
+              href="/book-now"
+              className="inline-flex items-center justify-center rounded-full bg-secondary px-5 py-2 text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 hover:bg-secondary/90 hover:scale-105"
+            >
+              Book Now
+            </Link>
           </div>
         </div>
 

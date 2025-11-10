@@ -90,6 +90,7 @@ export async function GET(request: NextRequest) {
       const fetchStart = Date.now();
       response = await client.getEntries({
         content_type: 'addOns', // Make sure this matches your Contentful content type
+        limit: 1000, // Maximum allowed by Contentful API to fetch all items
       });
       const fetchDuration = Date.now() - fetchStart;
       
