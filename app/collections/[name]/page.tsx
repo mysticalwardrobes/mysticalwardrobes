@@ -427,29 +427,44 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
     }
   };
 
-  // Helper function to normalize image URLs from Contentful
-  const normalizeImageUrl = (url: string): string => {
+  // Helper function to normalize and optimize image URLs from Contentful
+  // Uses Contentful's image API to optimize images, avoiding Vercel's optimization limits
+  const normalizeImageUrl = (url: string, width?: number, height?: number, quality: number = 80): string => {
     if (!url || url === 'null' || url.trim() === '') {
       return '/assets/sample_gown-1.jpg';
     }
     
-    // If already a full URL (starts with http:// or https://), return as is
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      return url;
-    }
+    let normalizedUrl = url;
     
-    // If protocol-relative URL (starts with //), add https:
+    // Normalize the URL format
     if (url.startsWith('//')) {
-      return `https:${url}`;
-    }
-    
-    // If it's a local path (starts with /), return as is
-    if (url.startsWith('/')) {
+      normalizedUrl = `https:${url}`;
+    } else if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
+      normalizedUrl = `https://${url}`;
+    } else if (url.startsWith('http://') || url.startsWith('https://')) {
+      normalizedUrl = url;
+    } else {
+      // Local path
       return url;
     }
     
-    // Otherwise, assume it's a Contentful URL without protocol and add https://
-    return `https://${url}`;
+    // If it's a Contentful CDN URL, add optimization parameters
+    if (normalizedUrl.includes('images.ctfassets.net') || normalizedUrl.includes('ctfassets.net')) {
+      try {
+        const urlObj = new URL(normalizedUrl);
+        // Only add parameters if they don't already exist (preserve existing params)
+        if (width && !urlObj.searchParams.has('w')) urlObj.searchParams.set('w', width.toString());
+        if (height && !urlObj.searchParams.has('h')) urlObj.searchParams.set('h', height.toString());
+        if (!urlObj.searchParams.has('q')) urlObj.searchParams.set('q', quality.toString());
+        if (!urlObj.searchParams.has('fm')) urlObj.searchParams.set('fm', 'webp'); // Use WebP format for better compression
+        return urlObj.toString();
+      } catch (e) {
+        // If URL parsing fails, return normalized URL as-is
+        return normalizedUrl;
+      }
+    }
+    
+    return normalizedUrl;
   };
 
   const getGownImage = (gown: Gown) => {
@@ -623,12 +638,12 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
                   <Link href={`/gown/${gown.id}`} className="flex h-full flex-col">
                     <div className="relative aspect-[4/5] w-full overflow-hidden bg-secondary/10 group">
                       <Image
-                        src={normalizeImageUrl(getGownImage(gown))}
+                        src={normalizeImageUrl(getGownImage(gown), 600, 750, 85)}
                         alt={gown.name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-110"
                         sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 30vw"
-                        unoptimized={false}
+                        unoptimized={true}
                       />
                       {/* Show indicator if gown has no valid images */}
                       {!hasValidImages(gown) && (

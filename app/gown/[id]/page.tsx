@@ -29,29 +29,44 @@ const getCollectionSlugFromName = (name: string) => {
   return encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"));
 };
 
-// Helper function to normalize image URLs from Contentful
-const normalizeImageUrl = (url: string): string => {
+// Helper function to normalize and optimize image URLs from Contentful
+// Uses Contentful's image API to optimize images, avoiding Vercel's optimization limits
+const normalizeImageUrl = (url: string, width?: number, height?: number, quality: number = 80): string => {
   if (!url || url === 'null' || url.trim() === '') {
     return '/assets/sample_gown-1.jpg';
   }
   
-  // If already a full URL (starts with http:// or https://), return as is
-  if (url.startsWith('http://') || url.startsWith('https://')) {
-    return url;
-  }
+  let normalizedUrl = url;
   
-  // If protocol-relative URL (starts with //), add https:
+  // Normalize the URL format
   if (url.startsWith('//')) {
-    return `https:${url}`;
-  }
-  
-  // If it's a local path (starts with /), return as is
-  if (url.startsWith('/')) {
+    normalizedUrl = `https:${url}`;
+  } else if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
+    normalizedUrl = `https://${url}`;
+  } else if (url.startsWith('http://') || url.startsWith('https://')) {
+    normalizedUrl = url;
+  } else {
+    // Local path
     return url;
   }
   
-  // Otherwise, assume it's a Contentful URL without protocol and add https://
-  return `https://${url}`;
+  // If it's a Contentful CDN URL, add optimization parameters
+  if (normalizedUrl.includes('images.ctfassets.net') || normalizedUrl.includes('ctfassets.net')) {
+    try {
+      const urlObj = new URL(normalizedUrl);
+      // Only add parameters if they don't already exist (preserve existing params)
+      if (width && !urlObj.searchParams.has('w')) urlObj.searchParams.set('w', width.toString());
+      if (height && !urlObj.searchParams.has('h')) urlObj.searchParams.set('h', height.toString());
+      if (!urlObj.searchParams.has('q')) urlObj.searchParams.set('q', quality.toString());
+      if (!urlObj.searchParams.has('fm')) urlObj.searchParams.set('fm', 'webp'); // Use WebP format for better compression
+      return urlObj.toString();
+    } catch (e) {
+      // If URL parsing fails, return normalized URL as-is
+      return normalizedUrl;
+    }
+  }
+  
+  return normalizedUrl;
 };
 
 export default function GownPage({ params }: { params: Promise<{ id: string }> }) {
@@ -322,12 +337,13 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
         </div>
         <div className="relative w-full aspect-[3/4] overflow-hidden rounded-sm bg-neutral-100 shadow-sm group">
           <Image
-            src={normalizeImageUrl(getCurrentImage())}
+            src={normalizeImageUrl(getCurrentImage(), 1200, 1600, 90)}
             alt={gown.name}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
+            unoptimized={true}
           />
           {/* Navigation arrows if multiple images */}
           {getCurrentImages().length > 1 && (
@@ -373,11 +389,12 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                   aria-label={`Select image ${idx + 1}`}
                 >
                   <Image 
-                    src={normalizeImageUrl(src)} 
+                    src={normalizeImageUrl(src, 200, 200, 85)} 
                     alt={`${gown.name} ${idx + 1}`} 
                     fill 
                     className="object-cover transition-transform duration-200" 
                     sizes="120px" 
+                    unoptimized={true}
                   />
                 </button>
               );
@@ -836,13 +853,14 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
               <Image 
                 src={
                   gown.longGownPictures.length > 0 && gown.longGownPictures[0] && gown.longGownPictures[0] !== 'null'
-                    ? normalizeImageUrl(gown.longGownPictures[0])
+                    ? normalizeImageUrl(gown.longGownPictures[0], 600, 750, 85)
                     : '/assets/sample_gown-1.jpg'
                 } 
                 alt={gown.name} 
                 fill 
                 className="object-cover transition-transform duration-500 group-hover:scale-105" 
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" 
+                unoptimized={true}
               />
             </div>
             <div className="mt-3">
@@ -1013,11 +1031,12 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
                   <div className="relative w-full aspect-[4/5] overflow-hidden rounded-sm bg-neutral-50 group-hover:shadow-lg transition-all duration-300">
                     {addon.pictures && addon.pictures.length > 0 ? (
                       <Image
-                        src={normalizeImageUrl(addon.pictures[0])}
+                        src={normalizeImageUrl(addon.pictures[0], 600, 750, 85)}
                         alt={addon.name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        unoptimized={true}
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center bg-secondary/10">
