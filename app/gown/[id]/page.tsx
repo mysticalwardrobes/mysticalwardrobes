@@ -29,6 +29,31 @@ const getCollectionSlugFromName = (name: string) => {
   return encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"));
 };
 
+// Helper function to normalize image URLs from Contentful
+const normalizeImageUrl = (url: string): string => {
+  if (!url || url === 'null' || url.trim() === '') {
+    return '/assets/sample_gown-1.jpg';
+  }
+  
+  // If already a full URL (starts with http:// or https://), return as is
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  
+  // If protocol-relative URL (starts with //), add https:
+  if (url.startsWith('//')) {
+    return `https:${url}`;
+  }
+  
+  // If it's a local path (starts with /), return as is
+  if (url.startsWith('/')) {
+    return url;
+  }
+  
+  // Otherwise, assume it's a Contentful URL without protocol and add https://
+  return `https://${url}`;
+};
+
 export default function GownPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
   const [gown, setGown] = useState<Gown | null>(null);
@@ -297,7 +322,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
         </div>
         <div className="relative w-full aspect-[3/4] overflow-hidden rounded-sm bg-neutral-100 shadow-sm group">
           <Image
-            src={getCurrentImage().startsWith('http') ? getCurrentImage() : 'https:' + getCurrentImage()}
+            src={normalizeImageUrl(getCurrentImage())}
             alt={gown.name}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -348,7 +373,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                   aria-label={`Select image ${idx + 1}`}
                 >
                   <Image 
-                    src={src.startsWith('http') ? src : 'https:' + src} 
+                    src={normalizeImageUrl(src)} 
                     alt={`${gown.name} ${idx + 1}`} 
                     fill 
                     className="object-cover transition-transform duration-200" 
@@ -811,7 +836,7 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
               <Image 
                 src={
                   gown.longGownPictures.length > 0 && gown.longGownPictures[0] && gown.longGownPictures[0] !== 'null'
-                    ? (gown.longGownPictures[0].startsWith('http') ? gown.longGownPictures[0] : 'https:' + gown.longGownPictures[0])
+                    ? normalizeImageUrl(gown.longGownPictures[0])
                     : '/assets/sample_gown-1.jpg'
                 } 
                 alt={gown.name} 
@@ -988,7 +1013,7 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
                   <div className="relative w-full aspect-[4/5] overflow-hidden rounded-sm bg-neutral-50 group-hover:shadow-lg transition-all duration-300">
                     {addon.pictures && addon.pictures.length > 0 ? (
                       <Image
-                        src={'https:' + addon.pictures[0]}
+                        src={normalizeImageUrl(addon.pictures[0])}
                         alt={addon.name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"

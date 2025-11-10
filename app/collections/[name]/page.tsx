@@ -427,6 +427,31 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
     }
   };
 
+  // Helper function to normalize image URLs from Contentful
+  const normalizeImageUrl = (url: string): string => {
+    if (!url || url === 'null' || url.trim() === '') {
+      return '/assets/sample_gown-1.jpg';
+    }
+    
+    // If already a full URL (starts with http:// or https://), return as is
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    // If protocol-relative URL (starts with //), add https:
+    if (url.startsWith('//')) {
+      return `https:${url}`;
+    }
+    
+    // If it's a local path (starts with /), return as is
+    if (url.startsWith('/')) {
+      return url;
+    }
+    
+    // Otherwise, assume it's a Contentful URL without protocol and add https://
+    return `https://${url}`;
+  };
+
   const getGownImage = (gown: Gown) => {
     // Check if only "Pixie" is selected in skirt styles
     const isOnlyPixieSelected = selectedSkirtStyles.length === 1 && selectedSkirtStyles.includes('Pixie');
@@ -598,11 +623,12 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
                   <Link href={`/gown/${gown.id}`} className="flex h-full flex-col">
                     <div className="relative aspect-[4/5] w-full overflow-hidden bg-secondary/10 group">
                       <Image
-                        src={getGownImage(gown).startsWith('http') ? getGownImage(gown) : 'https:' + getGownImage(gown)}
+                        src={normalizeImageUrl(getGownImage(gown))}
                         alt={gown.name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-110"
                         sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 30vw"
+                        unoptimized={false}
                       />
                       {/* Show indicator if gown has no valid images */}
                       {!hasValidImages(gown) && (
