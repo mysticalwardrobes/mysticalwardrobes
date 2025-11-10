@@ -387,21 +387,39 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
   };
 
   const getGownImage = (gown: Gown) => {
-    // Check long gown pictures first
-    if (gown.longGownPictures.length > 0 && gown.longGownPictures[0] && gown.longGownPictures[0] !== 'null') {
-      return gown.longGownPictures[0];
-    }
-    // Check filipiniana pictures
-    if (gown.filipinianaPictures.length > 0 && gown.filipinianaPictures[0] && gown.filipinianaPictures[0] !== 'null') {
-      return gown.filipinianaPictures[0];
-    }
-    // Check pixie pictures
-    if (gown.pixiePictures.length > 0 && gown.pixiePictures[0] && gown.pixiePictures[0] !== 'null') {
-      return gown.pixiePictures[0];
-    }
-    // Check train pictures
-    if (gown.trainPictures.length > 0 && gown.trainPictures[0] && gown.trainPictures[0] !== 'null') {
-      return gown.trainPictures[0];
+    // Check if only "Pixie" is selected in skirt styles
+    const isOnlyPixieSelected = selectedSkirtStyles.length === 1 && selectedSkirtStyles.includes('Pixie');
+    
+    if (isOnlyPixieSelected) {
+      // If only Pixie is selected, prioritize pixie pictures
+      if (gown.pixiePictures.length > 0 && gown.pixiePictures[0] && gown.pixiePictures[0] !== 'null') {
+        return gown.pixiePictures[0];
+      }
+      // Fallback to other images if pixie not available
+      if (gown.longGownPictures.length > 0 && gown.longGownPictures[0] && gown.longGownPictures[0] !== 'null') {
+        return gown.longGownPictures[0];
+      }
+      if (gown.filipinianaPictures.length > 0 && gown.filipinianaPictures[0] && gown.filipinianaPictures[0] !== 'null') {
+        return gown.filipinianaPictures[0];
+      }
+      if (gown.trainPictures.length > 0 && gown.trainPictures[0] && gown.trainPictures[0] !== 'null') {
+        return gown.trainPictures[0];
+      }
+    } else {
+      // If other skirt styles are selected (or none selected), prioritize long gown pictures
+      if (gown.longGownPictures.length > 0 && gown.longGownPictures[0] && gown.longGownPictures[0] !== 'null') {
+        return gown.longGownPictures[0];
+      }
+      // Fallback to other images if long gown not available
+      if (gown.filipinianaPictures.length > 0 && gown.filipinianaPictures[0] && gown.filipinianaPictures[0] !== 'null') {
+        return gown.filipinianaPictures[0];
+      }
+      if (gown.pixiePictures.length > 0 && gown.pixiePictures[0] && gown.pixiePictures[0] !== 'null') {
+        return gown.pixiePictures[0];
+      }
+      if (gown.trainPictures.length > 0 && gown.trainPictures[0] && gown.trainPictures[0] !== 'null') {
+        return gown.trainPictures[0];
+      }
     }
     
     // Log gowns without images for debugging
