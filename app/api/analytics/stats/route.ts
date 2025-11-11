@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAnalyticsStats } from '@/lib/redis-config';
+import { getAnalyticsStats } from '@/lib/analytics';
 import { getSession } from '@/lib/auth-supabase';
 
 export async function GET(request: NextRequest) {
@@ -27,4 +27,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

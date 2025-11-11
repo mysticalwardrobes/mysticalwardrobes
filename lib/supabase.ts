@@ -31,6 +31,7 @@ export interface Database {
           created_at: string;
           user_agent: string | null;
           referrer: string | null;
+          session_id: string | null;
         };
         Insert: {
           id?: string;
@@ -38,6 +39,7 @@ export interface Database {
           created_at?: string;
           user_agent?: string | null;
           referrer?: string | null;
+          session_id?: string | null;
         };
       };
       analytics_gown_clicks: {

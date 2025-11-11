@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { trackPageView, trackGownClick } from '@/lib/redis-config';
+import { trackPageView, trackGownClick } from '@/lib/analytics';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,6 +12,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const userAgent = request.headers.get('user-agent') ?? undefined;
+    const referrer = request.headers.get('referer') ?? undefined;
+
     switch (type) {
       case 'page_view':
         if (!data?.path) {
@@ -20,7 +23,11 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           );
         }
-        await trackPageView(data.path);
+        await trackPageView(data.path, { 
+          userAgent, 
+          referrer,
+          sessionId: data.sessionId 
+        });
         break;
 
       case 'gown_click':
@@ -30,7 +37,7 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           );
         }
-        await trackGownClick(data.gownId);
+        await trackGownClick(data.gownId, { userAgent });
         break;
 
       default:
@@ -49,4 +56,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

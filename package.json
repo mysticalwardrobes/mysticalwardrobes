@@ -15,7 +15,6 @@
     "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.2.0",
     "@supabase/supabase-js": "^2.80.0",
-    "@upstash/redis": "^1.35.6",
     "bcryptjs": "^3.0.3",
     "contentful": "^11.8.6",
     "framer-motion": "^12.23.0",

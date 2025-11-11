@@ -1,201 +1,121 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 
-interface CacheItem {
-  key: string;
-  exists: boolean;
-  ttl: number | null;
-  expiresIn: string | null;
-}
-
 export default function CacheManagementPage() {
-  const [cacheStatus, setCacheStatus] = useState<CacheItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-
-  const fetchCacheStatus = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/admin/cache');
-      if (response.ok) {
-        const data = await response.json();
-        setCacheStatus(data.cacheStatus || []);
-      }
-    } catch (error) {
-      console.error('Error fetching cache status:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCacheStatus();
-  }, []);
-
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    setMessage(null);
-    try {
-      const response = await fetch('/api/admin/cache', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({}),
-      });
-
-      if (response.ok) {
-        setMessage({ type: 'success', text: 'Cache refresh initiated successfully' });
-        // Refresh the status after a delay
-        setTimeout(() => {
-          fetchCacheStatus();
-        }, 2000);
-      } else {
-        setMessage({ type: 'error', text: 'Failed to refresh cache' });
-      }
-    } catch (error) {
-      setMessage({ type: 'error', text: 'An error occurred while refreshing cache' });
-    } finally {
-      setIsRefreshing(false);
-      setTimeout(() => setMessage(null), 5000);
-    }
-  };
-
-  const handleClearCache = async (key: string) => {
-    try {
-      const response = await fetch('/api/admin/cache', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ keys: [key] }),
-      });
-
-      if (response.ok) {
-        setMessage({ type: 'success', text: `Cache cleared for ${key}` });
-        fetchCacheStatus();
-      } else {
-        setMessage({ type: 'error', text: `Failed to clear cache for ${key}` });
-      }
-    } catch (error) {
-      setMessage({ type: 'error', text: 'An error occurred while clearing cache' });
-    }
-    setTimeout(() => setMessage(null), 3000);
-  };
-
-  if (isLoading) {
-    return (
-      <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-lg font-manrope text-gray-600">Loading cache status...</div>
-        </div>
-      </AdminLayout>
-    );
-  }
-
   return (
     <AdminLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-3xl font-vegawanty text-foreground-darker">
-              Cache Management
-            </h2>
-            <p className="font-manrope text-gray-600 mt-1">
-              Monitor and manage Redis cache
+        <div>
+          <h2 className="text-3xl font-vegawanty text-foreground-darker">
+            Cache Management
+          </h2>
+          <p className="font-manrope text-gray-600 mt-1">
+            System cache configuration
+          </p>
+        </div>
+
+        {/* Info Card */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0">
+              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-blue-900 font-manrope mb-2">
+                Redis Cache Removed
+              </h3>
+              <p className="text-blue-800 font-manrope mb-3">
+                Cache management is no longer needed. The application now serves data directly from:
+              </p>
+              <ul className="list-disc list-inside space-y-1 text-blue-800 font-manrope">
+                <li><strong>Contentful</strong> - for gowns, add-ons, reviews, and prom queens</li>
+                <li><strong>Supabase</strong> - for analytics, voting, and configuration</li>
+              </ul>
+              <p className="text-blue-800 font-manrope mt-3">
+                These services handle caching internally, providing better performance and real-time updates without the need for manual cache management.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Benefits Card */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-xl font-vegawanty text-foreground-darker mb-4">
+            Benefits of Direct Data Access
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="font-manrope font-semibold text-gray-900">Real-time Updates</h4>
+                <p className="font-manrope text-sm text-gray-600">Changes in Contentful appear immediately</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="font-manrope font-semibold text-gray-900">Simplified Architecture</h4>
+                <p className="font-manrope text-sm text-gray-600">No Redis configuration or maintenance needed</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="font-manrope font-semibold text-gray-900">Lower Costs</h4>
+                <p className="font-manrope text-sm text-gray-600">No separate Redis/Upstash subscription required</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="font-manrope font-semibold text-gray-900">Better Analytics</h4>
+                <p className="font-manrope text-sm text-gray-600">All analytics data persisted in Supabase with full history</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Technical Details Card */}
+        <div className="bg-gray-50 rounded-lg border border-gray-200 p-6">
+          <h3 className="text-xl font-vegawanty text-foreground-darker mb-4">
+            Technical Details
+          </h3>
+          <div className="space-y-3 font-manrope text-gray-700">
+            <p>
+              <strong>Previous:</strong> Redis was used to cache Contentful data and store analytics counters.
+            </p>
+            <p>
+              <strong>Current:</strong> All analytics events are now stored in Supabase tables with full event history, allowing for detailed reporting and historical analysis.
+            </p>
+            <p className="text-sm text-gray-600 mt-4">
+              If you need to add caching in the future, consider using Next.js built-in caching mechanisms or Vercel's edge caching.
             </p>
           </div>
-          <button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="px-6 py-2 bg-primary text-foreground-darker font-manrope rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
-          >
-            <span>{isRefreshing ? '⏳' : '🔄'}</span>
-            {isRefreshing ? 'Refreshing...' : 'Refresh All'}
-          </button>
-        </div>
-
-        {/* Message */}
-        {message && (
-          <div
-            className={`p-4 rounded-lg ${
-              message.type === 'success'
-                ? 'bg-green-50 text-green-700'
-                : 'bg-red-50 text-red-700'
-            }`}
-          >
-            <p className="font-manrope">{message.text}</p>
-          </div>
-        )}
-
-        {/* Cache Status Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {cacheStatus.map((cache) => (
-            <div key={cache.key} className="bg-white rounded-lg shadow p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="font-manrope font-medium text-foreground-darker text-lg">
-                    {cache.key.split(':').pop()?.toUpperCase()}
-                  </h3>
-                  <p className="text-sm text-gray-500 font-mono">{cache.key}</p>
-                </div>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-manrope ${
-                    cache.exists
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-red-100 text-red-700'
-                  }`}
-                >
-                  {cache.exists ? 'Active' : 'Empty'}
-                </span>
-              </div>
-
-              {cache.exists && (
-                <div className="space-y-2 mb-4">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 font-manrope">TTL:</span>
-                    <span className="font-manrope font-medium">
-                      {cache.ttl ? `${cache.ttl}s` : 'N/A'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 font-manrope">Expires in:</span>
-                    <span className="font-manrope font-medium">
-                      {cache.expiresIn || 'N/A'}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              <button
-                onClick={() => handleClearCache(cache.key)}
-                disabled={!cache.exists}
-                className="w-full px-4 py-2 bg-red-50 text-red-600 font-manrope rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Clear Cache
-              </button>
-            </div>
-          ))}
-        </div>
-
-        {/* Info Section */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="font-manrope font-medium text-blue-900 mb-2">
-            ℹ️ Cache Information
-          </h3>
-          <ul className="space-y-2 text-sm font-manrope text-blue-800">
-            <li>• Caches automatically refresh when they expire (24 hours TTL)</li>
-            <li>• First request after expiry will be slower as it fetches from Contentful</li>
-            <li>• Use "Refresh All" to manually update all caches with latest data</li>
-            <li>• Clearing a cache will force it to refetch on next request</li>
-          </ul>
         </div>
       </div>
     </AdminLayout>
   );
 }
-

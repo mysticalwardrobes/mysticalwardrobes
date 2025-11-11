@@ -8,6 +8,7 @@ import { AddOn } from "@/app/api/addons/model";
 import { collections as collectionConfig } from "@/app/config/collections";
 import React from "react";
 import { div } from "framer-motion/client";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 type Props = {
   params: { id: string };
@@ -81,6 +82,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
   const [selectedImageType, setSelectedImageType] = useState<'longGown' | 'filipiniana' | 'pixie' | 'train'>('longGown');
   const [selectedSizeOption, setSelectedSizeOption] = useState(0);
   const [showAllTags, setShowAllTags] = useState(false);
+  const { trackGownClick } = useAnalytics();
 
   useEffect(() => {
     const fetchGown = async () => {
@@ -761,6 +763,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
             </p>
             <Link
               href="/book-now"
+              onClick={() => trackGownClick(gown.id)}
               className="inline-flex items-center justify-center rounded-full bg-secondary px-5 py-2 text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 hover:bg-secondary/90 hover:scale-105"
             >
               Book Now
@@ -788,6 +791,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
 function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
   const [relatedGowns, setRelatedGowns] = useState<Gown[]>([]);
   const [loading, setLoading] = useState(true);
+  const { trackGownClick } = useAnalytics();
 
   useEffect(() => {
     const fetchRelatedGowns = async () => {
@@ -846,6 +850,7 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
           <Link 
             key={gown.id} 
             href={`/gown/${gown.id}`} 
+            onClick={() => trackGownClick(gown.id)}
             className="group block animate-fade-in-up" 
             style={{ animationDelay: `${1.1 + index * 0.05}s` }}
           >
