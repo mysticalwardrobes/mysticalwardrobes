@@ -27,6 +27,7 @@ import Link from "next/link";
 import { collections, type Collection } from "@/app/config/collections";
 import { featuredGownIds } from "@/app/config/featured";
 import VotingEvent from "@/components/voting/VotingEvent";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 // Helper function to chunk array
 const chunkArray = <T,>(arr: T[], size: number): T[][] => {
@@ -625,6 +626,7 @@ function Featured() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { trackGownClick } = useAnalytics();
 
   useEffect(() => {
     const fetchFeaturedGowns = async () => {
@@ -660,6 +662,7 @@ function Featured() {
   }, []);
 
   const handleGownClick = (gownId: string) => {
+    trackGownClick(gownId);
     router.push(`/gown/${gownId}`);
   };
 

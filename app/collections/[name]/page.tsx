@@ -23,6 +23,7 @@ import { Gown } from "@/app/api/gowns/model";
 import { useEffect, useState } from "react";
 import React from "react";
 import { getCollectionDisplayName, getCollectionDescription } from "@/app/config/collections";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 
 interface GownsResponse {
@@ -370,6 +371,7 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
   const [error, setError] = useState<string | null>(null);
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const { trackGownClick } = useAnalytics();
 
   const toggleFilterDrawer = () => {
     setIsFilterDrawerOpen((isOpen) => !isOpen);
@@ -635,7 +637,11 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
                   className="group flex h-full flex-col overflow-hidden bg-white transition-all duration-300 hover:-translate-y-2 hover:shadow-lg animate-fade-in-up"
                   style={{ animationDelay: `${0.3 + index * 0.1}s` }}
                 >
-                  <Link href={`/gown/${gown.id}`} className="flex h-full flex-col">
+                  <Link 
+                    href={`/gown/${gown.id}`} 
+                    onClick={() => trackGownClick(gown.id)}
+                    className="flex h-full flex-col"
+                  >
                     <div className="relative aspect-[4/5] w-full overflow-hidden bg-secondary/10 group">
                       <Image
                         src={normalizeImageUrl(getGownImage(gown), 600, 750, 85)}
