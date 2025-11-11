@@ -19,6 +19,19 @@ export const revalidate = 3600;
 // In-memory cache for gowns data
 let gownsCache: CacheEntry<ContentfulEntriesResponse> | null = null;
 
+// In-memory cache for popularity data (gown click counts)
+interface PopularityData {
+  clickCounts: Map<string, number>;
+  timestamp: number;
+}
+let popularityCache: PopularityData | null = null;
+const POPULARITY_CACHE_DURATION = 15 * 60 * 1000; // 15 minutes in milliseconds
+
+// Helper to check if popularity cache is valid
+function isPopularityCacheValid(timestamp: number): boolean {
+  return Date.now() - timestamp < POPULARITY_CACHE_DURATION;
+}
+
 // Helper functions for Contentful data extraction
 const isRecord = (value: unknown): value is Record<string, unknown> => {
   return typeof value === 'object' && value !== null;
@@ -292,21 +305,53 @@ export async function GET(request: NextRequest) {
     // Sort
     switch (sortBy) {
       case 'most-popular':
-        // Fetch click counts from Supabase for last 30 days
+        // Fetch click counts from Supabase for last 30 days (with caching)
         try {
-          const thirtyDaysAgo = new Date();
-          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          let clickCounts: Map<string, number>;
           
-          const { data: clickData } = await supabaseAdmin
-            .from('analytics_gown_clicks')
-            .select('gown_id')
-            .gte('created_at', thirtyDaysAgo.toISOString());
-          
-          // Count clicks per gown
-          const clickCounts = new Map<string, number>();
-          clickData?.forEach(click => {
-            clickCounts.set(click.gown_id, (clickCounts.get(click.gown_id) || 0) + 1);
-          });
+          // Check if we have valid cached popularity data
+          if (popularityCache && isPopularityCacheValid(popularityCache.timestamp)) {
+            clickCounts = popularityCache.clickCounts;
+            const cacheAgeSeconds = Math.floor((Date.now() - popularityCache.timestamp) / 1000);
+            const cacheExpirySeconds = Math.floor((POPULARITY_CACHE_DURATION - (Date.now() - popularityCache.timestamp)) / 1000);
+            console.log('✅ POPULARITY CACHE HIT: Using cached click data');
+            console.log(`   Cache age: ${cacheAgeSeconds}s (expires in ${cacheExpirySeconds}s)`);
+            console.log(`   Cached gowns with clicks: ${clickCounts.size}`);
+          } else {
+            // Fetch fresh popularity data from Supabase
+            const popularityFetchStart = Date.now();
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            
+            const { data: clickData } = await supabaseAdmin
+              .from('analytics_gown_clicks')
+              .select('gown_id')
+              .gte('created_at', thirtyDaysAgo.toISOString());
+            
+            const popularityFetchDuration = Date.now() - popularityFetchStart;
+            
+            // Count clicks per gown
+            clickCounts = new Map<string, number>();
+            clickData?.forEach(click => {
+              clickCounts.set(click.gown_id, (clickCounts.get(click.gown_id) || 0) + 1);
+            });
+            
+            // Update cache
+            popularityCache = {
+              clickCounts,
+              timestamp: Date.now()
+            };
+            
+            if (popularityCache) {
+              console.log('🔄 POPULARITY CACHE MISS: Fetched fresh click data from Supabase');
+            } else {
+              console.log('🆕 INITIAL POPULARITY FETCH: Fetched click data from Supabase');
+            }
+            console.log(`   Fetch duration: ${popularityFetchDuration}ms`);
+            console.log(`   Total clicks in last 30 days: ${clickData?.length || 0}`);
+            console.log(`   Unique gowns with clicks: ${clickCounts.size}`);
+            console.log(`   Cache will expire in: ${POPULARITY_CACHE_DURATION / 1000}s (15 minutes)`);
+          }
           
           // Sort by click count (descending), then by name
           gowns.sort((a, b) => {
