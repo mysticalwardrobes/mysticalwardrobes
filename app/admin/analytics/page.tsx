@@ -172,7 +172,7 @@ export default function AnalyticsPage() {
                     <span className="text-xl font-bold text-gray-400">
                       #{index + 1}
                     </span>
-                    <span className="font-manrope text-foreground-darker font-mono text-sm">
+                    <span className="font-manrope text-foreground-darker text-sm">
                       {page.path}
                     </span>
                   </div>
