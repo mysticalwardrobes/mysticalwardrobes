@@ -18,18 +18,30 @@ export default function Header() {
   };
 
   const toggleFaqsDropdown = () => {
+    setIsStyleExtensionDropdownOpen(false);
+    setIsAddOnsDropdownOpen(false);
+    setIsMadeToOwnDropdownOpen(false);
     setIsFaqsDropdownOpen(!isFaqsDropdownOpen);
   };
 
   const toggleStyleExtensionDropdown = () => {
+    setIsFaqsDropdownOpen(false);
+    setIsAddOnsDropdownOpen(false);
+    setIsMadeToOwnDropdownOpen(false);
     setIsStyleExtensionDropdownOpen(!isStyleExtensionDropdownOpen);
   };
 
   const toggleAddOnsDropdown = () => {
+    setIsFaqsDropdownOpen(false);
+    setIsStyleExtensionDropdownOpen(false);
+    setIsMadeToOwnDropdownOpen(false);
     setIsAddOnsDropdownOpen(!isAddOnsDropdownOpen);
   };
 
   const toggleMadeToOwnDropdown = () => {
+    setIsFaqsDropdownOpen(false);
+    setIsStyleExtensionDropdownOpen(false);
+    setIsAddOnsDropdownOpen(false);
     setIsMadeToOwnDropdownOpen(!isMadeToOwnDropdownOpen);
   };
 
@@ -204,7 +216,7 @@ export default function Header() {
             Portfolio
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
-          <Link href="/contact" className="relative group transition-colors duration-300 hover:text-foreground-darker">
+          <Link href="/book-now" className="relative group transition-colors duration-300 hover:text-foreground-darker">
             Book Now
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
@@ -442,7 +454,7 @@ export default function Header() {
             Portfolio
           </Link>
           <Link 
-            href="/contact" 
+            href="/book-now" 
             className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
             style={{ animationDelay: isMobileMenuOpen ? '0.7s' : '0s' }}
             onClick={() => setIsMobileMenuOpen(false)}

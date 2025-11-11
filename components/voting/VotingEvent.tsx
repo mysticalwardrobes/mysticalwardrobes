@@ -106,8 +106,7 @@ export default function VotingEvent() {
           </p>
           <div className="flex items-center justify-center gap-4 font-manrope text-gray-600">
             <span className="flex items-center gap-2">
-              <span className="text-xl">⏰</span>
-              {timeRemaining}
+              Time Remaining: {timeRemaining}
             </span>
           </div>
         </div>

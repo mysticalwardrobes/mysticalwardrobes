@@ -83,7 +83,6 @@ export default function ResultsDisplay({ eventId }: ResultsDisplayProps) {
   if (!results || results.results.length === 0) {
     return (
       <div className="text-center py-12 bg-white rounded-lg shadow">
-        <div className="text-5xl mb-4">📊</div>
         <p className="font-manrope text-gray-600">No votes yet</p>
       </div>
     );
@@ -95,7 +94,6 @@ export default function ResultsDisplay({ eventId }: ResultsDisplayProps) {
     <div className="space-y-8">
       {/* Thank You Message */}
       <div className="bg-white rounded-lg shadow-xl p-8 text-center">
-        <div className="text-6xl mb-4">✅</div>
         <h3 className="font-vegawanty text-3xl text-foreground-darker mb-2">
           Thank You for Voting!
         </h3>
@@ -108,7 +106,6 @@ export default function ResultsDisplay({ eventId }: ResultsDisplayProps) {
       {results.totalVotes > 0 && (
         <div className="bg-gradient-to-br from-yellow-50 to-amber-50 border-2 border-yellow-300 rounded-xl shadow-lg p-8">
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-3xl">🏆</span>
             <h3 className="font-vegawanty text-2xl text-foreground-darker">
               Leading Choice
             </h3>

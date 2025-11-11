@@ -69,7 +69,7 @@ export default function AccessoriesPage() {
         const response = await fetch("/api/addons");
         if (response.ok) {
           const data = await response.json();
-          const addOns: AddOn[] = data;
+          const addOns: AddOn[] = data.items || [];
 
           // Count items per category (only accessories)
           const counts = new Map<string, number>();
