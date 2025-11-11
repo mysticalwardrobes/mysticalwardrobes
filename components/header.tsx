@@ -9,7 +9,9 @@ import Logo from "@/public/assets/Mystical-Wardrobes-Logo-02.svg"
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isFaqsDropdownOpen, setIsFaqsDropdownOpen] = useState(false);
-  const [isGownsDropdownOpen, setIsGownsDropdownOpen] = useState(false);
+  const [isStyleExtensionDropdownOpen, setIsStyleExtensionDropdownOpen] = useState(false);
+  const [isAddOnsDropdownOpen, setIsAddOnsDropdownOpen] = useState(false);
+  const [isMadeToOwnDropdownOpen, setIsMadeToOwnDropdownOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -19,13 +21,21 @@ export default function Header() {
     setIsFaqsDropdownOpen(!isFaqsDropdownOpen);
   };
 
-  const toggleGownsDropdown = () => {
-    setIsGownsDropdownOpen(!isGownsDropdownOpen);
+  const toggleStyleExtensionDropdown = () => {
+    setIsStyleExtensionDropdownOpen(!isStyleExtensionDropdownOpen);
+  };
+
+  const toggleAddOnsDropdown = () => {
+    setIsAddOnsDropdownOpen(!isAddOnsDropdownOpen);
+  };
+
+  const toggleMadeToOwnDropdown = () => {
+    setIsMadeToOwnDropdownOpen(!isMadeToOwnDropdownOpen);
   };
 
   return (
     <header className="sticky top-0 z-50 bg-background shadow-md py-4">
-      <nav className="container mx-auto px-6 py-2 md:px-16 md:py-4 flex justify-between items-center ">
+      <nav className="container mx-auto px-6 py-2 md:px-8 md:py-4 flex justify-between items-center ">
         {/* Company Logo */}
         <div className="flex-shrink-0">
           <Link href="/" className="font-bold text-gray-800 flex items-center space-x-2 justify-center group transition-all duration-300 hover:scale-105">
@@ -59,21 +69,26 @@ export default function Header() {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8 text-foreground font-manrope">
+        <div className="hidden md:flex items-center space-x-4 text-foreground font-manrope text-sm">
           <Link href="/" className="relative group transition-colors duration-300 hover:text-foreground-darker">
             Home
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
 
-          {/* Gowns Dropdown */}
+          <Link href="/collections" className="relative group transition-colors duration-300 hover:text-foreground-darker">
+            Gowns
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
+          </Link>
+
+          {/* Style Extension Dropdown */}
           <div className="relative group">
             <button
-              onClick={toggleGownsDropdown}
+              onClick={toggleStyleExtensionDropdown}
               className="relative transition-colors duration-300 hover:text-foreground-darker flex items-center gap-1"
             >
-              Collections
+              Style Extension
               <svg 
-                className={`w-4 h-4 transition-transform duration-300 ${isGownsDropdownOpen ? 'rotate-180' : ''}`}
+                className={`w-4 h-4 transition-transform duration-300 ${isStyleExtensionDropdownOpen ? 'rotate-180' : ''}`}
                 fill="none" 
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
@@ -86,28 +101,101 @@ export default function Header() {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
             </button>
             
-            {/* Dropdown Menu */}
-            <div className={`absolute top-full left-0 mt-2 w-48 bg-white rounded shadow-lg overflow-hidden transition-all duration-300 ${isGownsDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+            <div className={`absolute top-full left-0 mt-2 w-56 bg-white rounded shadow-lg overflow-hidden transition-all duration-300 ${isStyleExtensionDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
               <Link 
-                href="/collections" 
+                href="/addons/hood" 
                 className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
-                onClick={() => setIsGownsDropdownOpen(false)}
+                onClick={() => setIsStyleExtensionDropdownOpen(false)}
               >
-                Gowns
+                Hood
               </Link>
               <Link 
-                href="/addons" 
+                href="/collections/all?skirtStyles=Train" 
                 className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
-                onClick={() => setIsGownsDropdownOpen(false)}
+                onClick={() => setIsStyleExtensionDropdownOpen(false)}
               >
-                Add Ons
+                Train
               </Link>
+              <Link 
+                href="/request-style-extension" 
+                className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
+                onClick={() => setIsStyleExtensionDropdownOpen(false)}
+              >
+                Request Style Extension
+              </Link>
+            </div>
+          </div>
+
+          {/* Add Ons Dropdown */}
+          <div className="relative group">
+            <button
+              onClick={toggleAddOnsDropdown}
+              className="relative transition-colors duration-300 hover:text-foreground-darker flex items-center gap-1"
+            >
+              Add Ons
+              <svg 
+                className={`w-4 h-4 transition-transform duration-300 ${isAddOnsDropdownOpen ? 'rotate-180' : ''}`}
+                fill="none" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path d="M19 9l-7 7-7-7"></path>
+              </svg>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
+            </button>
+            
+            <div className={`absolute top-full left-0 mt-2 w-48 bg-white rounded shadow-lg overflow-hidden transition-all duration-300 ${isAddOnsDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+              <Link 
+                href="/addons/petticoat" 
+                className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
+                onClick={() => setIsAddOnsDropdownOpen(false)}
+              >
+                Petticoats
+              </Link>
+              <Link 
+                href="/addons-style-extensions" 
+                className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
+                onClick={() => setIsAddOnsDropdownOpen(false)}
+              >
+                Accessories
+              </Link>
+            </div>
+          </div>
+
+          {/* Made To Own Dropdown */}
+          <div className="relative group">
+            <button
+              onClick={toggleMadeToOwnDropdown}
+              className="relative transition-colors duration-300 hover:text-foreground-darker flex items-center gap-1"
+            >
+              Made To Own
+              <svg 
+                className={`w-4 h-4 transition-transform duration-300 ${isMadeToOwnDropdownOpen ? 'rotate-180' : ''}`}
+                fill="none" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path d="M19 9l-7 7-7-7"></path>
+              </svg>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
+            </button>
+            
+            <div className={`absolute top-full left-0 mt-2 w-56 bg-white rounded shadow-lg overflow-hidden transition-all duration-300 ${isMadeToOwnDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+              <div className="block px-4 py-3 text-gray-400 cursor-not-allowed">
+                To Own Collection
+              </div>
               <Link 
                 href="/custom-made-gowns" 
                 className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
-                onClick={() => setIsGownsDropdownOpen(false)}
+                onClick={() => setIsMadeToOwnDropdownOpen(false)}
               >
-                Custom Made Gowns
+                Custom Creations
               </Link>
             </div>
           </div>
@@ -117,17 +205,21 @@ export default function Header() {
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
           <Link href="/contact" className="relative group transition-colors duration-300 hover:text-foreground-darker">
-            Contact
+            Book Now
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
+          </Link>
+          <Link href="/community" className="relative group transition-colors duration-300 hover:text-foreground-darker">
+            Community
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground-darker transition-all duration-300 group-hover:w-full"></span>
           </Link>
           
-          {/* FAQs & Guides Dropdown */}
+          {/* FAQs & Terms Dropdown */}
           <div className="relative group">
             <button
               onClick={toggleFaqsDropdown}
               className="relative transition-colors duration-300 hover:text-foreground-darker flex items-center gap-1"
             >
-              FAQs & Guides
+              FAQs & Terms
               <svg 
                 className={`w-4 h-4 transition-transform duration-300 ${isFaqsDropdownOpen ? 'rotate-180' : ''}`}
                 fill="none" 
@@ -143,13 +235,13 @@ export default function Header() {
             </button>
             
             {/* Dropdown Menu */}
-            <div className={`absolute top-full left-0 mt-2 w-48 bg-white rounded shadow-lg overflow-hidden transition-all duration-300 ${isFaqsDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+            <div className={`absolute top-full left-0 mt-2 w-56 bg-white rounded shadow-lg overflow-hidden transition-all duration-300 ${isFaqsDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
               <Link 
                 href="/faqs" 
                 className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
                 onClick={() => setIsFaqsDropdownOpen(false)}
               >
-                FAQs
+                Faqs
               </Link>
               <Link 
                 href="/rental-terms" 
@@ -163,7 +255,14 @@ export default function Header() {
                 className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
                 onClick={() => setIsFaqsDropdownOpen(false)}
               >
-                Custom Made Terms
+                Made To Own Terms
+              </Link>
+              <Link 
+                href="/contact" 
+                className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
+                onClick={() => setIsFaqsDropdownOpen(false)}
+              >
+                Contact Us
               </Link>
             </div>
           </div>
@@ -172,7 +271,7 @@ export default function Header() {
 
       {/* Mobile Menu */}
       <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-        isMobileMenuOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+        isMobileMenuOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
       }`}>
         <div className="px-4 pb-4 space-y-2 font-manrope">
           <Link 
@@ -184,15 +283,24 @@ export default function Header() {
             Home
           </Link>
 
-          {/* Gowns Mobile Dropdown */}
-          <div style={{ animationDelay: isMobileMenuOpen ? '0.2s' : '0s' }}>
+          <Link 
+            href="/collections" 
+            className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
+            style={{ animationDelay: isMobileMenuOpen ? '0.2s' : '0s' }}
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Gowns
+          </Link>
+
+          {/* Style Extension Mobile Dropdown */}
+          <div style={{ animationDelay: isMobileMenuOpen ? '0.3s' : '0s' }}>
             <button
-              onClick={toggleGownsDropdown}
+              onClick={toggleStyleExtensionDropdown}
               className="w-full text-left py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2 flex items-center justify-between text-foreground"
             >
-              Collections
+              Style Extension
               <svg 
-                className={`w-4 h-4 transition-transform duration-300 ${isGownsDropdownOpen ? 'rotate-180' : ''}`}
+                className={`w-4 h-4 transition-transform duration-300 ${isStyleExtensionDropdownOpen ? 'rotate-180' : ''}`}
                 fill="none" 
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
@@ -204,38 +312,122 @@ export default function Header() {
               </svg>
             </button>
             
-            {/* Mobile Dropdown Items */}
-            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isGownsDropdownOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
+            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isStyleExtensionDropdownOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
               <div className="mt-1 ml-3 pl-3 border-l-2 border-foreground/20 space-y-1">
                 <Link 
-                  href="/collections" 
+                  href="/addons/hood" 
                   className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"
                   onClick={() => {
-                    setIsGownsDropdownOpen(false);
+                    setIsStyleExtensionDropdownOpen(false);
                     setIsMobileMenuOpen(false);
                   }}
                 >
-                  Gowns
+                  Hood
                 </Link>
                 <Link 
-                  href="/addons" 
+                  href="/collections/all?skirtStyles=Train" 
                   className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"
                   onClick={() => {
-                    setIsGownsDropdownOpen(false);
+                    setIsStyleExtensionDropdownOpen(false);
                     setIsMobileMenuOpen(false);
                   }}
                 >
-                  Add Ons
+                  Train
                 </Link>
+                <Link 
+                  href="/request-style-extension" 
+                  className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"
+                  onClick={() => {
+                    setIsStyleExtensionDropdownOpen(false);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  Request Style Extension
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Add Ons Mobile Dropdown */}
+          <div style={{ animationDelay: isMobileMenuOpen ? '0.4s' : '0s' }}>
+            <button
+              onClick={toggleAddOnsDropdown}
+              className="w-full text-left py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2 flex items-center justify-between text-foreground"
+            >
+              Add Ons
+              <svg 
+                className={`w-4 h-4 transition-transform duration-300 ${isAddOnsDropdownOpen ? 'rotate-180' : ''}`}
+                fill="none" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            
+            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isAddOnsDropdownOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
+              <div className="mt-1 ml-3 pl-3 border-l-2 border-foreground/20 space-y-1">
+                <Link 
+                  href="/addons/petticoat" 
+                  className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"
+                  onClick={() => {
+                    setIsAddOnsDropdownOpen(false);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  Petticoats
+                </Link>
+                <Link 
+                  href="/addons-style-extensions" 
+                  className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"
+                  onClick={() => {
+                    setIsAddOnsDropdownOpen(false);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  Accessories
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Made To Own Mobile Dropdown */}
+          <div style={{ animationDelay: isMobileMenuOpen ? '0.5s' : '0s' }}>
+            <button
+              onClick={toggleMadeToOwnDropdown}
+              className="w-full text-left py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2 flex items-center justify-between text-foreground"
+            >
+              Made To Own
+              <svg 
+                className={`w-4 h-4 transition-transform duration-300 ${isMadeToOwnDropdownOpen ? 'rotate-180' : ''}`}
+                fill="none" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            
+            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isMadeToOwnDropdownOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
+              <div className="mt-1 ml-3 pl-3 border-l-2 border-foreground/20 space-y-1">
+                <div className="block py-2 px-3 text-gray-400 cursor-not-allowed text-sm">
+                  To Own Collection
+                </div>
                 <Link 
                   href="/custom-made-gowns" 
                   className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"
                   onClick={() => {
-                    setIsGownsDropdownOpen(false);
+                    setIsMadeToOwnDropdownOpen(false);
                     setIsMobileMenuOpen(false);
                   }}
                 >
-                  Custom Made Gowns
+                  Custom Creations
                 </Link>
               </div>
             </div>
@@ -244,7 +436,7 @@ export default function Header() {
           <Link 
             href="/portfolio" 
             className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
-            style={{ animationDelay: isMobileMenuOpen ? '0.3s' : '0s' }}
+            style={{ animationDelay: isMobileMenuOpen ? '0.6s' : '0s' }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Portfolio
@@ -252,19 +444,27 @@ export default function Header() {
           <Link 
             href="/contact" 
             className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
-            style={{ animationDelay: isMobileMenuOpen ? '0.4s' : '0s' }}
+            style={{ animationDelay: isMobileMenuOpen ? '0.7s' : '0s' }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Contact
+            Book Now
+          </Link>
+          <Link 
+            href="/community" 
+            className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2"
+            style={{ animationDelay: isMobileMenuOpen ? '0.8s' : '0s' }}
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Community
           </Link>
           
-          {/* FAQs & Guides Mobile Dropdown */}
-          <div style={{ animationDelay: isMobileMenuOpen ? '0.5s' : '0s' }}>
+          {/* FAQs & Terms Mobile Dropdown */}
+          <div style={{ animationDelay: isMobileMenuOpen ? '0.9s' : '0s' }}>
             <button
               onClick={toggleFaqsDropdown}
               className="w-full text-left py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 transform hover:translate-x-2 flex items-center justify-between text-foreground"
             >
-              FAQs & Guides
+              FAQs & Terms
               <svg 
                 className={`w-4 h-4 transition-transform duration-300 ${isFaqsDropdownOpen ? 'rotate-180' : ''}`}
                 fill="none" 
@@ -279,7 +479,7 @@ export default function Header() {
             </button>
             
             {/* Mobile Dropdown Items */}
-            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isFaqsDropdownOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
+            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isFaqsDropdownOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}>
               <div className="mt-1 ml-3 pl-3 border-l-2 border-foreground/20 space-y-1">
                 <Link 
                   href="/faqs" 
@@ -289,7 +489,7 @@ export default function Header() {
                     setIsMobileMenuOpen(false);
                   }}
                 >
-                  FAQs
+                  Faqs
                 </Link>
                 <Link 
                   href="/rental-terms" 
@@ -309,7 +509,17 @@ export default function Header() {
                     setIsMobileMenuOpen(false);
                   }}
                 >
-                  Custom Made Terms
+                  Made To Own Terms
+                </Link>
+                <Link 
+                  href="/contact" 
+                  className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"
+                  onClick={() => {
+                    setIsFaqsDropdownOpen(false);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  Contact Us
                 </Link>
               </div>
             </div>
