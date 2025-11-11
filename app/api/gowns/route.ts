@@ -10,6 +10,7 @@ import {
   getCacheAge,
   getCacheExpiry
 } from '@/app/api/cache-config';
+import { supabaseAdmin } from '@/lib/supabase';
 
 // Cache configuration
 // Note: Must be a literal value for Next.js static analysis (3600 = 1 hour)
@@ -290,6 +291,38 @@ export async function GET(request: NextRequest) {
 
     // Sort
     switch (sortBy) {
+      case 'most-popular':
+        // Fetch click counts from Supabase for last 30 days
+        try {
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          
+          const { data: clickData } = await supabaseAdmin
+            .from('analytics_gown_clicks')
+            .select('gown_id')
+            .gte('created_at', thirtyDaysAgo.toISOString());
+          
+          // Count clicks per gown
+          const clickCounts = new Map<string, number>();
+          clickData?.forEach(click => {
+            clickCounts.set(click.gown_id, (clickCounts.get(click.gown_id) || 0) + 1);
+          });
+          
+          // Sort by click count (descending), then by name
+          gowns.sort((a, b) => {
+            const clicksA = clickCounts.get(a.id) || 0;
+            const clicksB = clickCounts.get(b.id) || 0;
+            if (clicksB !== clicksA) {
+              return clicksB - clicksA;
+            }
+            return a.name.localeCompare(b.name);
+          });
+        } catch (error) {
+          console.error('Error fetching click data for sorting:', error);
+          // Fallback to name sorting if click data fetch fails
+          gowns.sort((a, b) => a.name.localeCompare(b.name));
+        }
+        break;
       case 'price-low-high':
         gowns.sort((a, b) => {
           const priceA = a.metroManilaRate > 0 ? a.metroManilaRate : a.pixieMetroManilaRate;
