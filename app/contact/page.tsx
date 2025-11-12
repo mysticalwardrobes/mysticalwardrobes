@@ -7,6 +7,7 @@ interface FormData {
   name: string;
   email: string;
   phone: string;
+  socialMedia: string;
   message: string;
 }
 
@@ -20,6 +21,7 @@ export default function ContactPage() {
     name: '',
     email: '',
     phone: '',
+    socialMedia: '',
     message: ''
   });
 
@@ -62,6 +64,7 @@ export default function ContactPage() {
           name: '',
           email: '',
           phone: '',
+          socialMedia: '',
           message: ''
         });
       } else {
@@ -224,6 +227,26 @@ export default function ContactPage() {
                         className="w-full px-4 py-3 border border-foreground/20 rounded-lg font-manrope text-sm text-secondary focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors duration-200"
                         placeholder="+63 XXX XXX XXXX"
                       />
+                    </div>
+
+                    {/* Social Media */}
+                    <div>
+                      <label htmlFor="socialMedia" className="block font-manrope text-sm font-medium text-secondary mb-2">
+                        Social Media Link <span className="text-foreground">*</span>
+                      </label>
+                      <input
+                        type="url"
+                        id="socialMedia"
+                        name="socialMedia"
+                        required
+                        value={formData.socialMedia}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-foreground/20 rounded-lg font-manrope text-sm text-secondary focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors duration-200"
+                        placeholder="https://facebook.com/yourprofile or https://instagram.com/yourprofile"
+                      />
+                      <p className="mt-1 font-manrope text-xs text-secondary/60">
+                        Share your Facebook, Instagram, or TikTok profile so we can reach you there
+                      </p>
                     </div>
 
                     {/* Message */}

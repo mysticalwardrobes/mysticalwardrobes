@@ -5,9 +5,8 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Masonry from "react-masonry-css";
 import { PromQueen, PromQueensResponse } from "@/app/api/promqueens/model";
-import heroBg from "@/public/assets/CoverPhoto.png"
+import heroBg from "@/public/assets/portfolio/CoverforTagline.png"
 import Logo4fg from "@/public/assets/Mystical-Wardrobes-Logo-04-foreground.svg"
-import ExpandableText from "@/components/ExpandableText";
 
 // Modal component for full-size image viewing
 interface ImageModalProps {
@@ -70,7 +69,7 @@ function ImageModal({ isOpen, onClose, promQueen }: ImageModalProps) {
                 alt={promQueen.clientName || 'Prom Queen'}
                 width={800}
                 height={1200}
-                className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
+                className="max-w-full max-h-[80vh] object-contain rounded shadow-2xl"
                 priority
               />
               
@@ -204,7 +203,7 @@ export default function PortfolioPage() {
       <section 
         className="w-full h-fit bg-cover bg-top pl-5 px-28 py-16 space-y-3 md:pl-16 md:px-28 md:py-44 flex flex-col items-center justify-center text-center text-background font-manrope" 
         style={{ backgroundImage: `linear-gradient(to top, #B38882 0%, transparent), url(${heroBg.src})` }}>
-        <Image src={Logo4fg} alt="Logo 4" className="w-20 md:w-36"/>
+        {/* <Image src={Logo4fg} alt="Logo 4" className="w-20 md:w-36"/> */}
         <h1 className="font-vegawanty text-4xl md:text-7xl text-background">Where Fairytales Come to Life</h1>
     </section>
 
@@ -222,9 +221,9 @@ export default function PortfolioPage() {
                 encourages us to live our own version of fairytales.
               </p>
             </div>
-            <div className="relative h-[400px] md:h-[500px] rounded-lg overflow-hidden">
+            <div className="relative h-[400px] md:h-[500px] rounded overflow-hidden">
               <Image
-                src="/assets/sample_gown-1.jpg"
+                src="/assets/portfolio/Nicole Torres_Tangled Gown 2.jpg"
                 alt="Our Vision"
                 fill
                 className="object-cover"
@@ -238,9 +237,9 @@ export default function PortfolioPage() {
       <section className="py-16 md:py-24 px-5 sm:px-6 lg:px-8 bg-secondary/5">
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="relative h-[400px] md:h-[500px] rounded-lg overflow-hidden order-2 lg:order-1">
+            <div className="relative h-[400px] md:h-[500px] rounded overflow-hidden order-2 lg:order-1">
               <Image
-                src="/assets/sample_gown-1.jpg"
+                src="/assets/portfolio/IMG_7511.JPG"
                 alt="About Us"
                 fill
                 className="object-cover"
@@ -301,9 +300,9 @@ export default function PortfolioPage() {
                 and genuine care.
               </p>
             </div>
-            <div className="relative h-[400px] md:h-[500px] rounded-lg overflow-hidden">
+            <div className="relative h-[400px] md:h-[500px] rounded overflow-hidden">
               <Image
-                src="/assets/sample_gown-1.jpg"
+                src="/assets/portfolio/IMG_3017.JPG"
                 alt="What We Envision"
                 fill
                 className="object-cover"
@@ -317,9 +316,9 @@ export default function PortfolioPage() {
       <section className="py-16 md:py-24 px-5 sm:px-6 lg:px-8 bg-secondary/5">
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="relative h-[400px] md:h-[500px] rounded-lg overflow-hidden order-2 lg:order-1">
+            <div className="relative h-[400px] md:h-[500px] rounded overflow-hidden order-2 lg:order-1">
               <Image
-                src="/assets/sample_gown-1.jpg"
+                src="/assets/portfolio/IMG_2359.JPG"
                 alt="Why Choose Us"
                 fill
                 className="object-cover"

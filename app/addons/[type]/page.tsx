@@ -35,23 +35,46 @@ const sortOptions = [
 function FiltersPanel({ type }: { type: string }) {
   const [priceRange, setPriceRange] = useAtom(priceRangeAtom);
   
+  // Local state for temporary filter values
+  const [localPriceRange, setLocalPriceRange] = useState(priceRange);
+
+  // Sync local state when global state changes (e.g., when cleared)
+  useEffect(() => {
+    setLocalPriceRange(priceRange);
+  }, [priceRange]);
+  
   // Determine if this is a style extension or add-on
   const isStyleExtension = type === 'hood';
   const sectionTitle = isStyleExtension ? 'Style Extensions' : 'Accessories';
 
   const handleMinChange = (value: number) => {
-    setPriceRange(([, max]) => {
+    setLocalPriceRange(([, max]) => {
       const clampedValue = Math.max(0, Math.min(value, max));
       return [clampedValue, max];
     });
   };
 
   const handleMaxChange = (value: number) => {
-    setPriceRange(([min]) => {
+    setLocalPriceRange(([min]) => {
       const clampedValue = Math.min(2000, Math.max(value, min));
       return [min, clampedValue];
     });
   };
+
+  const handleApplyFilters = () => {
+    setPriceRange(localPriceRange);
+  };
+
+  const handleClearFilters = () => {
+    const defaultPriceRange: [number, number] = [0, 2000];
+    setLocalPriceRange(defaultPriceRange);
+    setPriceRange(defaultPriceRange);
+  };
+
+  // Check if there are any active filters
+  const hasActiveFilters = 
+    localPriceRange[0] > 0 || 
+    localPriceRange[1] < 2000;
 
   return (
     <div className="space-y-6 text-secondary">
@@ -68,7 +91,7 @@ function FiltersPanel({ type }: { type: string }) {
               min={0}
               max={2000}
               step={50}
-              value={priceRange[0]}
+              value={localPriceRange[0]}
               onChange={(event) => handleMinChange(Number(event.target.value))}
               className="accent-secondary transition-all duration-200 hover:accent-secondary/80"
             />
@@ -78,7 +101,7 @@ function FiltersPanel({ type }: { type: string }) {
               min={0}
               max={2000}
               step={50}
-              value={priceRange[1]}
+              value={localPriceRange[1]}
               onChange={(event) => handleMaxChange(Number(event.target.value))}
               className="accent-secondary transition-all duration-200 hover:accent-secondary/80"
             />
@@ -89,7 +112,7 @@ function FiltersPanel({ type }: { type: string }) {
               inputMode="numeric"
               min={0}
               max={2000}
-              value={priceRange[0]}
+              value={localPriceRange[0]}
               onChange={(event) => handleMinChange(Number(event.target.value))}
               className="w-full rounded border border-secondary/30 bg-white px-3 py-2 text-sm focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50"
             />
@@ -99,7 +122,7 @@ function FiltersPanel({ type }: { type: string }) {
               inputMode="numeric"
               min={0}
               max={2000}
-              value={priceRange[1]}
+              value={localPriceRange[1]}
               onChange={(event) => handleMaxChange(Number(event.target.value))}
               className="w-full rounded border border-secondary/30 bg-white px-3 py-2 text-sm focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50"
             />
@@ -156,6 +179,24 @@ function FiltersPanel({ type }: { type: string }) {
           </div>
         </div>
       </section>
+
+      {/* Apply and Clear Buttons */}
+      <div className="flex flex-col gap-2 pt-4 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+        <button
+          onClick={handleApplyFilters}
+          className="w-full rounded-lg bg-secondary px-4 py-3 font-manrope text-sm font-semibold uppercase tracking-wider text-white transition-all duration-200 hover:bg-secondary/90 hover:scale-105 hover:shadow-md active:scale-100"
+        >
+          Apply Filters
+        </button>
+        {hasActiveFilters && (
+          <button
+            onClick={handleClearFilters}
+            className="w-full rounded-lg border border-secondary/30 px-4 py-2 font-manrope text-xs font-medium uppercase tracking-wider text-secondary transition-all duration-200 hover:border-secondary hover:bg-secondary/5 hover:scale-105 active:scale-100"
+          >
+            Clear All
+          </button>
+        )}
+      </div>
     </div>
   );
 }
