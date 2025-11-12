@@ -1,4 +1,5 @@
 import { supabaseAdmin } from './supabase';
+import { client } from '@/app/api/config';
 
 /**
  * Generate a session ID for deduplication
@@ -173,6 +174,42 @@ export async function getAnalyticsStats(days: number = 7) {
       .sort((a, b) => b.clicks - a.clicks)
       .slice(0, 10);
 
+    // Fetch gown names from Contentful
+    const gownIds = popularGowns.map(g => g.gownId);
+    let gownsWithNames = popularGowns;
+    
+    if (gownIds.length > 0) {
+      try {
+        const gownsResponse = await client.getEntries({
+          content_type: 'gown',
+          'sys.id[in]': gownIds,
+          limit: 100,
+        });
+
+        const gownNamesMap = new Map<string, string>();
+        gownsResponse.items.forEach((item: any) => {
+          const name = item.fields?.name;
+          if (name && typeof name === 'string') {
+            gownNamesMap.set(item.sys.id, name);
+          }
+        });
+
+        gownsWithNames = popularGowns.map(g => ({
+          gownId: g.gownId,
+          gownName: gownNamesMap.get(g.gownId) || g.gownId,
+          clicks: g.clicks,
+        }));
+      } catch (error) {
+        console.error('Error fetching gown names from Contentful:', error);
+        // Fallback to just IDs if fetching names fails
+        gownsWithNames = popularGowns.map(g => ({
+          gownId: g.gownId,
+          gownName: g.gownId,
+          clicks: g.clicks,
+        }));
+      }
+    }
+
     // Get popular pages (top 10)
     const { data: pagePathData, error: pagePathError } = await supabaseAdmin
       .from('analytics_page_views')
@@ -197,7 +234,7 @@ export async function getAnalyticsStats(days: number = 7) {
 
     return {
       pageViewsByDate,
-      popularGowns,
+      popularGowns: gownsWithNames,
       popularPages,
       totalViews: totalViews || 0,
       todayViews: todayViews || 0,

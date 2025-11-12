@@ -6,7 +6,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 interface AnalyticsStats {
   todayViews: number;
   totalViews: number;
-  popularGowns: Array<{ gownId: string; clicks: number }>;
+  popularGowns: Array<{ gownId: string; gownName: string; clicks: number }>;
   popularPages: Array<{ path: string; views: number }>;
   pageViewsByDate: Array<{ date: string; views: number }>;
 }
@@ -142,7 +142,7 @@ export default function AnalyticsPage() {
                       #{index + 1}
                     </span>
                     <span className="font-manrope text-foreground-darker">
-                      {gown.gownId}
+                      {gown.gownName}
                     </span>
                   </div>
                   <span className="font-manrope font-medium text-primary">
