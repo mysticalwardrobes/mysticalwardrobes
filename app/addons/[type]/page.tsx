@@ -385,9 +385,9 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                         <p className="font-manrope text-sm uppercase tracking-[0.35em] text-secondary/70">
                           From ₱{addon.metroManilaRate.toLocaleString()}
                         </p>
-                        {addon.forSale && (
+                        {addon.forSaleRate && (
                           <p className="font-manrope text-xs text-secondary/60">
-                            Sale: ₱{addon.forSale.toLocaleString()}
+                            Sale: ₱{addon.forSaleRate.toLocaleString()}
                           </p>
                         )}
                       </div>

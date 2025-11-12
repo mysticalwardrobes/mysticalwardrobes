@@ -5,6 +5,9 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Masonry from "react-masonry-css";
 import { PromQueen, PromQueensResponse } from "@/app/api/promqueens/model";
+import heroBg from "@/public/assets/CoverPhoto.png"
+import Logo4fg from "@/public/assets/Mystical-Wardrobes-Logo-04-foreground.svg"
+import ExpandableText from "@/components/ExpandableText";
 
 // Modal component for full-size image viewing
 interface ImageModalProps {
@@ -197,65 +200,133 @@ export default function PortfolioPage() {
 
   return (
     <main className="bg-background">
-      {/* About Us Section */}
+      {/* Hero Section */}
+      <section 
+        className="w-full h-fit bg-cover bg-top pl-5 px-28 py-16 space-y-3 md:pl-16 md:px-28 md:py-44 flex flex-col items-center justify-center text-center text-background font-manrope" 
+        style={{ backgroundImage: `linear-gradient(to top, #B38882 0%, transparent), url(${heroBg.src})` }}>
+        <Image src={Logo4fg} alt="Logo 4" className="w-20 md:w-36"/>
+        <h1 className="font-vegawanty text-4xl md:text-7xl text-background">Where Fairytales Come to Life</h1>
+    </section>
+
+      {/* Our Vision Section - Text Left, Image Right */}
       <section className="py-16 md:py-24 px-5 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          {/* Header with Tagline */}
-          <header className="mb-16 text-center">
-            <p className="font-manrope text-xs uppercase tracking-[0.4em] text-secondary/70">Our Story</p>
-            <h1 className="font-vegawanty text-4xl text-foreground sm:text-5xl md:text-6xl mt-3">
-              Portfolio
-            </h1>
-            <p className="font-vegawanty text-2xl md:text-3xl text-secondary mt-2 italic">
-              Where Fairytales Come to Life
-            </p>
-          </header>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="space-y-6">
+              <h2 className="font-vegawanty text-4xl md:text-5xl lg:text-6xl text-foreground">
+                Our Vision
+              </h2>
+              <p className="font-manrope text-base md:text-lg text-secondary leading-relaxed">
+                Right from the outset, our vision was inspired by enchanting fairytales and timeless arts. 
+                Each creation serves as a canvas, adorned with care and affection, narrating a story that 
+                encourages us to live our own version of fairytales.
+              </p>
+            </div>
+            <div className="relative h-[400px] md:h-[500px] rounded-lg overflow-hidden">
+              <Image
+                src="/assets/sample_gown-1.jpg"
+                alt="Our Vision"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
-          {/* About Us Content */}
-          <div className="space-y-12 md:space-y-16">
-            {/* About Us */}
-            <div className="max-w-4xl mx-auto">
-              <h2 className="font-vegawanty text-3xl md:text-4xl text-foreground mb-6">
+      {/* About Us Section - Image Left, Text Right */}
+      <section className="py-16 md:py-24 px-5 sm:px-6 lg:px-8 bg-secondary/5">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="relative h-[400px] md:h-[500px] rounded-lg overflow-hidden order-2 lg:order-1">
+              <Image
+                src="/assets/sample_gown-1.jpg"
+                alt="About Us"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="space-y-6 order-1 lg:order-2">
+              <h2 className="font-vegawanty text-4xl md:text-5xl lg:text-6xl text-foreground">
                 About Us
               </h2>
               <p className="font-manrope text-base md:text-lg text-secondary leading-relaxed">
-                Mystical Wardrobes creates a curated collection of rare, mystical and enchanting gowns—transformative looks that make every woman's dream attire accessible for unforgettable events.
+                Mystical Wardrobes creates a curated collection of rare, mystical and enchanting gowns—transformative 
+                looks that make every woman's dream attire accessible for unforgettable events.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* What We Solve */}
-            <div className="max-w-4xl mx-auto">
-              <h2 className="font-vegawanty text-3xl md:text-4xl text-foreground mb-6">
+      {/* What We Solve & What We Offer Section - Two Columns */}
+      <section className="py-16 md:py-24 px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+            <div className="space-y-6">
+              <h2 className="font-vegawanty text-4xl md:text-5xl lg:text-6xl text-foreground">
                 What We Solve
               </h2>
               <p className="font-manrope text-base md:text-lg text-secondary leading-relaxed">
-                Finding a unique, themed gown that feels fairytale and truly enchanting is hard. Custom is pricey (and uncertain), and special designs are rare—so many end up compromising their vision.
+                Finding a unique, themed gown that feels fairytale and truly enchanting is hard. Custom is pricey 
+                (and uncertain), and special designs are rare—so many end up compromising their vision.
               </p>
             </div>
-
-            {/* What We Offer */}
-            <div className="max-w-4xl mx-auto">
-              <h2 className="font-vegawanty text-3xl md:text-4xl text-foreground mb-6">
+            <div className="space-y-6">
+              <h2 className="font-vegawanty text-4xl md:text-5xl lg:text-6xl text-foreground">
                 What We Offer
               </h2>
               <p className="font-manrope text-base md:text-lg text-secondary leading-relaxed">
-                We offer a rental collection of magical, fairytale-inspired gowns—unique, enchanting, and ready to wear. Browse our catalogue or visit us in person, try them on, and choose the one you love—all at a fraction of the cost of a custom gown. We prioritize ready-to-wear rentals, and we also accept custom work case-by-case, based on design and timeline.
+                We offer a rental collection of magical, fairytale-inspired gowns—unique, enchanting, and ready to wear. 
+                Browse our catalogue or visit us in person, try them on, and choose the one you love—all at a fraction 
+                of the cost of a custom gown. We prioritize ready-to-wear rentals, and we also accept custom work 
+                case-by-case, based on design and timeline.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* What We Envision */}
-            <div className="max-w-4xl mx-auto">
-              <h2 className="font-vegawanty text-3xl md:text-4xl text-foreground mb-6">
+      {/* What We Envision Section - Text Left, Image Right */}
+      <section className="py-16 md:py-24 px-5 sm:px-6 lg:px-8" style={{ background: 'linear-gradient(135deg, #f4c4b0 0%, #f5e6d3 40%, #e8d4d8 70%, #d9b8c4 100%)' }}>
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="space-y-6">
+              <h2 className="font-vegawanty text-4xl md:text-5xl lg:text-6xl text-foreground-darker">
                 What We Envision
               </h2>
-              <p className="font-manrope text-base md:text-lg text-secondary leading-relaxed">
-                A welcoming haven for enchanting fairytale fashion. Every client, whatever the theme, can step into their story with confidence. We continually refine our work—focusing on unique design, inclusive sizing, and genuine care.
+              <p className="font-manrope text-base md:text-lg text-foreground-darker leading-relaxed">
+                A welcoming haven for enchanting fairytale fashion. Every client, whatever the theme, can step into 
+                their story with confidence. We continually refine our work—focusing on unique design, inclusive sizing, 
+                and genuine care.
               </p>
             </div>
+            <div className="relative h-[400px] md:h-[500px] rounded-lg overflow-hidden">
+              <Image
+                src="/assets/sample_gown-1.jpg"
+                alt="What We Envision"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Why Choose Us */}
-            <div className="max-w-4xl mx-auto">
-              <h2 className="font-vegawanty text-3xl md:text-4xl text-foreground mb-6">
+      {/* Why Choose Us Section - Image Left, Text Right */}
+      <section className="py-16 md:py-24 px-5 sm:px-6 lg:px-8 bg-secondary/5">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="relative h-[400px] md:h-[500px] rounded-lg overflow-hidden order-2 lg:order-1">
+              <Image
+                src="/assets/sample_gown-1.jpg"
+                alt="Why Choose Us"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="space-y-6 order-1 lg:order-2">
+              <h2 className="font-vegawanty text-4xl md:text-5xl lg:text-6xl text-foreground">
                 Why Choose Us
               </h2>
               <ul className="space-y-4 font-manrope text-base md:text-lg text-secondary">

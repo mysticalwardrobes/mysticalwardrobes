@@ -74,7 +74,7 @@ function Hero() {
   
   return (
     <div 
-      className="w-full h-fit bg-cover bg-top pl-5 pr-28 py-16 space-y-3 md:pl-16 md:pr-20 md:py-36 flex flex-col items-start justify-center text-left text-background font-manrope" 
+      className="w-full h-fit bg-cover bg-top pl-5 pr-28 py-16 space-y-3 md:pl-16 md:pr-20 md:py-44 flex flex-col items-start justify-center text-left text-background font-manrope" 
       style={{ backgroundImage: `linear-gradient(to right, #B38882 -20%, transparent), url(${heroBg.src})` }}>
       <Image src={Logo4fg} alt="Logo 4" className="w-20 md:w-36"/>
       <h1 className=" font-vegawanty text-4xl md:text-6xl text-background">Where Fairytales Come to Life</h1>

@@ -110,7 +110,7 @@ export async function GET(
     const metroManilaRate = ensureNumber(fields.metroManilaRate) ?? 0;
     const luzonRate = ensureNumber(fields.luzonRate) ?? 0;
     const outsideLuzonRate = ensureNumber(fields.outsideLuzonRate) ?? 0;
-    const forSale = ensureNumber(fields.forSale);
+    const forSaleRate = ensureNumber(fields.forSaleRate);
     const pictures = normalizeAssetUrls(fields.pictures);
 
     const addOn: AddOn = {
@@ -121,7 +121,7 @@ export async function GET(
       metroManilaRate,
       luzonRate,
       outsideLuzonRate,
-      forSale,
+      forSaleRate,
       pictures,
     };
 

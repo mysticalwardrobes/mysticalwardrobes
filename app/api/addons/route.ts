@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
       const metroManilaRate = ensureNumber(fields.metroManilaRate) ?? 0;
       const luzonRate = ensureNumber(fields.luzonRate) ?? 0;
       const outsideLuzonRate = ensureNumber(fields.outsideLuzonRate) ?? 0;
-      const forSale = ensureNumber(fields.forSale);
+      const forSaleRate = ensureNumber(fields.forSaleRate);
       
       const pictures = normalizeAssetUrls(fields.pictures);
 
@@ -134,7 +134,7 @@ export async function GET(request: NextRequest) {
         metroManilaRate,
         luzonRate,
         outsideLuzonRate,
-        forSale,
+        forSaleRate,
         pictures,
       };
     });

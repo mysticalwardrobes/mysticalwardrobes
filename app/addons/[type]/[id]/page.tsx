@@ -82,7 +82,7 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
               href={`/addons/${type}`}
               className="inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-3 text-sm font-medium text-white transition hover:bg-secondary/90"
             >
-              ← Back to {type === 'necklace' ? 'necklaces' : type === 'gloves' ? 'gloves' : type + 's'}
+              ← Back to {type}s
             </Link>
           </div>
         </div>
@@ -100,7 +100,7 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
           </Link>
           <span className="text-secondary/50">/</span>
           <Link href={`/addons/${type}`} className="text-secondary/70 hover:text-secondary transition-colors capitalize">
-            {type === 'necklace' ? 'necklaces' : type === 'gloves' ? 'gloves' : type + 's'}
+            {type}s
           </Link>
           <span className="text-secondary/50">/</span>
           <span className="text-secondary">{addOn.name}</span>
@@ -198,7 +198,7 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
                   <div className="flex items-center gap-2 mb-2">
                     <div className="text-[11px] tracking-wide uppercase text-neutral-500">For Sale</div>
                   </div>
-                  <div className="mt-1 text-3xl font-semibold text-foreground">₱{addOn.forSaleRate.toLocaleString()}</div>
+                  <div className="mt-1 text-3xl font-semibold text-foreground-darker">₱{addOn.forSaleRate.toLocaleString()}</div>
                   <div className="text-xs text-neutral-500 mt-1">One-time purchase price</div>
                 </div>
               )}
@@ -228,9 +228,9 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
         {/* Related Items */}
         <section className="mt-16">
           <div className="mb-8 text-center">
-            <h2 className="font-vegawanty text-3xl text-foreground sm:text-4xl">More {addOn.type === 'necklace' ? 'Necklaces' : addOn.type === 'gloves' ? 'Gloves' : addOn.type.charAt(0).toUpperCase() + addOn.type.slice(1) + 's'}</h2>
+            <h2 className="font-vegawanty text-3xl text-foreground sm:text-4xl">More {addOn.type.charAt(0).toUpperCase() + addOn.type.slice(1)}s</h2>
             <p className="mt-2 font-manrope text-sm text-secondary/70">
-              Explore other {addOn.type === 'necklace' ? 'necklaces' : addOn.type === 'gloves' ? 'gloves' : addOn.type + 's'} in our collection
+              Explore other {addOn.type}s in our collection
             </p>
           </div>
           
@@ -239,7 +239,7 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
               href={`/addons/${type}`}
               className="inline-flex items-center gap-2 rounded-full border-2 border-secondary px-6 py-3 text-sm font-medium text-secondary transition hover:bg-secondary hover:text-white"
             >
-              View All {addOn.type === 'necklace' ? 'Necklaces' : addOn.type === 'gloves' ? 'Gloves' : addOn.type.charAt(0).toUpperCase() + addOn.type.slice(1) + 's'}
+              View All {addOn.type.charAt(0).toUpperCase() + addOn.type.slice(1)}s
             </Link>
           </div>
         </section>
@@ -247,3 +247,4 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
     </main>
   );
 }
+

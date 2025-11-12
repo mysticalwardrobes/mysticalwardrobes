@@ -147,7 +147,7 @@ export default function AccessoriesPage() {
               <div className="p-6">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-vegawanty text-2xl text-foreground capitalize group-hover:text-secondary transition-colors">
-                    {category.type === "necklace" ? "Necklaces" : category.type + "s"}
+                    {category.type === "necklace" ? "Necklaces" : category.type === "gloves" ? "Gloves" : category.type + "s"}
                   </h3>
                   {category.count > 0 && (
                     <span className="text-sm font-manrope text-secondary/70">

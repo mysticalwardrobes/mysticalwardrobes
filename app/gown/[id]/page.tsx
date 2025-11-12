@@ -1064,9 +1064,9 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
                       <span className="font-manrope text-sm font-semibold text-secondary">
                         From ₱{addon.metroManilaRate.toLocaleString()}
                       </span>
-                      {addon.forSale && (
+                      {addon.forSaleRate && (
                         <span className="font-manrope text-xs text-secondary/60 line-through">
-                          ₱{addon.forSale.toLocaleString()}
+                          ₱{addon.forSaleRate.toLocaleString()}
                         </span>
                       )}
                     </div>

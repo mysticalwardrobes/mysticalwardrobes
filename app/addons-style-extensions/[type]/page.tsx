@@ -307,7 +307,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
           <div className="flex flex-col gap-4 bg-white/90 py-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             <div className="flex items-center justify-between sm:justify-start sm:gap-12">
               <p className="font-manrope text-xs text-secondary/80 sm:text-sm">
-                Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, totalItems)} of {totalItems} {type}s
+                Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, totalItems)} of {totalItems} {type === 'necklace' ? 'necklaces' : type === 'gloves' ? 'gloves' : type + 's'}
               </p>
               <button
                 type="button"
@@ -342,7 +342,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
               <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-secondary/10 mx-auto">
                 <span className="font-vegawanty text-2xl font-semibold text-secondary">{getTypeIcon(type).charAt(0)}</span>
               </div>
-              <h3 className="font-vegawanty text-xl text-foreground mb-2">No {type}s found</h3>
+              <h3 className="font-vegawanty text-xl text-foreground mb-2">No {type === 'necklace' ? 'necklaces' : type === 'gloves' ? 'gloves' : type + 's'} found</h3>
               <p className="font-manrope text-secondary/70">
                 Try adjusting your filters to see more results.
               </p>
@@ -385,9 +385,9 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                         <p className="font-manrope text-sm uppercase tracking-[0.35em] text-secondary/70">
                           From ₱{addon.metroManilaRate.toLocaleString()}
                         </p>
-                        {addon.forSale && (
+                        {addon.forSaleRate && (
                           <p className="font-manrope text-xs text-secondary/60">
-                            Sale: ₱{addon.forSale.toLocaleString()}
+                            Sale: ₱{addon.forSaleRate.toLocaleString()}
                           </p>
                         )}
                       </div>

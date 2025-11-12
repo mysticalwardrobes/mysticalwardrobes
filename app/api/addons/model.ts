@@ -6,6 +6,6 @@ export interface AddOn {
   metroManilaRate: number;
   luzonRate: number;
   outsideLuzonRate: number;
-  forSale: number | null;
+  forSaleRate: number | null;
   pictures: string[];
 }
