@@ -232,6 +232,11 @@ function CustomGownCard({ gown }: CustomGownCardProps) {
         <h3 className="font-vegawanty text-xl text-foreground mb-2">
           {gown.title}
         </h3>
+        {gown.clientName && (
+          <p className="font-manrope text-sm text-foreground/70 mb-3">
+            Client: {gown.clientName}
+          </p>
+        )}
         
         <div className="flex items-center gap-2 mb-3">
           <span className="inline-block bg-secondary/10 text-secondary text-xs px-2 py-1 rounded-full font-manrope">

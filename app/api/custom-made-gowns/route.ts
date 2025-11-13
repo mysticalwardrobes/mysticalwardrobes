@@ -114,6 +114,7 @@ export async function GET(request: NextRequest) {
       const gownFor = ensureString(fields.gownFor) ?? '';
       const location = ensureString(fields.location) ?? '';
       const description = ensureString(fields.description) ?? '';
+      const clientName = ensureString(fields.clientName) ?? undefined;
       const preOrderPrice = ensureNumber(fields.preOrderPrice) ?? 0;
 
       // Extract image URLs from different image arrays
@@ -126,6 +127,7 @@ export async function GET(request: NextRequest) {
         title,
         gownFor,
         location,
+        clientName,
         description,
         preOrderPrice,
         longGownPicture,

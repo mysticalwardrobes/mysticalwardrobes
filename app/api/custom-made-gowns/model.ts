@@ -3,6 +3,7 @@ export interface CustomMadeGown {
   title: string;
   gownFor: string;
   location: string;
+  clientName?: string;
   description: string;
   preOrderPrice: number;
   longGownPicture: string[];
