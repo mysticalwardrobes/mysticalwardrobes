@@ -8,10 +8,7 @@ import heroBg from "@/public/assets/CoverPhoto.png"
 import Logo4fg from "@/public/assets/Mystical-Wardrobes-Logo-04-foreground.svg"
 import Icon6 from "@/public/assets/symbols/Mystical-Wardrobes-Icons-09-06.svg"
 
-import premium from "@/public/assets/collections/Premium.png";
-import explore_accessories from "@/public/assets/addons/Explore.jpg";
 import sampleGown1 from "@/public/assets/sample_gown-1.jpg";
-import LogoDarker from "@/public/LogoDarker.svg"
 
 import exploreAddons from "@/public/assets/explore/Addons.jpg"
 import exploreCustomMadeGowns from "@/public/assets/explore/CustomMadeGowns.jpg"

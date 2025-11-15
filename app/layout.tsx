@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     siteName: 'Mystical Wardrobes',
     images: [
       {
-        url: '/assets/Hero-bg.jpg',
+        url: '/assets/CoverPhoto.png',
         width: 1200,
         height: 630,
         alt: 'Mystical Wardrobes - Enchanting Gowns and Accessories',
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Mystical Wardrobes - Where Fairytales Come to Life',
     description: 'Discover enchanting gowns and accessories for your special moments.',
-    images: ['/assets/Hero-bg.jpg'],
+    images: ['/assets/CoverPhoto.png'],
   },
   verification: {
     google: 'x5fGpv6CrB1REo_zH1VEn1uWid6MVNtWmdjwkN-10Es',
@@ -123,7 +123,7 @@ export default function RootLayout({
               "description": "Where Fairytales Come to Life - Discover enchanting gowns and accessories for your special moments. Rental gowns, custom-made designs, and mystical accessories.",
               "url": "https://mysticalwardrobes.com",
               "logo": "https://mysticalwardrobes.com/assets/Mystical-Wardrobes-Logo-02.svg",
-              "image": "https://mysticalwardrobes.com/assets/Hero-bg.jpg",
+              "image": "https://mysticalwardrobes.com/assets/CoverPhoto.png",
               "telephone": "+1-XXX-XXX-XXXX",
               "email": "info@mysticalwardrobes.com",
               "address": {
