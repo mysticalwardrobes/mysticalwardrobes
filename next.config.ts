@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   images: {
     // Disable Vercel's image optimization to avoid hitting limits
     // We use Contentful's image API for optimization instead
-    unoptimized: true,
+    unoptimized: true, // Disable Vercel's image optimization to avoid hitting limits ENABLE IF NOT ON LIMIT
     remotePatterns: [
       {
         protocol: 'https',
