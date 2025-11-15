@@ -212,6 +212,9 @@ export default function CustomGownPage({ params }: Props) {
         <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <p className="mt-1 text-sm text-neutral-600">{gown.gownFor}</p>
           <h1 className="text-6xl font-semibold tracking-tight font-serif">{gown.title}</h1>
+          {gown.clientName && (
+            <p className="mt-2 text-base text-neutral-600">Client: {gown.clientName}</p>
+          )}
           {gown.location && (
             <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
               <span className="rounded-full border px-3 py-1 bg-white/60 tracking-wide uppercase text-neutral-700 hover:bg-white/80 transition-colors duration-200">
