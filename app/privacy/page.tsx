@@ -9,7 +9,7 @@ export default function PrivacyPolicyPage() {
         <FadeInOnScroll delay={0.1}>
           <header className="mb-12 text-center">
             <p className="font-manrope text-sm text-secondary/80">
-              Last Updated: January 2025
+              Last Updated: November 14, 2025
             </p>
             <h1 className="mt-3 font-vegawanty text-4xl text-foreground md:text-6xl">
               Privacy Policy
