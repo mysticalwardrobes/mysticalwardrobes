@@ -199,9 +199,6 @@ export default function Header() {
             </button>
             
             <div className={`absolute top-full left-0 mt-2 w-56 bg-white rounded shadow-lg overflow-hidden transition-all duration-300 ${isMadeToOwnDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
-              <div className="block px-4 py-3 text-gray-400 cursor-not-allowed">
-                To Own Collection
-              </div>
               <Link 
                 href="/custom-made-gowns" 
                 className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
@@ -428,9 +425,6 @@ export default function Header() {
             
             <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isMadeToOwnDropdownOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
               <div className="mt-1 ml-3 pl-3 border-l-2 border-foreground/20 space-y-1">
-                <div className="block py-2 px-3 text-gray-400 cursor-not-allowed text-sm">
-                  To Own Collection
-                </div>
                 <Link 
                   href="/custom-made-gowns" 
                   className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"

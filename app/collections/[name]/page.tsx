@@ -662,7 +662,15 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
                     <div className="flex flex-1 flex-col justify-between gap-0.5 px-1 py-2 md:gap-1 md:px-4 md:py-4">
                       <h2 className="font-manrope text-base font-semibold text-secondary sm:text-lg group-hover:text-secondary/80 transition-colors duration-200">{gown.name}</h2>
                       <p className="font-manrope text-sm uppercase tracking-[0.35em] text-secondary/70">
-                        FROM Php {(gown.metroManilaRate > 0 ? gown.metroManilaRate : gown.pixieMetroManilaRate).toLocaleString()}
+                        FROM Php {(() => {
+                          // If Pixie filter is selected and pixie price is available, show pixie price
+                          const isPixieSelected = selectedSkirtStyles.includes('Pixie');
+                          if (isPixieSelected && gown.pixieMetroManilaRate > 0) {
+                            return gown.pixieMetroManilaRate.toLocaleString();
+                          }
+                          // Otherwise, show regular price
+                          return (gown.metroManilaRate > 0 ? gown.metroManilaRate : gown.pixieMetroManilaRate).toLocaleString();
+                        })()}
                       </p>
                     </div>
                   </Link>
