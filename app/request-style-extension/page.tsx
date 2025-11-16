@@ -20,92 +20,92 @@ export default function RequestStyleExtensionPage() {
             />
           </div>
           <h1 className="font-vegawanty text-4xl text-foreground sm:text-5xl md:text-6xl mb-4">
-            Request Style Extension
+            Style Extensions — Request Version for RENT
           </h1>
           <p className="mx-auto mt-4 max-w-2xl font-manrope text-base text-secondary">
             Transform your gown with custom style extensions
           </p>
         </header>
 
-        {/* Coming Soon Section */}
-        <div className="bg-white rounded-lg shadow-lg p-8 md:p-12 text-center">
-          <div className="mb-6">
-            <div className="inline-block p-4 bg-secondary/10 rounded-full mb-4">
-              <svg 
-                className="w-16 h-16 text-secondary" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={1.5} 
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
-                />
-              </svg>
-            </div>
-            <h2 className="font-vegawanty text-3xl text-foreground mb-4">
-              Coming Soon
+        {/* Main Content */}
+        <div className="bg-white rounded-lg shadow-lg p-8 md:p-12">
+          {/* Style Extensions List */}
+          <div className="mb-8 text-center">
+            <p className="font-manrope text-lg text-foreground">
+              Hood / Pixie Skirt / Long Skirt / Train / Sleeves
+            </p>
+          </div>
+
+          {/* Pricing Table */}
+          <div className="mb-8">
+            <h2 className="font-vegawanty text-2xl text-foreground mb-6 text-center">
+              Prices
             </h2>
-            <p className="font-manrope text-secondary/80 mb-6 max-w-xl mx-auto">
-              We're working on making it easier for you to request custom style extensions for your gowns. 
-              This feature will allow you to add hoods, trains, and other enhancements to create your perfect look.
-            </p>
-          </div>
-
-          {/* What's Available Now */}
-          <div className="border-t border-gray-200 pt-8 mt-8">
-            <h3 className="font-vegawanty text-2xl text-foreground mb-6">
-              Available Style Extensions
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-              <Link
-                href="/addons/hood"
-                className="p-4 border border-gray-200 rounded-lg hover:border-secondary hover:bg-secondary/5 transition-all duration-200"
-              >
-                <h4 className="font-manrope font-semibold text-foreground mb-2">Hoods</h4>
-                <p className="text-sm text-secondary/70">
-                  Browse our collection of dramatic hoods with elegant details
-                </p>
-              </Link>
-              <Link
-                href="/collections/all?skirtStyles=Train"
-                className="p-4 border border-gray-200 rounded-lg hover:border-secondary hover:bg-secondary/5 transition-all duration-200"
-              >
-                <h4 className="font-manrope font-semibold text-foreground mb-2">Trains</h4>
-                <p className="text-sm text-secondary/70">
-                  Discover gowns featuring elegant flowing trains
-                </p>
-              </Link>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b-2 border-gray-300">
+                    <th className="text-left py-4 px-4 font-manrope font-semibold text-foreground">
+                      Style Extension
+                    </th>
+                    <th className="text-center py-4 px-4 font-manrope font-semibold text-foreground border-l border-gray-200">
+                      Designer's Choice
+                    </th>
+                    <th className="text-center py-4 px-4 font-manrope font-semibold text-foreground border-l border-gray-200">
+                      Made for You
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-gray-200">
+                    <td className="py-4 px-4 font-manrope text-foreground">Hood and Capes</td>
+                    <td className="py-4 px-4 font-manrope text-center text-foreground border-l border-gray-200">₱1,990</td>
+                    <td className="py-4 px-4 font-manrope text-center text-foreground border-l border-gray-200">₱2,990+</td>
+                  </tr>
+                  <tr className="border-b border-gray-200">
+                    <td className="py-4 px-4 font-manrope text-foreground">Pixie Skirts</td>
+                    <td className="py-4 px-4 font-manrope text-center text-foreground border-l border-gray-200">₱2,990</td>
+                    <td className="py-4 px-4 font-manrope text-center text-foreground border-l border-gray-200">₱3,990+</td>
+                  </tr>
+                  <tr className="border-b border-gray-200">
+                    <td className="py-4 px-4 font-manrope text-foreground">Long Skirts</td>
+                    <td className="py-4 px-4 font-manrope text-center text-foreground border-l border-gray-200">₱3,990</td>
+                    <td className="py-4 px-4 font-manrope text-center text-foreground border-l border-gray-200">₱7,990+</td>
+                  </tr>
+                  <tr className="border-b border-gray-200">
+                    <td className="py-4 px-4 font-manrope text-foreground">Train</td>
+                    <td className="py-4 px-4 font-manrope text-center text-foreground border-l border-gray-200">₱3,990</td>
+                    <td className="py-4 px-4 font-manrope text-center text-foreground border-l border-gray-200">₱5,990+</td>
+                  </tr>
+                  <tr className="border-b border-gray-200">
+                    <td className="py-4 px-4 font-manrope text-foreground">Sleeves</td>
+                    <td className="py-4 px-4 font-manrope text-center text-foreground border-l border-gray-200">₱990</td>
+                    <td className="py-4 px-4 font-manrope text-center text-foreground border-l border-gray-200">₱1,890</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-4 text-sm text-secondary/70">
+              <p className="font-manrope mb-2">
+                <strong className="text-foreground">Designer's Choice</strong> - Mystical Wardrobes will release a new one based on its own design.
+              </p>
+              <p className="font-manrope">
+                <strong className="text-foreground">Made for You</strong> - Mystical Wardrobes will release a new one based or similar on your design.
+              </p>
             </div>
           </div>
 
-          {/* Contact CTA */}
-          <div className="border-t border-gray-200 pt-8 mt-8">
-            <h3 className="font-vegawanty text-xl text-foreground mb-4">
-              Need a Custom Style Extension Now?
-            </h3>
-            <p className="font-manrope text-secondary/80 mb-6">
-              Contact us directly and we'll help bring your vision to life.
+          {/* Information Section */}
+          <div className="space-y-6 text-secondary">
+            <p className="font-manrope">
+              Even if your chosen gown doesn't have a matching style extension, you can still avail it as an add-on. If a design that fits already exists, you'll be able to choose from the available options.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center px-8 py-3 bg-secondary text-white font-manrope font-medium rounded-lg hover:bg-secondary/90 transition-all duration-200 hover:scale-105"
-              >
-                Contact Us
-                <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-              <Link
-                href="/custom-made-gowns"
-                className="inline-flex items-center justify-center px-8 py-3 border-2 border-secondary text-secondary font-manrope font-medium rounded-lg hover:bg-secondary hover:text-white transition-all duration-200"
-              >
-                Custom Creations
-              </Link>
-            </div>
+            <p className="font-manrope">
+              You might even be the first to wear it <span className="italic">(Case by case)</span> — Mystical Wardrobes will design a custom style extension just for you.
+            </p>
+            <p className="font-manrope">
+              Once your downpayment is made, we'll begin the full design process, including the mood board, styling, and production of your style extension based on the gown's original look.
+            </p>
           </div>
         </div>
 
