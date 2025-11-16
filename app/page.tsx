@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import type { PanInfo } from "framer-motion";
 import Image from "next/image";
-import heroBg from "@/public/assets/CoverPhoto.png"
+import heroBg from "@/public/assets/CoverPhoto.webp"
 import Logo4fg from "@/public/assets/Mystical-Wardrobes-Logo-04-foreground.svg"
 import Icon6 from "@/public/assets/symbols/Mystical-Wardrobes-Icons-09-06.svg"
 
