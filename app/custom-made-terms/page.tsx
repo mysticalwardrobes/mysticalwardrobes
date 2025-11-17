@@ -28,7 +28,7 @@ export default function CustomMadeTermsPage() {
                   Please note that purchases are not made through a direct "click-to-buy" process on our website. All orders are coordinated personally through our official Mystical Wardrobes accounts on Instagram or Facebook, where our customer service team will assist you, confirm details, and provide major updates regarding your order's progress.
                 </p>
                 <p>
-                  Our website serves primarily as a catalogue and pricing reference for transparency. Official bookings, payments, and order updates are handled exclusively through our direct communication channels on Instagram or Facebook.
+                  Our website serves primarily as a catalog and pricing reference for transparency. Official bookings, payments, and order updates are handled exclusively through our direct communication channels on Instagram or Facebook.
                 </p>
                 <p>
                   By placing an order, paying a down payment, and/or approving a design, the client ("You") agrees to the terms below.
@@ -148,8 +148,8 @@ export default function CustomMadeTermsPage() {
               </h2>
               <div className="space-y-4 text-secondary/80 leading-relaxed">
                 <ul className="list-disc list-inside space-y-2">
-                  <li>To-Own Collection: typical production lead time is 1-2 months (excluding shipping).</li>
-                  <li>Custom Creations: typical production lead time is 2-3 months, depending on complexity and sourcing.</li>
+                  <li>To-Own Collection: typical production lead time is 2-3 months (excluding shipping).</li>
+                  <li>Custom Creations: typical production lead time is 3-6 months, depending on complexity and sourcing.</li>
                   <li>Final timelines are confirmed during booking. Rush orders may be accepted subject to approval and additional fees.</li>
                   <li>Lead time refers to the gown's production period before dispatch or delivery. Shipping and transit times vary by location and are not included in the stated lead time.</li>
                 </ul>
@@ -168,14 +168,14 @@ export default function CustomMadeTermsPage() {
                       <tbody>
                         <tr className="border-b border-foreground/10">
                           <td className="py-3 px-4 align-top">To-Own</td>
-                          <td className="py-3 px-4 align-top">1-2 months (production time only)</td>
-                          <td className="py-3 px-4 align-top">Case-to-case</td>
+                          <td className="py-3 px-4 align-top">2-3 months (production time only)</td>
+                          <td className="py-3 px-4 align-top">Case-by-case</td>
                           <td className="py-3 px-4 align-top">Dependent on stock/queue.</td>
                         </tr>
                         <tr>
                           <td className="py-3 px-4 align-top">Custom</td>
-                          <td className="py-3 px-4 align-top">2-3 months (production time only)</td>
-                          <td className="py-3 px-4 align-top">Case-to-case</td>
+                          <td className="py-3 px-4 align-top">3-6 months (production time only)</td>
+                          <td className="py-3 px-4 align-top">Case-by-case</td>
                           <td className="py-3 px-4 align-top">Dependent on complexity/sourcing.</td>
                         </tr>
                       </tbody>
