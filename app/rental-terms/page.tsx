@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import FadeInOnScroll from "@/components/FadeInOnScroll";
 
 export default function RentalTermsPage() {
@@ -9,7 +10,7 @@ export default function RentalTermsPage() {
         <FadeInOnScroll delay={0.1}>
           <header className="mb-12 text-center">
             <p className="font-manrope text-sm text-secondary/80">
-              Click here to see our Rental gowns
+              <Link href="/collections/all" className="text-secondary hover:text-foreground underline transition-colors">Click here to see our Rental gowns</Link>
             </p>
             <h1 className="mt-3 font-vegawanty text-4xl text-foreground md:text-6xl">
               Rental Terms
@@ -27,9 +28,9 @@ export default function RentalTermsPage() {
                 Gown Rates, Fitting Appointments, and Booking
               </h2>
               <ul className="list-disc list-inside space-y-2">
-                <li>For gown rental rates and availability, please refer to [ link].</li>
-                <li>For fitting appointments, please refer to [ link].</li>
-                <li>For booking a gown, please refer to [ link].</li>
+                <li>For gown rental rates and timeline, please refer to <Link href="/collections/all" className="text-secondary hover:text-foreground underline transition-colors">our gown collection</Link>.</li>
+                <li>For fitting appointments, please refer to <Link href="/book-now" className="text-secondary hover:text-foreground underline transition-colors">our book us page</Link>.</li>
+                <li>For booking a gown, please refer to <Link href="/book-now" className="text-secondary hover:text-foreground underline transition-colors">our book us page</Link>.</li>
               </ul>
             </section>
           </FadeInOnScroll>
@@ -43,7 +44,7 @@ export default function RentalTermsPage() {
                 <li>Reservation: A booking is locked only after the 50% or stated down-payment is received.</li>
                 <li>Payment-First Policy: All fees must be settled before the gown is dispatched or a fitting is scheduled. We do not collect security deposits.</li>
                 <li>Balance Payment: The client must settle the remaining balance at least one week before the delivery date. If a client makes a down-payment when their event is less than one week away, they must pay the full amount immediately.</li>
-                <li>Proof of Payment: Clients must send a screenshot of their payment via our official channels (IG, FB or email). A booking is only confirmed once acknowledged.</li>
+                <li>Proof of Payment: Clients must send a screenshot of their payment via our official channels (IG, FB, or email). A booking is only confirmed once acknowledged.</li>
                 <li>ID Requirement: First-time renters must present a valid government-issued ID (or school ID for minors).</li>
                 <li>Accepted Channels: We accept GCash, bank transfer, or in-studio cash.</li>
                 <li>Rush Rental: Bookings placed less than 24 hours before ship-out incur a ₱500 rush fee.</li>
@@ -68,21 +69,21 @@ export default function RentalTermsPage() {
                   <tbody>
                     <tr className="border-b border-foreground/10">
                       <td className="py-3 px-4 align-top">Fitting Fee</td>
-                      <td className="py-3 px-4 align-top">P800.00</td>
+                      <td className="py-3 px-4 align-top">₱800.00</td>
                       <td className="py-3 px-4 align-top">
                         ₱300 staff assistance + ₱500 deductible from rental balance. This fee is non-refundable for any missed appointments.
                       </td>
                     </tr>
                     <tr className="border-b border-foreground/10">
                       <td className="py-3 px-4 align-top">Reschedule Fee</td>
-                      <td className="py-3 px-4 align-top">P300.00</td>
+                      <td className="py-3 px-4 align-top">₱300.00</td>
                       <td className="py-3 px-4 align-top">
                         A ₱300.00 fee is payable each time a fitting slot is moved.
                       </td>
                     </tr>
                     <tr>
                       <td className="py-3 px-4 align-top">Extension Fee</td>
-                      <td className="py-3 px-4 align-top">P300.00</td>
+                      <td className="py-3 px-4 align-top">₱300.00</td>
                       <td className="py-3 px-4 align-top">
                         An extension of up to 30 minutes may be allowed if there is no next client booked after your slot. A ₱300.00 extension fee will be charged.
                       </td>
@@ -106,7 +107,7 @@ export default function RentalTermsPage() {
               <h2 className="font-vegawanty text-2xl text-foreground md:text-3xl">
                 3. Rental Timeline
               </h2>
-              <p>Click here to see our Rental gowns</p>
+              <p><Link href="/collections/all" className="text-secondary hover:text-foreground underline transition-colors">Click here to see our Rental gowns</Link></p>
               <div className="space-y-4">
                 <div>
                   <h3 className="font-semibold text-foreground mb-2">3.1 Metro Manila (Lalamove / Grab / Pick-up)</h3>
@@ -175,7 +176,7 @@ export default function RentalTermsPage() {
                   <tbody>
                     <tr className="border-b border-foreground/10">
                       <td className="py-3 px-4 align-top">Approved Extension Fee</td>
-                      <td className="py-3 px-4 align-top">P1,000.00</td>
+                      <td className="py-3 px-4 align-top">₱1,000.00</td>
                       <td className="py-3 px-4 align-top space-y-3">
                         <ul className="list-disc list-inside space-y-1">
                           <li>If you need more time with the gown beyond your original return date, you can ask in advance to extend your rental.</li>
@@ -186,14 +187,14 @@ export default function RentalTermsPage() {
                           <p className="font-semibold text-foreground">Important:</p>
                           <ul className="mt-1 list-disc list-inside space-y-1">
                             <li>This is different from a late return fee. The extension fee applies only if you asked and we approved before the due date.</li>
-                            <li>If you don’t request in advance (or we can’t approve because the gown is booked), the late return penalty applies instead.</li>
+                            <li>If you do not request in advance (or we cannot approve because the gown is booked), the late return penalty applies instead.</li>
                           </ul>
                         </div>
                       </td>
                     </tr>
                     <tr>
-                      <td className="py-3 px-4 align-top">Late return fee</td>
-                      <td className="py-3 px-4 align-top">Late Return Fee (₱1,488/day).</td>
+                      <td className="py-3 px-4 align-top">Late Return Fee</td>
+                      <td className="py-3 px-4 align-top">₱1,488.00/day</td>
                       <td className="py-3 px-4 align-top">
                         Charged per day when no extension was requested in advance. This higher fee exists because late returns directly affect our ability to prepare the gown for the next client and cause a measurable loss of income.
                       </td>
@@ -245,16 +246,16 @@ export default function RentalTermsPage() {
                     <tr className="border-b border-foreground/10">
                       <td className="py-3 px-4 align-top">Rescheduling Fees</td>
                       <td className="py-3 px-4 align-top">
-                        Metro Manila: 2,000<br />Outside Metro Manila: 3,000
+                        Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
                       </td>
                       <td className="py-3 px-4 align-top">
-                        This applies if you move your event date—even if the event is canceled—as your original slot was already reserved. This option is not available if you decide just 2 days before your scheduled delivery. If your first-choice gown isn’t available on the new date, you’ll need to choose from what’s available. The fee still applies, as the gown was previously blocked for your original schedule.
+                        This applies if you move your event date—even if the event is canceled—as your original slot was already reserved. This option is not available if you decide only 2 days before your scheduled delivery. If your first-choice gown is not available on the new date, you will need to choose from what is available. The fee still applies, as the gown was previously blocked for your original schedule.
                       </td>
                     </tr>
                     <tr>
                       <td className="py-3 px-4 align-top">Changing of Gown Fees</td>
                       <td className="py-3 px-4 align-top">
-                        Metro Manila: 2,000<br />Outside Metro Manila: 3,000
+                        Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
                       </td>
                       <td className="py-3 px-4 align-top">
                         Subject to availability. One change per booking. If the new gown’s rate is higher, the difference must be paid; if lower, no refunds are issued.
@@ -338,7 +339,7 @@ export default function RentalTermsPage() {
                     <tbody>
                       <tr className="border-b border-foreground/10">
                         <td className="py-3 px-4">Brooch</td>
-                        <td className="py-3 px-4">₱400-500</td>
+                        <td className="py-3 px-4">₱400–₱500</td>
                       </tr>
                       <tr className="border-b border-foreground/10">
                         <td className="py-3 px-4">Necklace</td>
@@ -493,10 +494,7 @@ export default function RentalTermsPage() {
                     Normal Wear and Tear: Due to the nature of a gown being worn multiple times, there may be minor stains, rips, missing beads, or other normal wear and tear concerns. The normal wear and tear caused by previous clients will not be shouldered by the present renter.
                   </li>
                   <li>
-                    Responsibility: Upon delivery, you are fully responsible for the product. Please treat it with great care.
-                  </li>
-                  <li>
-                    Upon delivery, you are responsible for the product(s). Please treat the products with great care. You are liable for loss, destruction, or damage due to theft, mysterious disappearance, fire, major stains, or any other cause, other than normal wear and tear.
+                    Responsibility: Upon delivery, you are fully responsible for the product(s). Please treat the product(s) with great care. You are liable for loss, destruction, or damage due to theft, mysterious disappearance, fire, major stains, or any other cause, other than normal wear and tear.
                   </li>
                   <li>
                     Cleaning: Mystical Wardrobes handles all gown cleaning before and after use; this is included in your rental fee. Clients must not clean, spot-treat, or apply any detergents or chemicals to the gown—even if permission is requested—as this can cause further damage. If a stain occurs, please return the gown as is. Any necessary restoration will be handled by our team and, if applicable, charged under the Damage &amp; Loss schedule.
@@ -510,6 +508,19 @@ export default function RentalTermsPage() {
           </FadeInOnScroll>
 
           <FadeInOnScroll delay={0.55}>
+            <section className="bg-white/95 rounded-lg border border-foreground/10 p-6 shadow-md md:p-8">
+              <h2 className="font-vegawanty text-2xl text-foreground md:text-3xl mb-4">
+                8. Photo Usage Rights
+              </h2>
+              <ul className="list-disc list-inside space-y-2">
+                <li>Mystical Wardrobes reserves the right to use photos of clients wearing our gowns for marketing, promotional, and portfolio purposes, including but not limited to our website, social media platforms, advertisements, and other marketing materials.</li>
+                <li>If you do not wish for your photos to be used, you must notify us in writing (via email, social media message, or other official channels) at the time of booking or before your event date.</li>
+                <li>By proceeding with your rental without specifying otherwise, you grant Mystical Wardrobes permission to use your photos as described above.</li>
+              </ul>
+            </section>
+          </FadeInOnScroll>
+
+          <FadeInOnScroll delay={0.6}>
             <section className="bg-white/95 rounded-lg border border-foreground/10 p-6 shadow-md md:p-8">
               <h2 className="font-vegawanty text-2xl text-foreground md:text-3xl mb-4">
                 Updates
