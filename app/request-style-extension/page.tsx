@@ -93,6 +93,9 @@ export default function RequestStyleExtensionPage() {
                 <strong className="text-foreground">Made for You</strong> - Mystical Wardrobes will release a new one based or similar on your design.
               </p>
             </div>
+            <p className="mt-4 font-manrope font-bold text-foreground">
+              Note: Style extension prices are on top of your gown's rental rate. These are optional add-ons and are not included in the base rental price.
+            </p>
           </div>
 
           {/* Information Section */}
