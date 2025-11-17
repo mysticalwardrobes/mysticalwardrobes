@@ -302,15 +302,11 @@ export default function ContactPage() {
                   <div className="space-y-3 font-manrope text-sm">
                     <div className="flex justify-between items-center py-2 border-b border-foreground/10">
                       <span className="text-secondary/80">Monday - Friday</span>
-                      <span className="text-secondary font-medium">9:00 AM - 6:00 PM</span>
+                      <span className="text-secondary font-medium">9:00 AM - 5:00 PM</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-foreground/10">
-                      <span className="text-secondary/80">Saturday</span>
-                      <span className="text-secondary font-medium">10:00 AM - 4:00 PM</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-secondary/80">Sunday</span>
-                      <span className="text-secondary font-medium">Closed</span>
+                      <span className="text-secondary/80">Saturday & Sunday</span>
+                      <span className="text-secondary font-medium">By appointment only</span>
                     </div>
                   </div>
 
