@@ -125,6 +125,8 @@ export async function GET(
     const description = ensureString(fields.description) ?? '';
     const clientName = ensureString(fields.clientName) ?? undefined;
     const preOrderPrice = ensureNumber(fields.preOrderPrice) ?? 0;
+    const pixiePreOrderPrice = ensureNumber(fields.pixiePreOrderPrice) ?? undefined;
+    const hoodPreOrderPrice = ensureNumber(fields.hoodPreOrderPrice) ?? undefined;
 
     // Extract image URLs from different image arrays
     const longGownPicture = normalizeAssetUrls(fields.longGownPicture);
@@ -139,6 +141,8 @@ export async function GET(
       clientName,
       description,
       preOrderPrice,
+      pixiePreOrderPrice,
+      hoodPreOrderPrice,
       longGownPicture,
       pixiePicture,
       hoodPicture,

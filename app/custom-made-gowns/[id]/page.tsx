@@ -69,6 +69,23 @@ export default function CustomGownPage({ params }: Props) {
     return '/assets/sample_gown-1.jpg';
   };
 
+  const getCurrentPrice = () => {
+    if (!gown) return 0;
+    switch (selectedImageType) {
+      case 'pixie':
+        return (gown.pixiePreOrderPrice !== undefined && gown.pixiePreOrderPrice !== null) 
+          ? gown.pixiePreOrderPrice 
+          : gown.preOrderPrice;
+      case 'hood':
+        return (gown.hoodPreOrderPrice !== undefined && gown.hoodPreOrderPrice !== null) 
+          ? gown.hoodPreOrderPrice 
+          : gown.preOrderPrice;
+      case 'longGown':
+      default:
+        return gown.preOrderPrice;
+    }
+  };
+
   if (loading) {
     return (
       <div className="mx-auto max-w-6xl p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -273,10 +290,10 @@ export default function CustomGownPage({ params }: Props) {
             </div>
           </div>
 
-          {gown.preOrderPrice > 0 && (
+          {getCurrentPrice() > 0 && (
             <div className="pt-1 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
               <div className="text-[11px] tracking-wide uppercase text-neutral-500">Pre-Order Price</div>
-              <div className="mt-1 text-3xl font-semibold transition-all duration-300">₱{gown.preOrderPrice.toLocaleString()}</div>
+              <div className="mt-1 text-3xl font-semibold transition-all duration-300">₱{getCurrentPrice().toLocaleString()}</div>
             </div>
           )}
         </div>

@@ -6,6 +6,8 @@ export interface CustomMadeGown {
   clientName?: string;
   description: string;
   preOrderPrice: number;
+  pixiePreOrderPrice?: number;
+  hoodPreOrderPrice?: number;
   longGownPicture: string[];
   pixiePicture: string[];
   hoodPicture: string[];
