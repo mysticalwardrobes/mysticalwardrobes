@@ -139,9 +139,16 @@ export async function GET(request: NextRequest) {
       };
     });
 
+    // Log available types for debugging
+    const availableTypes = [...new Set(addOns.map(a => a.type))];
+    console.log(`   Available types in data: ${availableTypes.join(', ')}`);
+
     // Filter by type
     if (type && type !== 'all') {
-      addOns = addOns.filter(addon => addon.type === type);
+      const normalizedType = type.toLowerCase().trim();
+      addOns = addOns.filter(addon => addon.type.toLowerCase().trim() === normalizedType);
+      console.log(`   Filtering by type: "${type}" (normalized: "${normalizedType}")`);
+      console.log(`   Found ${addOns.length} addons matching type "${type}"`);
     }
 
     // Filter by price range

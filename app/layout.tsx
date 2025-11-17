@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     siteName: 'Mystical Wardrobes',
     images: [
       {
-        url: 'https://mysticalwardrobes.com/assets/CoverPhoto.webp',
+        url: '/assets/CoverPhoto.webp',
         width: 1200,
         height: 630,
         alt: 'Mystical Wardrobes - Enchanting Gowns and Accessories',
@@ -90,7 +90,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Mystical Wardrobes - Where Fairytales Come to Life',
     description: 'Discover enchanting gowns and accessories for your special moments.',
-    images: ['https://mysticalwardrobes.com/assets/CoverPhoto.webp'],
+    images: ['/assets/CoverPhoto.webp'],
   },
   verification: {
     google: 'x5fGpv6CrB1REo_zH1VEn1uWid6MVNtWmdjwkN-10Es',

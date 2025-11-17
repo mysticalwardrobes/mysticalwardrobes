@@ -16,7 +16,7 @@ interface PageProps {
 import { atom } from "jotai";
 
 type PriceRange = [number, number];
-const DEFAULT_PRICE_RANGE: PriceRange = [0, 2000];
+const DEFAULT_PRICE_RANGE: PriceRange = [0, 10000];
 const DEFAULT_SORT_BY = "name";
 const ITEMS_PER_PAGE = 15;
 
@@ -36,7 +36,7 @@ function FiltersPanel({ type }: { type: string }) {
   const [priceRange, setPriceRange] = useAtom(priceRangeAtom);
   
   // Determine if this is a style extension or add-on
-  const isStyleExtension = type === 'hood';
+  const isStyleExtension = type === 'hood' || type === 'train';
   const sectionTitle = isStyleExtension ? 'Style Extensions' : 'Accessories';
 
   const handleMinChange = (value: number) => {
@@ -48,7 +48,7 @@ function FiltersPanel({ type }: { type: string }) {
 
   const handleMaxChange = (value: number) => {
     setPriceRange(([min]) => {
-      const clampedValue = Math.min(2000, Math.max(value, min));
+      const clampedValue = Math.min(10000, Math.max(value, min));
       return [min, clampedValue];
     });
   };
@@ -66,7 +66,7 @@ function FiltersPanel({ type }: { type: string }) {
               aria-label="Minimum price"
               type="range"
               min={0}
-              max={2000}
+              max={10000}
               step={50}
               value={priceRange[0]}
               onChange={(event) => handleMinChange(Number(event.target.value))}
@@ -76,7 +76,7 @@ function FiltersPanel({ type }: { type: string }) {
               aria-label="Maximum price"
               type="range"
               min={0}
-              max={2000}
+              max={10000}
               step={50}
               value={priceRange[1]}
               onChange={(event) => handleMaxChange(Number(event.target.value))}
@@ -88,7 +88,7 @@ function FiltersPanel({ type }: { type: string }) {
               type="number"
               inputMode="numeric"
               min={0}
-              max={2000}
+              max={10000}
               value={priceRange[0]}
               onChange={(event) => handleMinChange(Number(event.target.value))}
               className="w-full rounded border border-secondary/30 bg-white px-3 py-2 text-sm focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50"
@@ -98,7 +98,7 @@ function FiltersPanel({ type }: { type: string }) {
               type="number"
               inputMode="numeric"
               min={0}
-              max={2000}
+              max={10000}
               value={priceRange[1]}
               onChange={(event) => handleMaxChange(Number(event.target.value))}
               className="w-full rounded border border-secondary/30 bg-white px-3 py-2 text-sm focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50"
@@ -130,6 +130,16 @@ function FiltersPanel({ type }: { type: string }) {
                 }`}
               >
                 Hoods
+              </Link>
+              <Link
+                href="/addons-style-extensions/train"
+                className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${
+                  'train' === type 
+                    ? 'text-secondary font-semibold' 
+                    : 'text-secondary/70 hover:text-secondary/90'
+                }`}
+              >
+                Trains
               </Link>
             </div>
           </div>
@@ -178,6 +188,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
   useEffect(() => {
     const fetchAddOns = async () => {
       try {
+        setLoading(true);
         const searchParams = new URLSearchParams({
           type: type,
           sortBy: sortBy,
@@ -187,14 +198,23 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
           limit: ITEMS_PER_PAGE.toString(),
         });
 
+        console.log(`Fetching addons for type: "${type}"`);
         const response = await fetch(`/api/addons?${searchParams}`);
         if (!response.ok) {
           throw new Error('Failed to fetch add-ons');
         }
         const data = await response.json();
-        setAddOns(data.items || data);
-        setTotalItems(data.total || data.length);
+        console.log(`API response for type "${type}":`, data);
+        
+        // Handle both response formats: { items: [], total: number } or just []
+        const items = Array.isArray(data) ? data : (data.items || []);
+        const total = Array.isArray(data) ? data.length : (data.total || 0);
+        
+        console.log(`Found ${items.length} items for type "${type}"`);
+        setAddOns(items);
+        setTotalItems(total);
       } catch (err) {
+        console.error('Error fetching addons:', err);
         setError(err instanceof Error ? err.message : 'Failed to load add-ons');
       } finally {
         setLoading(false);
@@ -209,13 +229,14 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
     setCurrentPage(1);
   }, [type, sortBy, priceRange, setCurrentPage]);
 
-  const isStyleExtension = type === 'hood';
+  const isStyleExtension = type === 'hood' || type === 'train';
   const sectionName = isStyleExtension ? 'Style Extensions' : 'Accessories';
 
   const getTypeIcon = (type: string) => {
     const icons: Record<string, string> = {
       crown: 'Crown',
       hood: 'Hood',
+      train: 'Train',
       petticoat: 'Petticoat',
       gloves: 'Gloves',
       fan: 'Fan',
@@ -230,6 +251,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
     const descriptions: Record<string, string> = {
       crown: 'Regal and enchanting crowns for your magical moments',
       hood: 'Dramatic hoods with elegant details and flowing fabrics',
+      train: 'Elegant trains that add drama and sophistication to your gown',
       petticoat: 'Perfect petticoats to create the ideal silhouette',
       gloves: 'Elegant gloves to complete your sophisticated look',
       fan: 'Beautiful fans for a touch of vintage elegance',
