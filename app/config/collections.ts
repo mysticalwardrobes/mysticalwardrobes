@@ -66,7 +66,7 @@ export const collectionDescriptions: Record<string, string> = {
   'Nature Seasonal Realms': 'A reflection of nature\'s elegance and ever-changing beauty. From the frost of winter to the bloom of spring, this collection is inspired by the seasons\' colors, moods, and harmony. Each gown embodies the softness and vitality of the natural world, creating an organic grace that feels timeless and serene.',
   'Celestial Dreamlike': 'For those who shine among the stars. Radiant and ethereal, these gowns are inspired by the cosmos—by moonlight, galaxies, and the divine heavens. Flowing fabrics and shimmering tones mirror the night sky, turning every wearer into a celestial vision of grace and light.',
   'Ocean Realm': 'Born from the depths of legend and the beauty of the sea. This collection embodies the mystery of sirens and the grace of ocean goddesses—where every gown mirrors the rhythm of the waves and the glow of moonlit waters. Designed for those who find strength in serenity, it captures the calm, allure, and eternal magic of the sea.',
-  'Cultural and Mythic Icons': 'These gowns pay homage to mythological figures, beloved characters, and cultural masterpieces. Each creation reimagines legends through fashion—blending tradition and fantasy into couture that transcends eras and cultures alike.',
+  'Your Favorite Character': 'These gowns pay homage to mythological figures, beloved characters, and cultural masterpieces. Each creation reimagines legends through fashion—blending tradition and fantasy into couture that transcends eras and cultures alike.',
   'All Gowns': 'Prom, Junior-Senior Balls, Graduation ball, Masquerade ball and Public Balls'
 };
 
