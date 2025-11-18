@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { client } from '@/app/api/config';
 import { AddOn } from '../model';
 import { 
+  CACHE_DURATION,
   CACHE_CONTROL_HEADER,
   ContentfulEntryResponse,
   CacheEntry,
@@ -9,13 +10,16 @@ import {
   getCacheAge,
   getCacheExpiry
 } from '@/app/api/cache-config';
+import { getJSON, setJSON } from '@/lib/redis';
+import { 
+  serializeAddonEntry, 
+  deserializeAddonEntry,
+  SerializedAddonEntrySingle 
+} from '@/lib/contentful-serializer';
 
 // Cache configuration
 // Note: Must be a literal value for Next.js static analysis (3600 = 1 hour)
 export const revalidate = 3600;
-
-// In-memory cache for individual addon entries
-const addonCache = new Map<string, CacheEntry<ContentfulEntryResponse>>();
 
 // Helper functions for Contentful data extraction
 const isRecord = (value: unknown): value is Record<string, unknown> => {
@@ -71,17 +75,24 @@ export async function GET(
     console.log(`   ID: ${id}`);
     console.log(`   Timestamp: ${new Date().toISOString()}`);
 
-    // Check if we have valid cached data for this specific addon
+    // Check Redis cache first for this specific addon
     const now = Date.now();
-    let response;
+    const redisCacheKey = `addon:${id}`;
+    let response: ContentfulEntryResponse;
     let dataSource: 'cache' | 'contentful' = 'cache';
     
-    const cachedEntry = addonCache.get(id);
-    if (cachedEntry && isCacheValid(cachedEntry.timestamp)) {
-      // Use cached data
-      response = cachedEntry.data;
-      console.log('✅ CACHE HIT: Using cached addon data');
-      console.log(`   Cache age: ${getCacheAge(cachedEntry.timestamp)}s (expires in ${getCacheExpiry(cachedEntry.timestamp)}s)`);
+    // Try to get from Redis cache (stored as serialized data)
+    interface SerializedCacheEntry {
+      serialized: SerializedAddonEntrySingle;
+      timestamp: number;
+    }
+    const cachedEntry = await getJSON<SerializedCacheEntry>(redisCacheKey);
+    
+    if (cachedEntry) {
+      // Deserialize cached data from Redis (no expiration - invalidated via webhook)
+      response = deserializeAddonEntry(cachedEntry.serialized);
+      console.log('✅ REDIS CACHE HIT: Using cached addon data from Redis');
+      console.log(`   Cache age: ${getCacheAge(cachedEntry.timestamp)}s`);
     } else {
       // Fetch fresh data from Contentful
       const fetchStart = Date.now();
@@ -90,14 +101,17 @@ export async function GET(
       
       dataSource = 'contentful';
       
-      // Update cache
-      addonCache.set(id, {
-        data: response,
+      // Serialize and store in Redis cache (no expiration - invalidated via webhook)
+      const serialized = serializeAddonEntry(response);
+      const cacheEntry: SerializedCacheEntry = {
+        serialized,
         timestamp: now
-      });
+      };
+      await setJSON(redisCacheKey, cacheEntry);
       
-      console.log('🔄 CACHE MISS: Fetched fresh addon from Contentful');
+      console.log('🔄 REDIS CACHE MISS: Fetched fresh addon from Contentful');
       console.log(`   Fetch duration: ${fetchDuration}ms`);
+      console.log(`   Cache stored in Redis (no expiration - invalidated via webhook)`);
       console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
     }
 

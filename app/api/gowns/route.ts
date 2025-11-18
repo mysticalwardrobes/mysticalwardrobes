@@ -11,13 +11,19 @@ import {
   getCacheExpiry
 } from '@/app/api/cache-config';
 import { supabaseAdmin } from '@/lib/supabase';
+import { getJSON, setJSON } from '@/lib/redis';
+import { 
+  serializeGownsResponse, 
+  deserializeGownsResponse,
+  SerializedGownEntry 
+} from '@/lib/contentful-serializer';
 
 // Cache configuration
 // Note: Must be a literal value for Next.js static analysis (3600 = 1 hour)
 export const revalidate = 3600;
 
-// In-memory cache for gowns data
-let gownsCache: CacheEntry<ContentfulEntriesResponse> | null = null;
+// Redis cache key for all gowns
+const REDIS_CACHE_KEY = 'gowns:all';
 
 // In-memory cache for popularity data (gown click counts)
 interface PopularityData {
@@ -127,16 +133,23 @@ export async function GET(request: NextRequest) {
     console.log('🔍 NEW GOWNS API REQUEST');
     console.log(`   Timestamp: ${new Date().toISOString()}`);
 
-    // Check if we have valid cached data
+    // Check Redis cache first
     const now = Date.now();
-    let response;
+    let response: ContentfulEntriesResponse;
     let dataSource: 'cache' | 'contentful' = 'cache';
     
-    if (gownsCache && isCacheValid(gownsCache.timestamp)) {
-      // Use cached data
-      response = gownsCache.data;
-      console.log('✅ CACHE HIT: Using cached gowns data');
-      console.log(`   Cache age: ${getCacheAge(gownsCache.timestamp)}s (expires in ${getCacheExpiry(gownsCache.timestamp)}s)`);
+    // Try to get from Redis cache (stored as serialized data)
+    interface SerializedCacheEntry {
+      serialized: SerializedGownEntry[];
+      timestamp: number;
+    }
+    const cachedData = await getJSON<SerializedCacheEntry>(REDIS_CACHE_KEY);
+    
+    if (cachedData) {
+      // Deserialize cached data from Redis (no expiration - invalidated via webhook)
+      response = deserializeGownsResponse(cachedData.serialized);
+      console.log('✅ REDIS CACHE HIT: Using cached gowns data from Redis');
+      console.log(`   Cache age: ${getCacheAge(cachedData.timestamp)}s`);
       console.log(`   Total items in cache: ${response.items.length}`);
     } else {
       // Fetch fresh data from Contentful
@@ -150,19 +163,22 @@ export async function GET(request: NextRequest) {
       
       dataSource = 'contentful';
       
-      // Update cache
-      gownsCache = {
-        data: response,
+      // Serialize and store in Redis cache (no expiration - invalidated via webhook)
+      const serialized = serializeGownsResponse(response);
+      const cacheEntry: SerializedCacheEntry = {
+        serialized,
         timestamp: now
       };
+      await setJSON(REDIS_CACHE_KEY, cacheEntry);
       
-      if (gownsCache) {
-        console.log('🔄 CACHE MISS: Fetched fresh gowns data from Contentful');
+      if (cachedData) {
+        console.log('🔄 REDIS CACHE MISS: Fetched fresh gowns data from Contentful');
       } else {
         console.log('🆕 INITIAL FETCH: Fetched gowns data from Contentful');
       }
       console.log(`   Fetch duration: ${fetchDuration}ms`);
       console.log(`   Total items fetched: ${response.items.length}`);
+      console.log(`   Cache stored in Redis (no expiration - invalidated via webhook)`);
       console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
     }
 
@@ -191,7 +207,8 @@ export async function GET(request: NextRequest) {
       const lenght = ensureString(fields.lenght) ?? '';
       // Add-ons may be Symbols or Entry links; normalize to entry IDs
       const addOns = extractIdArray(fields.addOns);
-      const relatedGowns = ensureStringArray(fields.relatedGowns);
+      // Related gowns may be Entry links; normalize to entry IDs
+      const relatedGowns = extractIdArray(fields.relatedGowns);
 
       // Extract image URLs (handle arrays of images)
       const longGownPictures = normalizeAssetUrls(fields.longGownPicture);

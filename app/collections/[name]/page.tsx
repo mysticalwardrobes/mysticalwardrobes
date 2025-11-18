@@ -331,6 +331,13 @@ function FiltersPanel() {
         />
       </div>
 
+      {/* Note about tags */}
+      <div className="pt-2 pb-4 animate-fade-in-up" style={{ animationDelay: '0.55s' }}>
+        <p className="font-manrope text-xs text-secondary/60 italic leading-relaxed">
+          Note: These tags are our recommended themes, but you're not limited by them. Any gown can be styled to fit your event - feel free to explore and choose what matches your vision.
+        </p>
+      </div>
+
       {/* Apply and Clear Buttons */}
       <div className="flex flex-col gap-2 pt-4 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
         <button

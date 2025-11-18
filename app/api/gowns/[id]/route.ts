@@ -10,13 +10,16 @@ import {
   getCacheAge,
   getCacheExpiry
 } from '@/app/api/cache-config';
+import { getJSON, setJSON } from '@/lib/redis';
+import { 
+  serializeGownEntry, 
+  deserializeGownEntry,
+  SerializedGownEntrySingle 
+} from '@/lib/contentful-serializer';
 
 // Cache configuration
 // Note: Must be a literal value for Next.js static analysis (3600 = 1 hour)
 export const revalidate = 3600;
-
-// In-memory cache for individual gown entries
-const gownCache = new Map<string, CacheEntry<ContentfulEntryResponse>>();
 
 // Helper functions for Contentful data extraction
 const isRecord = (value: unknown): value is Record<string, unknown> => {
@@ -135,17 +138,24 @@ export async function GET(
     console.log(`   ID: ${id}`);
     console.log(`   Timestamp: ${new Date().toISOString()}`);
 
-    // Check if we have valid cached data for this specific gown
+    // Check Redis cache first for this specific gown
     const now = Date.now();
-    let response;
+    const redisCacheKey = `gown:${id}`;
+    let response: ContentfulEntryResponse;
     let dataSource: 'cache' | 'contentful' = 'cache';
     
-    const cachedEntry = gownCache.get(id);
-    if (cachedEntry && isCacheValid(cachedEntry.timestamp)) {
-      // Use cached data
-      response = cachedEntry.data;
-      console.log('✅ CACHE HIT: Using cached gown data');
-      console.log(`   Cache age: ${getCacheAge(cachedEntry.timestamp)}s (expires in ${getCacheExpiry(cachedEntry.timestamp)}s)`);
+    // Try to get from Redis cache (stored as serialized data)
+    interface SerializedCacheEntry {
+      serialized: SerializedGownEntrySingle;
+      timestamp: number;
+    }
+    const cachedEntry = await getJSON<SerializedCacheEntry>(redisCacheKey);
+    
+    if (cachedEntry) {
+      // Deserialize cached data from Redis (no expiration - invalidated via webhook)
+      response = deserializeGownEntry(cachedEntry.serialized);
+      console.log('✅ REDIS CACHE HIT: Using cached gown data from Redis');
+      console.log(`   Cache age: ${getCacheAge(cachedEntry.timestamp)}s`);
     } else {
       // Fetch fresh data from Contentful
       const fetchStart = Date.now();
@@ -156,14 +166,17 @@ export async function GET(
       
       dataSource = 'contentful';
       
-      // Update cache
-      gownCache.set(id, {
-        data: response,
+      // Serialize and store in Redis cache (no expiration - invalidated via webhook)
+      const serialized = serializeGownEntry(response);
+      const cacheEntry: SerializedCacheEntry = {
+        serialized,
         timestamp: now
-      });
+      };
+      await setJSON(redisCacheKey, cacheEntry);
       
-      console.log('🔄 CACHE MISS: Fetched fresh gown from Contentful');
+      console.log('🔄 REDIS CACHE MISS: Fetched fresh gown from Contentful');
       console.log(`   Fetch duration: ${fetchDuration}ms`);
+      console.log(`   Cache stored in Redis (no expiration - invalidated via webhook)`);
       console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
     }
 
