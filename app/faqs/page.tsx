@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeInOnScroll from "@/components/FadeInOnScroll";
 
 interface FAQ {
   question: string;
-  answer: string;
+  answer: string | React.ReactNode;
 }
 
 interface FAQCategory {
@@ -24,7 +25,15 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "Where can I view your gown rental rates and availability?",
-        answer: "For gown rental rates and availability, please refer to the provided link."
+        answer: (
+          <>
+            For gown rental rates click{" "}
+            <Link href="/collections/all" className="text-secondary hover:text-foreground underline transition-colors">
+              Gowns
+            </Link>{" "}
+            then for availability message us on FB or IG
+          </>
+        )
       }
     ]
   },
@@ -33,7 +42,14 @@ const faqData: FAQCategory[] = [
     faqs: [
       {
         question: "How do I book a gown?",
-        answer: "A booking is confirmed only after a 50% or stated down-payment is received. All fees must be settled before the gown is dispatched or a fitting is scheduled. You can find the booking link here."
+        answer: (
+          <>
+            A booking is confirmed only after a 50% or stated down-payment is received. All fees must be settled before the gown is dispatched. You can find the{" "}
+            <Link href="/book-now" className="text-secondary hover:text-foreground underline transition-colors">
+              booking link here
+            </Link>.
+          </>
+        )
       },
       {
         question: "What payment methods do you accept?",
@@ -41,7 +57,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "Do I need to pay a security deposit?",
-        answer: "No, we do not collect security deposits. All fees must be settled before the gown is dispatched or a fitting is scheduled."
+        answer: "No, we do not collect security deposits. All fees must be settled before the gown is dispatched."
       },
       {
         question: "When do I need to pay the remaining balance?",
@@ -58,11 +74,18 @@ const faqData: FAQCategory[] = [
     faqs: [
       {
         question: "How do I schedule a fitting appointment?",
-        answer: "For fitting appointments, please refer to the provided link."
+        answer: (
+          <>
+            For fitting appointments, please refer to the{" "}
+            <Link href="/book-now" className="text-secondary hover:text-foreground underline transition-colors">
+              booking page
+            </Link>.
+          </>
+        )
       },
       {
         question: "Is there a fee for fitting appointments?",
-        answer: "Yes, there is a fitting fee of ₱800. This includes ₱300 for staff assistance and ₱500 which is deductible from your rental balance. This fee is non-refundable for any missed appointments."
+        answer: "Yes, Fitting Fee (₱800): ₱300 covers staff assistance (non-refundable), and ₱500 will be credited to your rental if you book within 5 calendar days from your fitting date (Day 1 = fitting day); missed or late-cancelled appointments forfeit the fee."
       },
       {
         question: "Can I reschedule my fitting appointment?",
@@ -87,7 +110,7 @@ const faqData: FAQCategory[] = [
     faqs: [
       {
         question: "When does the rental period begin?",
-        answer: "The rental period starts on the day we ship out the gown. Courier working days exclude Sundays and holidays."
+        answer: "The rental period starts on the day we ship out the gown. Courier working days exclude Sundays and holidays if we will use LBC."
       },
       {
         question: "Who is responsible for shipping fees?",
@@ -133,7 +156,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "What is the Store Credit Option?",
-        answer: "In case of unavoidable cancellations, clients may request store credit instead of paying the full balance. Store credits are valid for one month and may be applied to any future rental within six months from the date of issuance. Store credit may only be granted once. If a client uses the store credit to rebook and later cancels again, the standard cancellation policy will be enforced."
+        answer: "What it is: We convert only the eligible portion of the amount you've already paid into credit you can use for a future booking. How long it's valid: Use the credit to make a new booking within 30 days of issuance. Your new event date must be within 6 months of issuance. One-time only. If you rebook with store credit and cancel again, our standard cancellation policy applies and the credit is forfeited."
       },
       {
         question: "Is there a fee for rescheduling my event date?",
@@ -141,7 +164,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "Can I change the gown I booked?",
-        answer: "Yes, you can change your gown once per booking, subject to availability. If the new gown's rate is higher, the difference must be paid; if lower, no refunds are issued. A changing of gown fee applies (Metro Manila: ₱2,000; Outside Metro Manila: ₱3,000)."
+        answer: "Yes, upon approval and subject to availability. If the new gown's rate is higher, the difference must be paid; if lower, no refunds are issued. A changing of gown fee applies (Metro Manila: ₱2,000; Outside Metro Manila: ₱3,000)."
       }
     ]
   },
@@ -182,8 +205,8 @@ const faqData: FAQCategory[] = [
         answer: "Upon delivery, you are fully responsible for the product. Please treat it with great care. You are liable for loss, destruction, or damage due to theft, mysterious disappearance, fire, major stains, or any other cause, other than normal wear and tear."
       },
       {
-        question: "Is normal wear and tear covered?",
-        answer: "Normal wear and tear (minor stains, rips, missing beads from previous uses) will not be shouldered by the present renter."
+        question: "Normal Wear & Tear — what's covered vs. chargeable damage?",
+        answer: "Covered (no charge): Light hem dust or minor makeup that comes out in cleaning. A few loose/missing beads or small thread pulls from previous use. Mild creasing/wrinkling. Pre-existing minor damages from the previous renter. Not covered (may incur repair/replacement fees): Large rips/holes, broken zipper/corset boning. Permanent stains (e.g., wine, dye/bleach, self-tanner, paint). Burn marks, water damage/mildew, heavy discoloration. Missing parts/accessories (belts, gloves, appliqués), unauthorized alterations. Reminder: Please don't spot-clean or DIY repairs. Return the gown as is."
       }
     ]
   },
@@ -234,9 +257,9 @@ function FAQAccordion({ faq, isOpen, onToggle }: FAQAccordionProps) {
             className="overflow-hidden"
           >
             <div className="px-6 pb-4 pt-2">
-              <p className="font-manrope text-sm md:text-base text-secondary/80 leading-relaxed">
+              <div className="font-manrope text-sm md:text-base text-secondary/80 leading-relaxed">
                 {faq.answer}
-              </p>
+              </div>
             </div>
           </motion.div>
         )}

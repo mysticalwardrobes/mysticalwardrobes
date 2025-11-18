@@ -16,7 +16,7 @@ export default function RentalTermsPage() {
               Rental Terms
             </h1>
             <p className="mx-auto mt-5 max-w-3xl font-manrope text-sm text-secondary/80 md:text-base">
-              These terms apply to all gown rentals and fittings booked through Mystical Wardrobes in Malabon City, Philippines. By proceeding with your order, you confirm that you have read, understood, and agree to these terms in their entirety.
+              These terms apply to all gown rentals and fittings booked through Mystical Wardrobes. By proceeding with your order, you confirm that you have read, understood, and agree to these terms in their entirety.
             </p>
           </header>
         </FadeInOnScroll>
@@ -28,9 +28,9 @@ export default function RentalTermsPage() {
                 Gown Rates, Fitting Appointments, and Booking
               </h2>
               <ul className="list-disc list-inside space-y-2">
-                <li>For gown rental rates and timeline, please refer to <Link href="/collections/all" className="text-secondary hover:text-foreground underline transition-colors">our gown collection</Link>.</li>
-                <li>For fitting appointments, please refer to <Link href="/book-now" className="text-secondary hover:text-foreground underline transition-colors">our book us page</Link>.</li>
-                <li>For booking a gown, please refer to <Link href="/book-now" className="text-secondary hover:text-foreground underline transition-colors">our book us page</Link>.</li>
+                <li>For gown rental rates, please refer to <Link href="/collections/all" className="text-secondary hover:text-foreground underline transition-colors">our gown collection</Link>.</li>
+                <li>For fitting appointments, please refer to <Link href="/book-now" className="text-secondary hover:text-foreground underline transition-colors">our booking page</Link>.</li>
+                <li>For renting a gown, please refer to <Link href="/book-now" className="text-secondary hover:text-foreground underline transition-colors">our booking page</Link>.</li>
               </ul>
             </section>
           </FadeInOnScroll>
@@ -71,7 +71,7 @@ export default function RentalTermsPage() {
                       <td className="py-3 px-4 align-top">Fitting Fee</td>
                       <td className="py-3 px-4 align-top">₱800.00</td>
                       <td className="py-3 px-4 align-top">
-                        ₱300 staff assistance + ₱500 deductible from rental balance. This fee is non-refundable for any missed appointments.
+                        Fitting Fee (₱800): ₱300 covers staff assistance (non-refundable), and ₱500 will be credited to your rental if you book within 5 calendar days from your fitting date (Day 1 = fitting day); missed or late-cancelled appointments forfeit the fee.
                       </td>
                     </tr>
                     <tr className="border-b border-foreground/10">
@@ -110,7 +110,7 @@ export default function RentalTermsPage() {
               <p><Link href="/collections/all" className="text-secondary hover:text-foreground underline transition-colors">Click here to see our Rental gowns</Link></p>
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">3.1 Metro Manila (Lalamove / Grab / Pick-up)</h3>
+                  <h3 className="font-semibold text-foreground mb-2">3.1 Metro Manila and Greater Metro Manila (Lalamove / Grab / Pick-up)</h3>
                   <ul className="list-disc list-inside space-y-1">
                     <li>Day 1 – Dispatch between 3 PM to 5 PM (earlier if possible)</li>
                     <li>Day 2 – Client uses gown</li>
@@ -142,7 +142,7 @@ export default function RentalTermsPage() {
                 </div>
               </div>
               <p>
-                The rental period starts on the day we ship out the gown. Courier working days exclude Sundays and holidays. We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed.
+                The rental period starts on the day we ship out the gown. Courier working days exclude Sundays and holidays for Luzon Provinces and Outside Luzon / Luzon Islands. We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed.
               </p>
             </section>
           </FadeInOnScroll>
@@ -193,10 +193,10 @@ export default function RentalTermsPage() {
                       </td>
                     </tr>
                     <tr>
-                      <td className="py-3 px-4 align-top">Late Return Fee</td>
-                      <td className="py-3 px-4 align-top">₱1,488.00/day</td>
+                      <td className="py-3 px-4 align-top">Late return fee</td>
+                      <td className="py-3 px-4 align-top">₱1,488/day</td>
                       <td className="py-3 px-4 align-top">
-                        Charged per day when no extension was requested in advance. This higher fee exists because late returns directly affect our ability to prepare the gown for the next client and cause a measurable loss of income.
+                        Late Return Fee (₱1,488/day). Charged per day when no extension was requested in advance. This higher fee exists because late returns directly affect our ability to prepare the gown for the next client and cause a measurable loss of income.
                       </td>
                     </tr>
                   </tbody>
@@ -233,32 +233,32 @@ export default function RentalTermsPage() {
                       <td className="py-3 px-4 align-top">Rental cancellation</td>
                       <td className="py-3 px-4 align-top">Remaining balance payable</td>
                       <td className="py-3 px-4 align-top">
-                        The gown was reserved exclusively for your date. Since we don’t charge a security deposit, the remaining balance must be settled. Down-payments are non-refundable. If approved under the Store Credit Policy, the paid amount may be converted to store credit instead of being forfeited.
+                        The gown was reserved exclusively for your date. Since we don't charge a security deposit, the remaining balance must be settled. Down-payments are non-refundable. If approved under the Store Credit Policy, only the eligible portion of the amount you've already paid may be converted to store credit instead of being forfeited.
                       </td>
                     </tr>
                     <tr className="border-b border-foreground/10">
                       <td className="py-3 px-4 align-top">Store Credit Option</td>
                       <td className="py-3 px-4 align-top">N/A</td>
                       <td className="py-3 px-4 align-top">
-                        In case of unavoidable cancellations, clients may request store credit instead of paying the full balance. Store credits are valid for one month and may be applied to any future rental within six months from the date of issuance. Store credit may only be granted once. If a client uses the store credit to rebook and later cancels again, the standard cancellation policy will be enforced.
+                        What it is: We convert only the eligible portion of the amount you've already paid into credit you can use for a future booking. How long it's valid: Use the credit to make a new booking within 30 days of issuance. Your new event date must be within 6 months of issuance. One-time only. If you rebook with store credit and cancel again, our standard cancellation policy applies and the credit is forfeited.
                       </td>
                     </tr>
                     <tr className="border-b border-foreground/10">
                       <td className="py-3 px-4 align-top">Rescheduling Fees</td>
                       <td className="py-3 px-4 align-top">
-                        Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
+                        Metro Manila and Greater Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
                       </td>
                       <td className="py-3 px-4 align-top">
-                        This applies if you move your event date—even if the event is canceled—as your original slot was already reserved. This option is not available if you decide only 2 days before your scheduled delivery. If your first-choice gown is not available on the new date, you will need to choose from what is available. The fee still applies, as the gown was previously blocked for your original schedule.
+                        This applies if you move your event date—even if the event is canceled—as your original slot was already reserved. This option is not available if you decide just 2 days before your scheduled delivery. If your first-choice gown isn't available on the new date, you'll need to choose from what's available. The fee still applies, as the gown was previously blocked for your original schedule.
                       </td>
                     </tr>
                     <tr>
                       <td className="py-3 px-4 align-top">Changing of Gown Fees</td>
                       <td className="py-3 px-4 align-top">
-                        Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
+                        Metro Manila and Greater Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
                       </td>
                       <td className="py-3 px-4 align-top">
-                        Subject to availability. One change per booking. If the new gown’s rate is higher, the difference must be paid; if lower, no refunds are issued.
+                        Upon approval and subject to availability. One change per booking. If the new gown's rate is higher, the difference must be paid; if lower, no refunds are issued.
                       </td>
                     </tr>
                   </tbody>
@@ -310,7 +310,7 @@ export default function RentalTermsPage() {
                       </td>
                       <td className="py-3 px-4 align-top">₱2,500 to Full Replacement Value</td>
                       <td className="py-3 px-4 align-top">
-                        Covers the cost of a new, comparable gown or a significant portion thereof, in addition to lost income.
+                        Covers the cost of a new, comparable gown or a significant portion thereof, in addition to lost income.11
                       </td>
                     </tr>
                     <tr>
@@ -380,11 +380,11 @@ export default function RentalTermsPage() {
                       </tr>
                       <tr className="border-b border-foreground/10">
                         <td className="py-3 px-4">Pixie skirts</td>
-                        <td className="py-3 px-4">₱5,000–₱7,000</td>
+                        <td className="py-3 px-4">₱7,000–₱10,000</td>
                       </tr>
                       <tr className="border-b border-foreground/10">
                         <td className="py-3 px-4">Train</td>
-                        <td className="py-3 px-4">₱8,000–₱10,000</td>
+                        <td className="py-3 px-4">₱8,000–₱12,000</td>
                       </tr>
                       <tr>
                         <td className="py-3 px-4">Wings</td>
@@ -494,7 +494,10 @@ export default function RentalTermsPage() {
                     Normal Wear and Tear: Due to the nature of a gown being worn multiple times, there may be minor stains, rips, missing beads, or other normal wear and tear concerns. The normal wear and tear caused by previous clients will not be shouldered by the present renter.
                   </li>
                   <li>
-                    Responsibility: Upon delivery, you are fully responsible for the product(s). Please treat the product(s) with great care. You are liable for loss, destruction, or damage due to theft, mysterious disappearance, fire, major stains, or any other cause, other than normal wear and tear.
+                    Responsibility: Upon delivery, you are fully responsible for the product. Please treat it with great care.
+                  </li>
+                  <li>
+                    Upon delivery, you are responsible for the product(s). Please treat the products with great care. You are liable for loss, destruction, or damage due to theft, mysterious disappearance, fire, major stains, or any other cause, other than normal wear and tear.
                   </li>
                   <li>
                     Cleaning: Mystical Wardrobes handles all gown cleaning before and after use; this is included in your rental fee. Clients must not clean, spot-treat, or apply any detergents or chemicals to the gown—even if permission is requested—as this can cause further damage. If a stain occurs, please return the gown as is. Any necessary restoration will be handled by our team and, if applicable, charged under the Damage &amp; Loss schedule.
@@ -523,7 +526,7 @@ export default function RentalTermsPage() {
           <FadeInOnScroll delay={0.6}>
             <section className="bg-white/95 rounded-lg border border-foreground/10 p-6 shadow-md md:p-8">
               <h2 className="font-vegawanty text-2xl text-foreground md:text-3xl mb-4">
-                Updates
+                9. Updates
               </h2>
               <ul className="list-disc list-inside space-y-2">
                 <li>Last updated on October 15, 2025</li>
