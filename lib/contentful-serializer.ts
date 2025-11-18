@@ -196,6 +196,9 @@ export function deserializeGownsResponse(
             id: 'gown',
           },
         },
+        metadata: {
+          tags: [],
+        },
       },
       fields: {
         name: entry.name,
@@ -371,6 +374,9 @@ export function deserializeGownEntry(serialized: SerializedGownEntrySingle): Con
           id: 'gown',
         },
       },
+      metadata: {
+        tags: [],
+      },
     },
     fields: {
       name: serialized.name,
@@ -423,7 +429,7 @@ export function deserializeGownEntry(serialized: SerializedGownEntrySingle): Con
       addOns: serialized.addOns,
       relatedGowns: serialized.relatedGownIds, // Return as string array (IDs only)
     },
-  } as ContentfulEntryResponse;
+  } as unknown as ContentfulEntryResponse;
 }
 
 /**
@@ -493,6 +499,9 @@ export function deserializeAddonsResponse(
             linkType: 'ContentType',
             id: 'addOns',
           },
+        },
+        metadata: {
+          tags: [],
         },
       },
       fields: {
@@ -582,6 +591,9 @@ export function deserializeAddonEntry(serialized: SerializedAddonEntrySingle): C
           id: 'addOns',
         },
       },
+      metadata: {
+        tags: [],
+      },
     },
     fields: {
       name: serialized.name,
@@ -599,6 +611,6 @@ export function deserializeAddonEntry(serialized: SerializedAddonEntrySingle): C
         },
       })),
     },
-  } as ContentfulEntryResponse;
+  } as unknown as ContentfulEntryResponse;
 }
 
