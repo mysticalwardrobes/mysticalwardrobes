@@ -44,3 +44,4 @@ export const selectedSkirtStylesAtom = atom<string[]>([]);
 // Search atoms for filtering options
 export const tagsSearchAtom = atom<string>('');
 export const colorsSearchAtom = atom<string>('');
+export const gownSearchAtom = atom<string>('');

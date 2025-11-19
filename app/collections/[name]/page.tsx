@@ -14,6 +14,7 @@ import {
   selectedSkirtStylesAtom,
   tagsSearchAtom,
   colorsSearchAtom,
+  gownSearchAtom,
   TAG_OPTIONS,
   COLOR_OPTIONS,
   BEST_FOR_OPTIONS,
@@ -371,6 +372,7 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
   const [selectedColors, setSelectedColors] = useAtom(selectedColorsAtom);
   const [selectedBestFor, setSelectedBestFor] = useAtom(selectedBestForAtom);
   const [selectedSkirtStyles, setSelectedSkirtStyles] = useAtom(selectedSkirtStylesAtom);
+  const [gownSearch, setGownSearch] = useAtom(gownSearchAtom);
   const searchParams = useSearchParams();
   const serializedParams = searchParams.toString();
   
@@ -415,6 +417,11 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
       }
       if (selectedSkirtStyles.length > 0) {
         selectedSkirtStyles.forEach(style => searchParams.append('skirtStyles', style));
+      }
+      
+      // Add search query
+      if (gownSearch.trim()) {
+        searchParams.set('search', gownSearch.trim());
       }
       
       // Add sorting
@@ -536,7 +543,7 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
 
   useEffect(() => {
     fetchGowns();
-  }, [name, displayName, sortBy, priceRange, selectedTags, selectedColors, selectedBestFor, selectedSkirtStyles, currentPage]);
+  }, [name, displayName, sortBy, priceRange, selectedTags, selectedColors, selectedBestFor, selectedSkirtStyles, gownSearch, currentPage]);
 
   useEffect(() => {
     const tagParams = searchParams.getAll('tags');
@@ -553,7 +560,7 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [name, displayName, sortBy, priceRange, selectedTags, selectedColors, selectedBestFor, selectedSkirtStyles]);
+  }, [name, displayName, sortBy, priceRange, selectedTags, selectedColors, selectedBestFor, selectedSkirtStyles, gownSearch]);
 
   return (
     <main className="bg-background py-10 text-secondary md:py-16">
@@ -575,6 +582,38 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
               {description}
             </p>
           </header>
+
+          {/* Search Bar */}
+          <div className="animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search gowns by name, collection, color, tags..."
+                value={gownSearch}
+                onChange={(e) => setGownSearch(e.target.value)}
+                className="w-full rounded-lg border border-secondary/30 bg-white px-4 py-3 pl-12 text-sm text-secondary placeholder:text-secondary/50 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all duration-200 hover:border-secondary/50"
+              />
+              <svg 
+                className="absolute left-4 top-3.5 h-5 w-5 text-secondary/50" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              {gownSearch && (
+                <button
+                  onClick={() => setGownSearch('')}
+                  className="absolute right-4 top-3.5 text-secondary/50 hover:text-secondary transition-colors"
+                  aria-label="Clear search"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </div>
 
           <div className="flex flex-col gap-4 bg-white/90 py-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             <div className="flex items-center justify-between sm:justify-start sm:gap-12">
