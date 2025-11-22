@@ -163,9 +163,49 @@ export default function ContactPage() {
         </section>
       </FadeInOnScroll>
 
-      {/* Contact Form and Business Hours */}
+      {/* Google Maps Section */}
       <FadeInOnScroll delay={0.2}>
-        <section className="py-12 md:py-16 px-6 md:px-16">
+        <section className="pt-4 md:pt-8 px-6 md:px-16">
+          <div className="mx-auto max-w-5xl">
+            <h2 className="font-vegawanty text-3xl text-foreground mb-6 text-center">
+              Find Us
+            </h2>
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="w-full h-[400px] md:h-[500px]">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d309.9050619844438!2d120.94277897525555!3d14.678243168290427!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b500510de647%3A0x9cb071aa8aa79434!2sMystical!5e0!3m2!1sen!2sph!4v1763780514540!5m2!1sen!2sph"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-full"
+                />
+              </div>
+              <div className="p-6 bg-white">
+                <p className="font-manrope text-sm text-secondary/80 text-center mb-4">
+                  <strong className="text-foreground">Crystal Fuel, Hulong Duhat, Malabon City, Metro Manila, Philippines</strong>
+                </p>
+                <div className="space-y-3 font-manrope text-sm text-secondary/80">
+                  <p className="flex items-start gap-2">
+                    <span className="text-foreground">📍</span>
+                    <span><strong className="text-foreground">Use this for Waze or Google Maps pin:</strong> Crystal Fuel, Hulong Duhat</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-foreground">🚗</span>
+                    <span><strong className="text-foreground">If you're driving,</strong> please call us before passing Crystal Fuel to avoid making a U-turn.</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </FadeInOnScroll>
+
+      {/* Contact Form and Business Hours */}
+      <FadeInOnScroll delay={0.25}>
+        <section className="py-6 md:py-8 px-6 md:px-16">
           <div className="mx-auto max-w-5xl">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Contact Form */}

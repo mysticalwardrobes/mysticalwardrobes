@@ -310,25 +310,47 @@ function BookFittingSection() {
                 <span className="text-secondary font-bold">•</span>
                 <span><strong>Try-On Time:</strong> You can try on 3-4 gowns within a 30-40 minute session.</span>
               </li>
-              <li className="flex items-start gap-2">
+              {/* <li className="flex items-start gap-2">
                 <span className="text-secondary font-bold">•</span>
                 <span><strong>Gown Availability:</strong> Gown availability is not guaranteed during fittings. Priority is given to gowns already booked online for confirmed events. The gown you wish to try might be booked by another client at the same time.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-secondary font-bold">•</span>
                 <span><strong>Real-Time Updates:</strong> We cannot provide real-time updates on gown availability during fittings. For specific inquiries, please contact us directly.</span>
-              </li>
+              </li> */}
             </ul>
           </div>
 
           {/* Location */}
           <div className="bg-secondary/5 border border-secondary/20 rounded-lg p-4">
-            <h3 className="font-manrope text-lg font-semibold text-foreground mb-2">
+            <h3 className="font-manrope text-lg font-semibold text-foreground mb-4">
               Our Location
             </h3>
-            <p className="font-manrope text-sm text-secondary/80">
+            <p className="font-manrope text-sm text-secondary/80 mb-4">
               <strong>Address:</strong> Crystal Fuel, Hulong Duhat, Malabon City
             </p>
+            <div className="w-full h-[300px] md:h-[400px] rounded-lg overflow-hidden mb-4">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d309.9050619844438!2d120.94277897525555!3d14.678243168290427!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b500510de647%3A0x9cb071aa8aa79434!2sMystical!5e0!3m2!1sen!2sph!4v1763780514540!5m2!1sen!2sph"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-full"
+              />
+            </div>
+            <div className="space-y-2 font-manrope text-sm text-secondary/80">
+              <p className="flex items-start gap-2">
+                <span className="text-foreground">📍</span>
+                <span><strong className="text-foreground">Use this for Waze or Google Maps pin:</strong> Crystal Fuel, Hulong Duhat</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <span className="text-foreground">🚗</span>
+                <span><strong className="text-foreground">If you're driving,</strong> please call us before passing Crystal Fuel to avoid making a U-turn.</span>
+              </p>
+            </div>
           </div>
 
           {/* Online Booking Alternative */}
