@@ -256,32 +256,57 @@ export default function RentalTermsPage() {
                       <td className="py-3 px-4 align-top">Rental cancellation</td>
                       <td className="py-3 px-4 align-top">Remaining balance payable</td>
                       <td className="py-3 px-4 align-top">
-                        The gown was reserved exclusively for your date. Since we don't charge a security deposit, the remaining balance must be settled. Down-payments are non-refundable. If approved under the Store Credit Policy, only the eligible portion of the amount you've already paid may be converted to store credit instead of being forfeited.
+                        <ul className="list-disc list-inside space-y-1">
+                          <li>The gown was reserved exclusively for your date.</li>
+                          <li>Since we don't charge a security deposit, the remaining balance must be settled.</li>
+                          <li>Down-payments are non-refundable.</li>
+                          <li>If approved under the Store Credit Policy, only the eligible portion of the amount you've already paid may be converted to store credit instead of being forfeited.</li>
+                        </ul>
                       </td>
                     </tr>
                     <tr className="border-b border-foreground/10">
                       <td className="py-3 px-4 align-top">Store Credit Option</td>
                       <td className="py-3 px-4 align-top">N/A</td>
-                      <td className="py-3 px-4 align-top">
-                        What it is: We convert only the eligible portion of the amount you've already paid into credit you can use for a future booking. How long it's valid: Use the credit to make a new booking within 30 days of issuance. Your new event date must be within 6 months of issuance. One-time only. If you rebook with store credit and cancel again, our standard cancellation policy applies and the credit is forfeited.
+                      <td className="py-3 px-4 align-top space-y-3">
+                        <div>
+                          <p className="font-semibold text-foreground mb-1">What it is:</p>
+                          <p>We convert only the eligible portion of the amount you've already paid into credit you can use for a future booking.</p>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-foreground mb-1">How long it's valid:</p>
+                          <ul className="list-disc list-inside space-y-1">
+                            <li>Use the credit to make a new booking within 30 days of issuance.</li>
+                            <li>Your new event date must be within 6 months of issuance.</li>
+                          </ul>
+                        </div>
+                        <p>One-time only. If you rebook with store credit and cancel again, our standard cancellation policy applies and the credit is forfeited.</p>
                       </td>
                     </tr>
                     <tr className="border-b border-foreground/10">
                       <td className="py-3 px-4 align-top">Rescheduling Fees</td>
                       <td className="py-3 px-4 align-top">
-                        Metro Manila and Greater Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
+                        Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
                       </td>
                       <td className="py-3 px-4 align-top">
-                        This applies if you move your event date—even if the event is canceled—as your original slot was already reserved. This option is not available if you decide just 2 days before your scheduled delivery. If your first-choice gown isn't available on the new date, you'll need to choose from what's available. The fee still applies, as the gown was previously blocked for your original schedule.
+                        <ul className="list-disc list-inside space-y-1">
+                          <li>This applies if you move your event date—even if the event is canceled—as your original slot was already reserved.</li>
+                          <li>This option is not available if you decide just 2 days before your scheduled delivery.</li>
+                          <li>If your first-choice gown isn't available on the new date, you'll need to choose from what's available.</li>
+                          <li>The fee still applies, as the gown was previously blocked for your original schedule.</li>
+                        </ul>
                       </td>
                     </tr>
                     <tr>
                       <td className="py-3 px-4 align-top">Changing of Gown Fees</td>
                       <td className="py-3 px-4 align-top">
-                        Metro Manila and Greater Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
+                        Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
                       </td>
                       <td className="py-3 px-4 align-top">
-                        Upon approval and subject to availability. One change per booking. If the new gown's rate is higher, the difference must be paid; if lower, no refunds are issued.
+                        <ul className="list-disc list-inside space-y-1">
+                          <li>Upon approval and subject to availability.</li>
+                          <li>One change per booking.</li>
+                          <li>If the new gown's rate is higher, the difference must be paid; if lower, no refunds are issued.</li>
+                        </ul>
                       </td>
                     </tr>
                   </tbody>
