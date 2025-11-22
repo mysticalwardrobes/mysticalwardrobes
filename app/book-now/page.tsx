@@ -310,15 +310,40 @@ function BookFittingSection() {
                 <span className="text-secondary font-bold">•</span>
                 <span><strong>Try-On Time:</strong> You can try on 3-4 gowns within a 30-40 minute session.</span>
               </li>
-              {/* <li className="flex items-start gap-2">
+            </ul>
+          </div>
+
+          {/* Gown Choices & Availability */}
+          <div>
+            <h3 className="font-manrope text-lg font-semibold text-foreground mb-3">
+              Gown Choices & Availability
+            </h3>
+            <ul className="space-y-2 font-manrope text-sm text-secondary/80 mb-4">
+              <li className="flex items-start gap-2">
                 <span className="text-secondary font-bold">•</span>
-                <span><strong>Gown Availability:</strong> Gown availability is not guaranteed during fittings. Priority is given to gowns already booked online for confirmed events. The gown you wish to try might be booked by another client at the same time.</span>
+                <span>Some gowns may not be available on your fitting date, as they may already be booked by other clients. That's why we ask for your top 8–15 choices, so we can easily remove any unavailable gowns and proceed with the rest.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-secondary font-bold">•</span>
-                <span><strong>Real-Time Updates:</strong> We cannot provide real-time updates on gown availability during fittings. For specific inquiries, please contact us directly.</span>
-              </li> */}
+                <span>We're unable to update every fitting client in real time about each gown's status, so please message us a few days before your fitting and we'll send an updated list of gowns that are available to try.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-secondary font-bold">•</span>
+                <span>Paying the ₱800 fitting fee does not reserve any gown for your fitting date or your event date. A gown is only reserved once you officially book it for your event.</span>
+              </li>
             </ul>
+
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-4 mb-4">
+              <h4 className="font-manrope text-base font-semibold text-foreground mb-3">
+                Sample Scenario
+              </h4>
+              <p className="font-manrope text-sm text-secondary/80 mb-3">
+                If you schedule your fitting weeks or months in advance, your preferred gowns may be available at the time of booking, but we cannot guarantee they'll still be available on your actual fitting day. Another client may reserve those gowns for an event date that overlaps with your fitting, making them unavailable for you.
+              </p>
+              <p className="font-manrope text-sm text-secondary/80">
+                If your chosen gowns are not in the studio on the day of your fitting, we will offer gowns with a similar structure or design for you to try (the design may not be exactly the same). Even if you're not able to fit a specific gown, you can still book it for your event date as long as it is available.
+              </p>
+            </div>
           </div>
 
           {/* Location */}
