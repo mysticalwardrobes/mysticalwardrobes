@@ -76,14 +76,14 @@ export default function RentalTermsPage() {
                     </tr>
                     <tr className="border-b border-foreground/10">
                       <td className="py-3 px-4 align-top">Reschedule Fee</td>
-                      <td className="py-3 px-4 align-top">₱300.00</td>
+                      <td className="py-3 px-4 align-top">₱500.00</td>
                       <td className="py-3 px-4 align-top">
                         A ₱300.00 fee is payable each time a fitting slot is moved.
                       </td>
                     </tr>
                     <tr>
                       <td className="py-3 px-4 align-top">Extension Fee</td>
-                      <td className="py-3 px-4 align-top">₱300.00</td>
+                      <td className="py-3 px-4 align-top">₱400.00</td>
                       <td className="py-3 px-4 align-top">
                         An extension of up to 30 minutes may be allowed if there is no next client booked after your slot. A ₱300.00 extension fee will be charged.
                       </td>
