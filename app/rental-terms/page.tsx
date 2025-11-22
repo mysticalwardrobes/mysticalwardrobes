@@ -257,9 +257,7 @@ export default function RentalTermsPage() {
                       <td className="py-3 px-4 align-top">Remaining balance payable</td>
                       <td className="py-3 px-4 align-top">
                         <ul className="list-disc list-inside space-y-1">
-                          <li>The gown was reserved exclusively for your date.</li>
-                          <li>Since we don't charge a security deposit, the remaining balance must be settled.</li>
-                          <li>Down-payments are non-refundable.</li>
+                          <li>The gown was reserved exclusively for your date. Since we don't charge a security deposit, the remaining balance must be settled. Down-payments are non-refundable.</li>
                           <li>If approved under the Store Credit Policy, only the eligible portion of the amount you've already paid may be converted to store credit instead of being forfeited.</li>
                         </ul>
                       </td>
@@ -288,12 +286,7 @@ export default function RentalTermsPage() {
                         Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
                       </td>
                       <td className="py-3 px-4 align-top">
-                        <ul className="list-disc list-inside space-y-1">
-                          <li>This applies if you move your event date—even if the event is canceled—as your original slot was already reserved.</li>
-                          <li>This option is not available if you decide just 2 days before your scheduled delivery.</li>
-                          <li>If your first-choice gown isn't available on the new date, you'll need to choose from what's available.</li>
-                          <li>The fee still applies, as the gown was previously blocked for your original schedule.</li>
-                        </ul>
+                        This applies if you move your event date—even if the event is canceled—as your original slot was already reserved. This option is not available if you decide just 2 days before your scheduled delivery. If your first-choice gown isn't available on the new date, you'll need to choose from what's available. The fee still applies, as the gown was previously blocked for your original schedule.
                       </td>
                     </tr>
                     <tr>
@@ -302,11 +295,7 @@ export default function RentalTermsPage() {
                         Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
                       </td>
                       <td className="py-3 px-4 align-top">
-                        <ul className="list-disc list-inside space-y-1">
-                          <li>Upon approval and subject to availability.</li>
-                          <li>One change per booking.</li>
-                          <li>If the new gown's rate is higher, the difference must be paid; if lower, no refunds are issued.</li>
-                        </ul>
+                        Upon approval and subject to availability. One change per booking. If the new gown's rate is higher, the difference must be paid; if lower, no refunds are issued.
                       </td>
                     </tr>
                   </tbody>
