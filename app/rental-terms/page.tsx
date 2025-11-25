@@ -165,7 +165,7 @@ export default function RentalTermsPage() {
                 </div>
               </div>
               <p>
-                The rental period starts on the day we ship out the gown. Courier working days exclude Sundays and holidays for Luzon Provinces and Outside Luzon / Luzon Islands. We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed.
+                The rental period starts on the day we ship out the gown. For Luzon Provinces: 6-7 days (excluding Sundays and holidays) or 9 days (including Saturdays and Sundays). We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed.
               </p>
             </section>
           </FadeInOnScroll>

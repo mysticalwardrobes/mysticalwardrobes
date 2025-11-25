@@ -16,6 +16,7 @@
     "@heroicons/react": "^2.2.0",
     "@supabase/supabase-js": "^2.80.0",
     "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
     "bcryptjs": "^3.0.3",
     "contentful": "^11.8.6",
     "framer-motion": "^12.23.0",

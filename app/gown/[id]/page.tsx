@@ -18,7 +18,7 @@ type LocationKey = "METRO_MANILA" | "LUZON" | "OUTSIDE_LUZON";
 const TAG_PREVIEW_LIMIT = 4;
 const RENTAL_TIMELINES: { key: LocationKey; title: string; duration: string }[] = [
   { key: "METRO_MANILA", title: "Metro Manila & Greater Metro Manila", duration: "3 days" },
-  { key: "LUZON", title: "Luzon (Outside Metro Manila)", duration: "6-9 days" },
+  { key: "LUZON", title: "Luzon (Outside Metro Manila)", duration: "6-7 days" },
   { key: "OUTSIDE_LUZON", title: "Outside Luzon & Luzon Islands", duration: "15-16 days" },
 ];
 
@@ -562,6 +562,16 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
               );
             })}
           </div>
+          {location === "LUZON" && (
+            <div className="mt-3 space-y-1">
+              <p className="text-xs text-neutral-600">
+                <span className="font-semibold">6-7 days</span> (excluding Sundays and holidays)
+              </p>
+              <p className="text-xs text-neutral-600">
+                <span className="font-semibold">9 days</span> (including Saturdays and Sundays)
+              </p>
+            </div>
+          )}
         </div>
 
           <div className="pt-1 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
