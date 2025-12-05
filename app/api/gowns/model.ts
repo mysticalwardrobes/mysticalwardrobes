@@ -19,6 +19,7 @@ export interface Gown {
   arms: string;
   backing: string;
   lenght: string;
+  sleeves: string;
   longGownPictures: string[];
   filipinianaPictures: string[];
   pixiePictures: string[];

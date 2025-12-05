@@ -18,7 +18,7 @@ type LocationKey = "METRO_MANILA" | "LUZON" | "OUTSIDE_LUZON";
 const TAG_PREVIEW_LIMIT = 4;
 const RENTAL_TIMELINES: { key: LocationKey; title: string; duration: string }[] = [
   { key: "METRO_MANILA", title: "Metro Manila & Greater Metro Manila", duration: "3 days" },
-  { key: "LUZON", title: "Luzon (Outside Metro Manila)", duration: "6-7 days" },
+  { key: "LUZON", title: "Luzon (Outside Metro Manila)", duration: "6-9 days" },
   { key: "OUTSIDE_LUZON", title: "Outside Luzon & Luzon Islands", duration: "15-16 days" },
 ];
 
@@ -703,6 +703,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                 <tr className="bg-neutral-50">
                   <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center border-r border-neutral-200">Bust</th>
                   <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center border-r border-neutral-200">Waist</th>
+                  <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center border-r border-neutral-200">Sleeves</th>
                   <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center">Length</th>
                 </tr>
               </thead>
@@ -717,6 +718,12 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                   <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
                     {getMeasurementForSize(gown.waist, selectedSizeOption)}
                     {getMeasurementForSize(gown.waist, selectedSizeOption) !== '-' && (
+                      <span className="text-xs text-neutral-500 ml-1">in</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
+                    {getMeasurementForSize(gown.sleeves, selectedSizeOption)}
+                    {getMeasurementForSize(gown.sleeves, selectedSizeOption) !== '-' && (
                       <span className="text-xs text-neutral-500 ml-1">in</span>
                     )}
                   </td>
