@@ -205,6 +205,7 @@ export async function GET(request: NextRequest) {
       const arms = ensureString(fields.arms) ?? '';
       const backing = ensureString(fields.backing) ?? '';
       const lenght = ensureString(fields.lenght) ?? '';
+      const sleeves = ensureString(fields.sleeves) ?? '';
       // Add-ons may be Symbols or Entry links; normalize to entry IDs
       const addOns = extractIdArray(fields.addOns);
       // Related gowns may be Entry links; normalize to entry IDs
@@ -237,6 +238,7 @@ export async function GET(request: NextRequest) {
         arms,
         backing,
         lenght,
+        sleeves,
         longGownPictures,
         filipinianaPictures,
         pixiePictures,
