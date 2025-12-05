@@ -8,9 +8,11 @@ export interface CustomMadeGown {
   preOrderPrice: number;
   pixiePreOrderPrice?: number;
   hoodPreOrderPrice?: number;
+  flowyPreOrderPrice?: number;
   longGownPicture: string[];
   pixiePicture: string[];
   hoodPicture: string[];
+  flowyPictures: string[];
 }
 
 export interface CustomMadeGownsResponse {

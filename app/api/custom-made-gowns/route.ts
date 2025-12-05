@@ -124,11 +124,13 @@ export async function GET(request: NextRequest) {
       const preOrderPrice = ensureNumber(fields.preOrderPrice) ?? 0;
       const pixiePreOrderPrice = ensureNumber(fields.pixiePreOrderPrice) ?? undefined;
       const hoodPreOrderPrice = ensureNumber(fields.hoodPreOrderPrice) ?? undefined;
+      const flowyPreOrderPrice = ensureNumber(fields.flowyPreOrderPrice) ?? undefined;
 
       // Extract image URLs from different image arrays
       const longGownPicture = normalizeAssetUrls(fields.longGownPicture);
       const pixiePicture = normalizeAssetUrls(fields.pixiePicture);
       const hoodPicture = normalizeAssetUrls(fields.hoodPicture);
+      const flowyPictures = normalizeAssetUrls(fields.flowyPictures);
 
       return {
         id: String(item.sys.id),
@@ -140,9 +142,11 @@ export async function GET(request: NextRequest) {
         preOrderPrice,
         pixiePreOrderPrice,
         hoodPreOrderPrice,
+        flowyPreOrderPrice,
         longGownPicture,
         pixiePicture,
         hoodPicture,
+        flowyPictures,
       };
     });
 

@@ -15,7 +15,7 @@ export default function CustomGownPage({ params }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [selectedImageType, setSelectedImageType] = useState<'longGown' | 'pixie' | 'hood'>('longGown');
+  const [selectedImageType, setSelectedImageType] = useState<'longGown' | 'pixie' | 'hood' | 'flowy'>('longGown');
 
   useEffect(() => {
     const fetchGown = async () => {
@@ -35,6 +35,8 @@ export default function CustomGownPage({ params }: Props) {
           setSelectedImageType('pixie');
         } else if (gownData.hoodPicture.length > 0) {
           setSelectedImageType('hood');
+        } else if (gownData.flowyPictures.length > 0) {
+          setSelectedImageType('flowy');
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch custom gown');
@@ -55,6 +57,8 @@ export default function CustomGownPage({ params }: Props) {
         return gown.pixiePicture;
       case 'hood':
         return gown.hoodPicture;
+      case 'flowy':
+        return gown.flowyPictures;
       default:
         return gown.longGownPicture;
     }
@@ -79,6 +83,10 @@ export default function CustomGownPage({ params }: Props) {
       case 'hood':
         return (gown.hoodPreOrderPrice !== undefined && gown.hoodPreOrderPrice !== null) 
           ? gown.hoodPreOrderPrice 
+          : gown.preOrderPrice;
+      case 'flowy':
+        return (gown.flowyPreOrderPrice !== undefined && gown.flowyPreOrderPrice !== null) 
+          ? gown.flowyPreOrderPrice 
           : gown.preOrderPrice;
       case 'longGown':
       default:
@@ -285,6 +293,20 @@ export default function CustomGownPage({ params }: Props) {
                   }`}
                 >
                   Hood
+                </button>
+              )}
+              {/* Show Flowy if pictures exist */}
+              {gown.flowyPictures.length > 0 && (
+                <button
+                  onClick={() => {
+                    setSelectedImageType('flowy');
+                    setSelectedImageIndex(0);
+                  }}
+                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${
+                    selectedImageType === 'flowy' ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                  }`}
+                >
+                  Flowy
                 </button>
               )}
             </div>

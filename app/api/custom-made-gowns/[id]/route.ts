@@ -130,11 +130,13 @@ export async function GET(
     const preOrderPrice = ensureNumber(fields.preOrderPrice) ?? 0;
     const pixiePreOrderPrice = ensureNumber(fields.pixiePreOrderPrice) ?? undefined;
     const hoodPreOrderPrice = ensureNumber(fields.hoodPreOrderPrice) ?? undefined;
+    const flowyPreOrderPrice = ensureNumber(fields.flowyPreOrderPrice) ?? undefined;
 
     // Extract image URLs from different image arrays
     const longGownPicture = normalizeAssetUrls(fields.longGownPicture);
     const pixiePicture = normalizeAssetUrls(fields.pixiePicture);
     const hoodPicture = normalizeAssetUrls(fields.hoodPicture);
+    const flowyPictures = normalizeAssetUrls(fields.flowyPictures);
 
     const customGown: CustomMadeGown = {
       id: String(item.sys.id),
@@ -146,9 +148,11 @@ export async function GET(
       preOrderPrice,
       pixiePreOrderPrice,
       hoodPreOrderPrice,
+      flowyPreOrderPrice,
       longGownPicture,
       pixiePicture,
       hoodPicture,
+      flowyPictures,
     };
 
     const nextResponse = NextResponse.json(customGown);
@@ -161,7 +165,7 @@ export async function GET(
     console.log('📤 RESPONSE:');
     console.log(`   Data source: ${dataSource.toUpperCase()}`);
     console.log(`   Gown title: ${title}`);
-    console.log(`   Total images: ${longGownPicture.length + pixiePicture.length + hoodPicture.length}`);
+    console.log(`   Total images: ${longGownPicture.length + pixiePicture.length + hoodPicture.length + flowyPictures.length}`);
     console.log(`   Total request time: ${totalRequestTime}ms`);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
