@@ -696,7 +696,6 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-110"
                         sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 30vw"
-                        unoptimized={true}
                       />
                       {/* Show indicator if gown has no valid images */}
                       {!hasValidImages(gown) && (

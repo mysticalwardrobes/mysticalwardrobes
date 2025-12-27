@@ -345,7 +345,6 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
-            unoptimized={true}
           />
           {/* Navigation arrows if multiple images */}
           {getCurrentImages().length > 1 && (
@@ -396,7 +395,6 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                     fill 
                     className="object-cover transition-transform duration-200" 
                     sizes="120px" 
-                    unoptimized={true}
                   />
                 </button>
               );
@@ -882,7 +880,6 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
                 fill 
                 className="object-cover transition-transform duration-500 group-hover:scale-105" 
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" 
-                unoptimized={true}
               />
             </div>
             <div className="mt-3">
@@ -1058,7 +1055,6 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        unoptimized={true}
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center bg-secondary/10">

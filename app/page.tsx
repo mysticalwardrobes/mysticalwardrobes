@@ -389,7 +389,6 @@ function ReviewCard(props: ReviewCardProps) {
                   sizes="(min-width: 1024px) 22rem, 90vw"
                   className="object-cover"
                   priority={position === 'active'}
-                  unoptimized
                 />
               </motion.div>
 
@@ -430,7 +429,6 @@ function ReviewCard(props: ReviewCardProps) {
                       fill
                       sizes="64px"
                       className="object-cover"
-                      unoptimized
                     />
                   </button>
                 ))}
