@@ -147,8 +147,8 @@ export default function RentalTermsPage() {
                     <li>Day 2-3 – In transit</li>
                     <li>Day 4 – Client receives gown</li>
                     <li>Day 5 – Event day</li>
-                    <li>Day 7 – Hand back to LBC</li>
-                    <li>Day 8-9 – Item arrives at Mystical</li>
+                    <li>Day 6 – Hand back to LBC</li>
+                    <li>Day 7-8 – Item arrives at Mystical</li>
                   </ul>
                 </div>
                 <div>
