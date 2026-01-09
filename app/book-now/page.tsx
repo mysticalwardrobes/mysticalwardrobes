@@ -151,7 +151,7 @@ function BookRentalSection() {
       title: "Reserve",
       content: (
         <p className="font-manrope text-sm text-secondary/80">
-          Pay 50% or the agreed upon amount as down payment and send proof of payment. A booking is only confirmed once acknowledged by our team.
+          Pay 70% or the agreed upon amount as down payment and send proof of payment. A booking is only confirmed once acknowledged by our team.
         </p>
       ),
     },
@@ -515,7 +515,7 @@ function CustomOrderSection() {
                   Confirm Your Order
                 </h4>
                 <p className="font-manrope text-sm text-secondary/80">
-                  A 50% or the agreed upon amount as down payment secures your order. Bookings are confirmed once acknowledged via Facebook, Email, or Instagram.
+                  A 70% or the agreed upon amount as down payment secures your order. Bookings are confirmed once acknowledged via Facebook, Email, or Instagram.
                 </p>
               </div>
             </div>

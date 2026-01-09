@@ -193,7 +193,7 @@ export default function CustomMadeTermsPage() {
               </h2>
               <div className="space-y-4 text-secondary/80 leading-relaxed">
                 <ul className="list-disc list-inside space-y-2">
-                  <li>A 50% down payment confirms the order and allows production or material sourcing to begin.</li>
+                  <li>A 70% down payment confirms the order and allows production or material sourcing to begin.</li>
                   <li>An order is considered final only after MW officially acknowledges your payment via our channels.</li>
                   <li>Payments are strictly non-refundable, as each gown is custom-made and materials are ordered specifically for your piece.</li>
                   <li>The remaining balance must be settled before pickup or dispatch.</li>

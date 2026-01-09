@@ -41,7 +41,7 @@ export default function RentalTermsPage() {
                 1. Booking &amp; Payment
               </h2>
               <ul className="list-disc list-inside space-y-2">
-                <li>Reservation: A booking is locked only after the 50% or stated down-payment is received.</li>
+                <li>Reservation: A booking is locked only after the 70% or stated down-payment is received.</li>
                 <li>Payment-First Policy: All fees must be settled before the gown is dispatched or a fitting is scheduled. We do not collect security deposits.</li>
                 <li>Balance Payment: The client must settle the remaining balance at least one week before the delivery date. If a client makes a down-payment when their event is less than one week away, they must pay the full amount immediately.</li>
                 <li>Proof of Payment: Clients must send a screenshot of their payment via our official channels (IG, FB, or email). A booking is only confirmed once acknowledged.</li>

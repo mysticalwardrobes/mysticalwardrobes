@@ -44,7 +44,7 @@ const faqData: FAQCategory[] = [
         question: "How do I book a gown?",
         answer: (
           <>
-            A booking is confirmed only after a 50% or stated down-payment is received. All fees must be settled before the gown is dispatched. You can find the{" "}
+            A booking is confirmed only after a 70% or stated down-payment is received. All fees must be settled before the gown is dispatched. You can find the{" "}
             <Link href="/book-now" className="text-secondary hover:text-foreground underline transition-colors">
               booking link here
             </Link>.
