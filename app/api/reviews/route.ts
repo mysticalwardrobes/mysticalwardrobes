@@ -64,11 +64,11 @@ const normalizeEntryIds = (value: unknown): string[] | null => {
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  
+
   // Parse query parameters
   const random = searchParams.get('random') === 'true'
   const limit = parseInt(searchParams.get('limit') || '0', 10)
-  
+
   const response = await client.getEntries({
     content_type: 'reviews',
     limit: 1000, // Maximum allowed by Contentful API to fetch all items

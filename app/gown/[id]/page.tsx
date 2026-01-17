@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 import { Gown } from "@/app/api/gowns/model";
 import { AddOn } from "@/app/api/addons/model";
+import { Review } from "@/app/api/reviews/model";
 import { collections as collectionConfig } from "@/app/config/collections";
 import React from "react";
 import { div } from "framer-motion/client";
@@ -36,9 +37,9 @@ const normalizeImageUrl = (url: string, width?: number, height?: number, quality
   if (!url || url === 'null' || url.trim() === '') {
     return '/assets/sample_gown-1.jpg';
   }
-  
+
   let normalizedUrl = url;
-  
+
   // Normalize the URL format
   if (url.startsWith('//')) {
     normalizedUrl = `https:${url}`;
@@ -50,7 +51,7 @@ const normalizeImageUrl = (url: string, width?: number, height?: number, quality
     // Local path
     return url;
   }
-  
+
   // If it's a Contentful CDN URL, add optimization parameters
   if (normalizedUrl.includes('images.ctfassets.net') || normalizedUrl.includes('ctfassets.net')) {
     try {
@@ -66,7 +67,7 @@ const normalizeImageUrl = (url: string, width?: number, height?: number, quality
       return normalizedUrl;
     }
   }
-  
+
   return normalizedUrl;
 };
 
@@ -94,7 +95,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
         }
         const gownData = await response.json();
         setGown(gownData);
-        
+
         // Set default version based on available pictures
         if (gownData.longGownPictures.length > 0) {
           setSelectedImageType('longGown');
@@ -209,7 +210,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
           <div className="relative w-full aspect-[3/4] overflow-hidden rounded-sm bg-neutral-200 animate-pulse">
             <div className="absolute inset-0 bg-gradient-to-r from-neutral-200 via-neutral-100 to-neutral-200 animate-pulse"></div>
           </div>
-          
+
           {/* Thumbnail skeleton */}
           <div className="mt-3 grid grid-cols-4 gap-2">
             {Array.from({ length: 4 }).map((_, idx) => (
@@ -330,475 +331,472 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
 
   return (
     <>
-    <div className="mx-auto max-w-6xl p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-10 animate-fade-in">
-      <div className="animate-slide-in-left">
-        <div className="mb-4 text-xs">
-          <Link href="/collections/all" className="text-neutral-500 hover:text-neutral-800 transition-colors duration-200">Collections</Link>
-          <span className="mx-2 text-neutral-400">/</span>
-          <span className="text-neutral-800">{gown.name}</span>
-        </div>
-        <div className="relative w-full aspect-[3/4] overflow-hidden rounded-sm bg-neutral-100 shadow-sm group">
-          <Image
-            src={normalizeImageUrl(getCurrentImage(), 1200, 1600, 90)}
-            alt={gown.name}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, 50vw"
-            priority
-          />
-          {/* Navigation arrows if multiple images */}
+      <div className="mx-auto max-w-6xl p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-10 animate-fade-in">
+        <div className="animate-slide-in-left">
+          <div className="mb-4 text-xs">
+            <Link href="/collections/all" className="text-neutral-500 hover:text-neutral-800 transition-colors duration-200">Collections</Link>
+            <span className="mx-2 text-neutral-400">/</span>
+            <span className="text-neutral-800">{gown.name}</span>
+          </div>
+          <div className="relative w-full aspect-[3/4] overflow-hidden rounded-sm bg-neutral-100 shadow-sm group">
+            <Image
+              src={normalizeImageUrl(getCurrentImage(), 1200, 1600, 90)}
+              alt={gown.name}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
+            />
+            {/* Navigation arrows if multiple images */}
+            {getCurrentImages().length > 1 && (
+              <>
+                <button
+                  onClick={() => setSelectedImageIndex(prev => prev > 0 ? prev - 1 : getCurrentImages().length - 1)}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-all duration-200 hover:scale-110 opacity-0 group-hover:opacity-100"
+                  aria-label="Previous image"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setSelectedImageIndex(prev => prev < getCurrentImages().length - 1 ? prev + 1 : 0)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-all duration-200 hover:scale-110 opacity-0 group-hover:opacity-100"
+                  aria-label="Next image"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </>
+            )}
+          </div>
+
+
+          {/* Thumbnail grid for current image type */}
           {getCurrentImages().length > 1 && (
-            <>
-              <button
-                onClick={() => setSelectedImageIndex(prev => prev > 0 ? prev - 1 : getCurrentImages().length - 1)}
-                className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-all duration-200 hover:scale-110 opacity-0 group-hover:opacity-100"
-                aria-label="Previous image"
-              >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button
-                onClick={() => setSelectedImageIndex(prev => prev < getCurrentImages().length - 1 ? prev + 1 : 0)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-all duration-200 hover:scale-110 opacity-0 group-hover:opacity-100"
-                aria-label="Next image"
-              >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </>
-          )}
-        </div>
-        
-
-        {/* Thumbnail grid for current image type */}
-        {getCurrentImages().length > 1 && (
-          <div className="mt-3 grid grid-cols-4 gap-2">
-            {getCurrentImages().map((src, idx) => {
-              // Filter out null or invalid URLs
-              if (!src || src === 'null' || src.trim() === '') {
-                return null;
-              }
-              return (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedImageIndex(idx)}
-                  className={`relative aspect-square overflow-hidden rounded-sm bg-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-neutral-300 transition-all duration-200 hover:scale-105 ${
-                    selectedImageIndex === idx ? 'ring-2 ring-black scale-105' : ''
-                  }`}
-                  aria-label={`Select image ${idx + 1}`}
-                >
-                  <Image 
-                    src={normalizeImageUrl(src, 200, 200, 85)} 
-                    alt={`${gown.name} ${idx + 1}`} 
-                    fill 
-                    className="object-cover transition-transform duration-200" 
-                    sizes="120px" 
-                  />
-                </button>
-              );
-            }).filter(Boolean)}
-          </div>
-        )}
-
-        <div className="mt-5 text-sm text-neutral-600 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
-          By booking a rental you agree to our{" "}
-          <Link
-            href="/rental-terms"
-            className="font-semibold text-secondary underline underline-offset-4 transition-colors duration-200 hover:text-secondary/80"
-          >
-            Rental Terms
-          </Link>.
-        </div>
-      </div>
-
-      <div className="space-y-5 md:sticky md:top-24 md:pt-10 self-start animate-slide-in-right">
-        <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-          <h1 className="text-6xl font-semibold tracking-tight font-serif">{gown.name}</h1>
-          {gown.tags.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
-              {visibleTags.map((t, index) => (
-                <Link
-                  key={`${t}-${index}`}
-                  href={{ pathname: "/collections/all", query: { tags: t } }}
-                  className="rounded-full border px-3 py-1 bg-white/60 tracking-wide uppercase text-neutral-700 hover:bg-white/80 transition-colors duration-200 animate-fade-in-up focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
-                  style={{ animationDelay: `${0.2 + index * 0.05}s` }}
-                >
-                  {t}
-                </Link>
-              ))}
-              {gown.tags.length > TAG_PREVIEW_LIMIT && (
-                <button
-                  type="button"
-                  onClick={() => setShowAllTags((prev) => !prev)}
-                  className="rounded-full border px-3 py-1 bg-white text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 uppercase text-[11px] font-medium animate-fade-in-up"
-                  style={{ animationDelay: `${0.2 + visibleTags.length * 0.05}s` }}
-                  aria-expanded={showAllTags}
-                >
-                  {showAllTags ? "Show Less Tags" : "View All Tags"}
-                </button>
-              )}
-            </div>
-          )}
-          {gown.tags.length > TAG_PREVIEW_LIMIT && showAllTags && (
-            <p className="mt-2 text-xs text-neutral-500 max-w-md animate-fade-in-up" style={{ animationDelay: `${0.2 + visibleTags.length * 0.05 + 0.05}s` }}>
-              Note: These tags are our recommended themes, but you're not limited by them. Any gown can be styled to fit your event - feel free to explore and choose what matches your vision.
-            </p>
-          )}
-        </div>
-
-        <div className="rounded p-4 space-y-4 bg-white shadow-sm animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-        <div>
-            <div className="text-[11px] tracking-wide uppercase text-neutral-500 mb-2">Version</div>
-            <div className="inline-flex rounded-full bg-neutral-50 p-1">
-              {/* Show Long Gown if pictures exist */}
-              {gown.longGownPictures.length > 0 && (
-                <button
-                  onClick={() => {
-                    setSelectedImageType('longGown');
-                    setSelectedImageIndex(0);
-                    setIsPixie(false);
-                  }}
-                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${
-                    selectedImageType === 'longGown' && !isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
-                  }`}
-                >
-                  Long Gown
-                </button>
-              )}
-              {/* Show Filipiniana if pictures exist */}
-              {gown.filipinianaPictures.length > 0 && (
-                <button
-                  onClick={() => {
-                    setSelectedImageType('filipiniana');
-                    setSelectedImageIndex(0);
-                    setIsPixie(false);
-                  }}
-                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${
-                    selectedImageType === 'filipiniana' && !isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
-                  }`}
-                >
-                  Filipiniana
-                </button>
-              )}
-              {/* Show Pixie if pictures exist */}
-              {gown.pixiePictures.length > 0 && (
-                <button
-                  onClick={() => {
-                    setSelectedImageType('pixie');
-                    setSelectedImageIndex(0);
-                    setIsPixie(true);
-                  }}
-                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${
-                    selectedImageType === 'pixie' && isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
-                  }`}
-                >
-                  Pixie
-                </button>
-              )}
-              {/* Show Train if pictures exist */}
-              {gown.trainPictures.length > 0 && (
-                <button
-                  onClick={() => {
-                    setSelectedImageType('train');
-                    setSelectedImageIndex(0);
-                    setIsPixie(false);
-                  }}
-                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${
-                    selectedImageType === 'train' && !isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
-                  }`}
-                >
-                  Train
-                </button>
-              )}
-            </div>
-          </div>
-          
-          <div>
-            <div className="text-[11px] tracking-wide uppercase text-neutral-500 mb-2">Location</div>
-            <div className="inline-flex rounded-full bg-neutral-50 p-1">
-              {([
-                { k: "METRO_MANILA", l: "Metro Manila" },
-                { k: "LUZON", l: "Luzon" },
-                { k: "OUTSIDE_LUZON", l: "Outside Luzon" },
-              ] as { k: LocationKey; l: string }[]).map(({ k, l }) => (
-                <button
-                  key={k}
-                  onClick={() => setLocation(k)}
-                  className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${location === k ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"}`}
-                >
-                  {l}
-                </button>
-              ))}
-            </div>
-          </div>
-
-        <div className="mt-3 rounded-md border border-neutral-200 bg-neutral-50/80 p-3 transition-all duration-200 animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
-          <div className="text-[11px] tracking-wide uppercase text-neutral-500">Rental Timeline</div>
-          <div className="mt-2 space-y-2">
-            {RENTAL_TIMELINES.map(({ key, title, duration }) => {
-              const isActive = key === location;
-              return (
-                <div
-                  key={key}
-                  className={`flex items-center justify-between gap-3 rounded-md border px-3 py-2 text-xs transition-all duration-200 ${
-                    isActive
-                      ? "border-neutral-300 bg-white shadow-sm text-neutral-800"
-                      : "border-transparent bg-white/30 text-neutral-500 hover:border-neutral-200 hover:bg-white/70 hover:text-neutral-700"
-                  }`}
-                >
-                  <span className="tracking-wide uppercase">{title}</span>
-                  <span
-                    className={`text-sm font-semibold ${
-                      isActive ? "text-secondary" : "text-neutral-500"
-                    }`}
-                  >
-                    {duration}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-          {location === "LUZON" && (
-            <div className="mt-3 space-y-1">
-              <p className="text-xs text-neutral-600">
-                <span className="font-semibold">6-7 days</span> (excluding Sundays and holidays)
-              </p>
-              <p className="text-xs text-neutral-600">
-                <span className="font-semibold">9 days</span> (including Saturdays and Sundays)
-              </p>
-            </div>
-          )}
-        </div>
-
-          <div className="pt-1 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-            <div className="text-[11px] tracking-wide uppercase text-neutral-500">Rate</div>
-            <div className="mt-1 text-3xl font-semibold transition-all duration-300">₱{rate.toLocaleString()}</div>
-          </div>
-
-          {forSaleRate !== null && (
-            <div className="pt-4 mt-4 border-t border-neutral-200 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-              <div className="flex items-center gap-2">
-                <div className="text-[11px] tracking-wide uppercase text-neutral-500">For Sale</div>
-              </div>
-              <div className="mt-2 text-3xl font-semibold text-foreground transition-all duration-300">
-                ₱{forSaleRate.toLocaleString()}
-              </div>
-              <div className="text-xs text-neutral-500 mt-1">One-time purchase price</div>
-            </div>
-          )}
-
-          {/* <button className="w-full rounded-full bg-black text-white py-3 text-sm tracking-wide hover:opacity-90">
-            Book Now
-          </button> */}
-        </div>
-
-        {/* Gown Details Section */}
-        <div className="rounded p-5 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-          <h3 className="text-sm font-semibold mb-4 tracking-wide uppercase text-neutral-700">Gown Details</h3>
-          <div className="space-y-3">
-            {/* Collection */}
-            {gown.collection.length > 0 && (
-              <div>
-                <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Collection</dt>
-                <dd className="flex flex-wrap gap-1.5">
-                  {gown.collection.map((collectionName, index) => (
-                    <Link
-                      key={`${collectionName}-${index}`}
-                      href={`/collections/${getCollectionSlugFromName(collectionName)}`}
-                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
-                    >
-                      {collectionName}
-                    </Link>
-                  ))}
-                </dd>
-              </div>
-            )}
-
-            {/* Color */}
-            {gown.color.length > 0 && (
-              <div>
-                <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Color</dt>
-                <dd className="flex flex-wrap gap-1.5">
-                  {gown.color.map((c, index) => (
-                    <Link 
-                      key={`${c}-${index}`} 
-                      href={{ pathname: "/collections/all", query: { colors: c } }}
-                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
-                    >
-                      {c}
-                    </Link>
-                  ))}
-                </dd>
-              </div>
-            )}
-            
-            {/* Skirt Style */}
-            {gown.skirtStyle.length > 0 && (
-              <div>
-                <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Skirt Style</dt>
-                <dd className="flex flex-wrap gap-1.5">
-                  {gown.skirtStyle.map((style, index) => (
-                    <Link 
-                      key={`${style}-${index}`} 
-                      href={{ pathname: "/collections/all", query: { skirtStyles: style } }}
-                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
-                    >
-                      {style}
-                    </Link>
-                  ))}
-                </dd>
-              </div>
-            )}
-            
-            {/* Best For */}
-            {gown.bestFor.length > 0 && (
-              <div>
-                <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Best For</dt>
-                <dd className="flex flex-wrap gap-1.5">
-                  {gown.bestFor.map((bf, index) => (
-                    <Link 
-                      key={`${bf}-${index}`} 
-                      href={{ pathname: "/collections/all", query: { bestFor: bf } }}
-                      className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
-                    >
-                      {bf}
-                    </Link>
-                  ))}
-                </dd>
-              </div>
-            )}
-            
-          </div>
-        </div>
-
-        {/* Measurements Section - Table Format */}
-        <div className="rounded p-5 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold tracking-wide uppercase text-neutral-700">Measurements</h3>
-            {getAvailableSizes() > 1 && (
-              <div className="inline-flex rounded-full bg-neutral-50 p-1">
-                {Array.from({ length: getAvailableSizes() }).map((_, index) => (
+            <div className="mt-3 grid grid-cols-4 gap-2">
+              {getCurrentImages().map((src, idx) => {
+                // Filter out null or invalid URLs
+                if (!src || src === 'null' || src.trim() === '') {
+                  return null;
+                }
+                return (
                   <button
-                    key={index}
-                    onClick={() => setSelectedSizeOption(index)}
-                    className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${
-                      selectedSizeOption === index ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
-                    }`}
+                    key={idx}
+                    onClick={() => setSelectedImageIndex(idx)}
+                    className={`relative aspect-square overflow-hidden rounded-sm bg-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-neutral-300 transition-all duration-200 hover:scale-105 ${selectedImageIndex === idx ? 'ring-2 ring-black scale-105' : ''
+                      }`}
+                    aria-label={`Select image ${idx + 1}`}
                   >
-                    Size {index + 1}
+                    <Image
+                      src={normalizeImageUrl(src, 200, 200, 85)}
+                      alt={`${gown.name} ${idx + 1}`}
+                      fill
+                      className="object-cover transition-transform duration-200"
+                      sizes="120px"
+                    />
+                  </button>
+                );
+              }).filter(Boolean)}
+            </div>
+          )}
+
+          <div className="mt-5 text-sm text-neutral-600 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
+            By booking a rental you agree to our{" "}
+            <Link
+              href="/rental-terms"
+              className="font-semibold text-secondary underline underline-offset-4 transition-colors duration-200 hover:text-secondary/80"
+            >
+              Rental Terms
+            </Link>.
+          </div>
+        </div>
+
+        <div className="space-y-5 md:sticky md:top-24 md:pt-10 self-start animate-slide-in-right">
+          <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            <h1 className="text-6xl font-semibold tracking-tight font-serif">{gown.name}</h1>
+            {gown.tags.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+                {visibleTags.map((t, index) => (
+                  <Link
+                    key={`${t}-${index}`}
+                    href={{ pathname: "/collections/all", query: { tags: t } }}
+                    className="rounded-full border px-3 py-1 bg-white/60 tracking-wide uppercase text-neutral-700 hover:bg-white/80 transition-colors duration-200 animate-fade-in-up focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                    style={{ animationDelay: `${0.2 + index * 0.05}s` }}
+                  >
+                    {t}
+                  </Link>
+                ))}
+                {gown.tags.length > TAG_PREVIEW_LIMIT && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllTags((prev) => !prev)}
+                    className="rounded-full border px-3 py-1 bg-white text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 uppercase text-[11px] font-medium animate-fade-in-up"
+                    style={{ animationDelay: `${0.2 + visibleTags.length * 0.05}s` }}
+                    aria-expanded={showAllTags}
+                  >
+                    {showAllTags ? "Show Less Tags" : "View All Tags"}
+                  </button>
+                )}
+              </div>
+            )}
+            {gown.tags.length > TAG_PREVIEW_LIMIT && showAllTags && (
+              <p className="mt-2 text-xs text-neutral-500 max-w-md animate-fade-in-up" style={{ animationDelay: `${0.2 + visibleTags.length * 0.05 + 0.05}s` }}>
+                Note: These tags are our recommended themes, but you're not limited by them. Any gown can be styled to fit your event - feel free to explore and choose what matches your vision.
+              </p>
+            )}
+          </div>
+
+          <div className="rounded p-4 space-y-4 bg-white shadow-sm animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+            <div>
+              <div className="text-[11px] tracking-wide uppercase text-neutral-500 mb-2">Version</div>
+              <div className="inline-flex rounded-full bg-neutral-50 p-1">
+                {/* Show Long Gown if pictures exist */}
+                {gown.longGownPictures.length > 0 && (
+                  <button
+                    onClick={() => {
+                      setSelectedImageType('longGown');
+                      setSelectedImageIndex(0);
+                      setIsPixie(false);
+                    }}
+                    className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${selectedImageType === 'longGown' && !isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                      }`}
+                  >
+                    Long Gown
+                  </button>
+                )}
+                {/* Show Filipiniana if pictures exist */}
+                {gown.filipinianaPictures.length > 0 && (
+                  <button
+                    onClick={() => {
+                      setSelectedImageType('filipiniana');
+                      setSelectedImageIndex(0);
+                      setIsPixie(false);
+                    }}
+                    className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${selectedImageType === 'filipiniana' && !isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                      }`}
+                  >
+                    Filipiniana
+                  </button>
+                )}
+                {/* Show Pixie if pictures exist */}
+                {gown.pixiePictures.length > 0 && (
+                  <button
+                    onClick={() => {
+                      setSelectedImageType('pixie');
+                      setSelectedImageIndex(0);
+                      setIsPixie(true);
+                    }}
+                    className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${selectedImageType === 'pixie' && isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                      }`}
+                  >
+                    Pixie
+                  </button>
+                )}
+                {/* Show Train if pictures exist */}
+                {gown.trainPictures.length > 0 && (
+                  <button
+                    onClick={() => {
+                      setSelectedImageType('train');
+                      setSelectedImageIndex(0);
+                      setIsPixie(false);
+                    }}
+                    className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${selectedImageType === 'train' && !isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                      }`}
+                  >
+                    Train
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <div className="text-[11px] tracking-wide uppercase text-neutral-500 mb-2">Location</div>
+              <div className="inline-flex rounded-full bg-neutral-50 p-1">
+                {([
+                  { k: "METRO_MANILA", l: "Metro Manila" },
+                  { k: "LUZON", l: "Luzon" },
+                  { k: "OUTSIDE_LUZON", l: "Outside Luzon" },
+                ] as { k: LocationKey; l: string }[]).map(({ k, l }) => (
+                  <button
+                    key={k}
+                    onClick={() => setLocation(k)}
+                    className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${location === k ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"}`}
+                  >
+                    {l}
                   </button>
                 ))}
               </div>
+            </div>
+
+            <div className="mt-3 rounded-md border border-neutral-200 bg-neutral-50/80 p-3 transition-all duration-200 animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
+              <div className="text-[11px] tracking-wide uppercase text-neutral-500">Rental Timeline</div>
+              <div className="mt-2 space-y-2">
+                {RENTAL_TIMELINES.map(({ key, title, duration }) => {
+                  const isActive = key === location;
+                  return (
+                    <div
+                      key={key}
+                      className={`flex items-center justify-between gap-3 rounded-md border px-3 py-2 text-xs transition-all duration-200 ${isActive
+                        ? "border-neutral-300 bg-white shadow-sm text-neutral-800"
+                        : "border-transparent bg-white/30 text-neutral-500 hover:border-neutral-200 hover:bg-white/70 hover:text-neutral-700"
+                        }`}
+                    >
+                      <span className="tracking-wide uppercase">{title}</span>
+                      <span
+                        className={`text-sm font-semibold ${isActive ? "text-secondary" : "text-neutral-500"
+                          }`}
+                      >
+                        {duration}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              {location === "LUZON" && (
+                <div className="mt-3 space-y-1">
+                  <p className="text-xs text-neutral-600">
+                    <span className="font-semibold">6-7 days</span> (excluding Sundays and holidays)
+                  </p>
+                  <p className="text-xs text-neutral-600">
+                    <span className="font-semibold">9 days</span> (including Saturdays and Sundays)
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-1 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+              <div className="text-[11px] tracking-wide uppercase text-neutral-500">Rate</div>
+              <div className="mt-1 text-3xl font-semibold transition-all duration-300">₱{rate.toLocaleString()}</div>
+            </div>
+
+            {forSaleRate !== null && (
+              <div className="pt-4 mt-4 border-t border-neutral-200 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+                <div className="flex items-center gap-2">
+                  <div className="text-[11px] tracking-wide uppercase text-neutral-500">For Sale</div>
+                </div>
+                <div className="mt-2 text-3xl font-semibold text-foreground transition-all duration-300">
+                  ₱{forSaleRate.toLocaleString()}
+                </div>
+                <div className="text-xs text-neutral-500 mt-1">One-time purchase price</div>
+              </div>
             )}
+
+            {/* <button className="w-full rounded-full bg-black text-white py-3 text-sm tracking-wide hover:opacity-90">
+            Book Now
+          </button> */}
           </div>
-          
-          {/* Measurements Table */}
-          <div className="overflow-hidden border border-neutral-200 rounded-sm">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-neutral-50">
-                  <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center border-r border-neutral-200">Bust</th>
-                  <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center border-r border-neutral-200">Waist</th>
-                  <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center border-r border-neutral-200">Sleeves</th>
-                  <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center">Length</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="bg-white">
-                  <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
-                    {getMeasurementForSize(gown.bust, selectedSizeOption)}
-                    {getMeasurementForSize(gown.bust, selectedSizeOption) !== '-' && (
-                      <span className="text-xs text-neutral-500 ml-1">in</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
-                    {getMeasurementForSize(gown.waist, selectedSizeOption)}
-                    {getMeasurementForSize(gown.waist, selectedSizeOption) !== '-' && (
-                      <span className="text-xs text-neutral-500 ml-1">in</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
-                    {getMeasurementForSize(gown.sleeves, selectedSizeOption)}
-                    {getMeasurementForSize(gown.sleeves, selectedSizeOption) !== '-' && (
-                      <span className="text-xs text-neutral-500 ml-1">in</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center">
-                    {gown.lenght && (() => {
-                      const lengths = gown.lenght.split('/').map(l => l.trim());
-                      if (lengths.length === 1) {
-                        return (<div>
-                          {`${lengths[0]} `}<span className="text-xs text-neutral-500 ml-1">in</span>
-                        </div>);
-                      } else if (lengths.length === 2) {
-                        if (lengths[0] === '-') {
+
+          {/* Gown Details Section */}
+          <div className="rounded p-5 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+            <h3 className="text-sm font-semibold mb-4 tracking-wide uppercase text-neutral-700">Gown Details</h3>
+            <div className="space-y-3">
+              {/* Collection */}
+              {gown.collection.length > 0 && (
+                <div>
+                  <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Collection</dt>
+                  <dd className="flex flex-wrap gap-1.5">
+                    {gown.collection.map((collectionName, index) => (
+                      <Link
+                        key={`${collectionName}-${index}`}
+                        href={`/collections/${getCollectionSlugFromName(collectionName)}`}
+                        className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                      >
+                        {collectionName}
+                      </Link>
+                    ))}
+                  </dd>
+                </div>
+              )}
+
+              {/* Color */}
+              {gown.color.length > 0 && (
+                <div>
+                  <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Color</dt>
+                  <dd className="flex flex-wrap gap-1.5">
+                    {gown.color.map((c, index) => (
+                      <Link
+                        key={`${c}-${index}`}
+                        href={{ pathname: "/collections/all", query: { colors: c } }}
+                        className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                      >
+                        {c}
+                      </Link>
+                    ))}
+                  </dd>
+                </div>
+              )}
+
+              {/* Skirt Style */}
+              {gown.skirtStyle.length > 0 && (
+                <div>
+                  <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Skirt Style</dt>
+                  <dd className="flex flex-wrap gap-1.5">
+                    {gown.skirtStyle.map((style, index) => (
+                      <Link
+                        key={`${style}-${index}`}
+                        href={{ pathname: "/collections/all", query: { skirtStyles: style } }}
+                        className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                      >
+                        {style}
+                      </Link>
+                    ))}
+                  </dd>
+                </div>
+              )}
+
+              {/* Best For */}
+              {gown.bestFor.length > 0 && (
+                <div>
+                  <dt className="text-xs uppercase tracking-wide text-neutral-500 mb-1.5">Best For</dt>
+                  <dd className="flex flex-wrap gap-1.5">
+                    {gown.bestFor.map((bf, index) => (
+                      <Link
+                        key={`${bf}-${index}`}
+                        href={{ pathname: "/collections/all", query: { bestFor: bf } }}
+                        className="px-2.5 py-1 text-xs bg-neutral-50 border border-neutral-200 rounded-full text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+                      >
+                        {bf}
+                      </Link>
+                    ))}
+                  </dd>
+                </div>
+              )}
+
+            </div>
+          </div>
+
+          {/* Measurements Section - Table Format */}
+          <div className="rounded p-5 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold tracking-wide uppercase text-neutral-700">Measurements</h3>
+              {getAvailableSizes() > 1 && (
+                <div className="inline-flex rounded-full bg-neutral-50 p-1">
+                  {Array.from({ length: getAvailableSizes() }).map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedSizeOption(index)}
+                      className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${selectedSizeOption === index ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                        }`}
+                    >
+                      Size {index + 1}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Measurements Table */}
+            <div className="overflow-hidden border border-neutral-200 rounded-sm">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-neutral-50">
+                    <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center border-r border-neutral-200">Bust</th>
+                    <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center border-r border-neutral-200">Waist</th>
+                    <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center border-r border-neutral-200">Sleeves</th>
+                    <th className="px-4 py-3 text-xs font-medium text-neutral-600 uppercase tracking-wide text-center">Length</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="bg-white">
+                    <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
+                      {getMeasurementForSize(gown.bust, selectedSizeOption)}
+                      {getMeasurementForSize(gown.bust, selectedSizeOption) !== '-' && (
+                        <span className="text-xs text-neutral-500 ml-1">in</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
+                      {getMeasurementForSize(gown.waist, selectedSizeOption)}
+                      {getMeasurementForSize(gown.waist, selectedSizeOption) !== '-' && (
+                        <span className="text-xs text-neutral-500 ml-1">in</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
+                      {getMeasurementForSize(gown.sleeves, selectedSizeOption)}
+                      {getMeasurementForSize(gown.sleeves, selectedSizeOption) !== '-' && (
+                        <span className="text-xs text-neutral-500 ml-1">in</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center">
+                      {gown.lenght && (() => {
+                        const lengths = gown.lenght.split('/').map(l => l.trim());
+                        if (lengths.length === 1) {
                           return (<div>
-                            {`Pixie: ${lengths[1]} `}<span className="text-xs text-neutral-500 ml-1">in</span>
-                          </div>
+                            {`${lengths[0]} `}<span className="text-xs text-neutral-500 ml-1">in</span>
+                          </div>);
+                        } else if (lengths.length === 2) {
+                          if (lengths[0] === '-') {
+                            return (<div>
+                              {`Pixie: ${lengths[1]} `}<span className="text-xs text-neutral-500 ml-1">in</span>
+                            </div>
+                            );
+                          }
+                          return (
+                            <div className="space-y-1">
+                              <div>Long Gown: {lengths[0]} <span className="text-xs text-neutral-500 ml-1">in</span></div>
+                              <div>Pixie: {lengths[1]} <span className="text-xs text-neutral-500 ml-1">in</span></div>
+                            </div>
                           );
                         }
-                        return (
-                          <div className="space-y-1">
-                            <div>Long Gown: {lengths[0]} <span className="text-xs text-neutral-500 ml-1">in</span></div>
-                            <div>Pixie: {lengths[1]} <span className="text-xs text-neutral-500 ml-1">in</span></div>
-                          </div>
-                        );
-                      }
-                      return gown.lenght;
-                    })()}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                        return gown.lenght;
+                      })()}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-6 rounded-md border border-neutral-200 bg-neutral-50/80 p-4 space-y-3">
+              <p className="text-sm text-neutral-700">
+                If the sizing isn't the right fit, kindly reach out to us via{' '}
+                <Link
+                  href="https://www.instagram.com/mysticalwardrobes"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-secondary underline underline-offset-4 hover:text-secondary/80"
+                >
+                  Instagram
+                </Link>{' '}
+                or{' '}
+                <Link
+                  href="https://www.facebook.com/MysticalWardrobes/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-secondary underline underline-offset-4 hover:text-secondary/80"
+                >
+                  Facebook
+                </Link>{' '}
+                so we can assist you.
+              </p>
+              <Link
+                href="/book-now"
+                onClick={() => trackGownClick(gown.id)}
+                className="inline-flex items-center justify-center rounded-full bg-secondary px-5 py-2 text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 hover:bg-secondary/90 hover:scale-105"
+              >
+                Book Now
+              </Link>
+            </div>
           </div>
 
-          <div className="mt-6 rounded-md border border-neutral-200 bg-neutral-50/80 p-4 space-y-3">
-            <p className="text-sm text-neutral-700">
-              If the sizing isn't the right fit, kindly reach out to us via{' '}
-              <Link
-                href="https://www.instagram.com/mysticalwardrobes"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-secondary underline underline-offset-4 hover:text-secondary/80"
-              >
-                Instagram
-              </Link>{' '}
-              or{' '}
-              <Link
-                href="https://www.facebook.com/MysticalWardrobes/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-secondary underline underline-offset-4 hover:text-secondary/80"
-              >
-                Facebook
-              </Link>{' '}
-              so we can assist you.
-            </p>
-            <Link
-              href="/book-now"
-              onClick={() => trackGownClick(gown.id)}
-              className="inline-flex items-center justify-center rounded-full bg-secondary px-5 py-2 text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 hover:bg-secondary/90 hover:scale-105"
-            >
-              Book Now
-            </Link>
-          </div>
+          {/* Related gowns moved to bottom */}
         </div>
-
-        {/* Related gowns moved to bottom */}
       </div>
-    </div>
-    
-    {/* Related Add-Ons Section */}
-    <div className="mx-auto max-w-6xl p-4 md:p-8">
-      <RelatedAddOns suggestedAddOns={gown.addOns} />
-    </div>
 
-    {/* Related Gowns Section moved to bottom */}
-    <div className="mx-auto max-w-6xl p-4 md:p-8">
-      <RelatedGowns relatedGownIds={gown.relatedGowns} />
-    </div>
+      {/* Client Reviews Section */}
+      <div className="mx-auto max-w-6xl p-4 md:p-8">
+        <GownReviews gownId={id} />
+      </div>
+
+      {/* Related Add-Ons Section */}
+      <div className="mx-auto max-w-6xl p-4 md:p-8">
+        <RelatedAddOns suggestedAddOns={gown.addOns} />
+      </div>
+
+      {/* Related Gowns Section moved to bottom */}
+      <div className="mx-auto max-w-6xl p-4 md:p-8">
+        <RelatedGowns relatedGownIds={gown.relatedGowns} />
+      </div>
     </>
   );
 }
@@ -812,7 +810,7 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
     const fetchRelatedGowns = async () => {
       try {
         setLoading(true);
-        const promises = relatedGownIds.map(id => 
+        const promises = relatedGownIds.map(id =>
           fetch(`/api/gowns/${id}`).then(res => res.json())
         );
         const gowns = await Promise.all(promises);
@@ -862,24 +860,24 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {relatedGowns.map((gown, index) => (
-          <Link 
-            key={gown.id} 
-            href={`/gown/${gown.id}`} 
+          <Link
+            key={gown.id}
+            href={`/gown/${gown.id}`}
             onClick={() => trackGownClick(gown.id)}
-            className="group block animate-fade-in-up" 
+            className="group block animate-fade-in-up"
             style={{ animationDelay: `${1.1 + index * 0.05}s` }}
           >
             <div className="relative w-full aspect-[4/5] overflow-hidden rounded-sm bg-neutral-50 group-hover:shadow-lg transition-all duration-300">
-              <Image 
+              <Image
                 src={
                   gown.longGownPictures.length > 0 && gown.longGownPictures[0] && gown.longGownPictures[0] !== 'null'
                     ? normalizeImageUrl(gown.longGownPictures[0], 600, 750, 85)
                     : '/assets/sample_gown-1.jpg'
-                } 
-                alt={gown.name} 
-                fill 
-                className="object-cover transition-transform duration-500 group-hover:scale-105" 
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" 
+                }
+                alt={gown.name}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               />
             </div>
             <div className="mt-3">
@@ -888,6 +886,103 @@ function RelatedGowns({ relatedGownIds }: { relatedGownIds: string[] }) {
               </h4>
             </div>
           </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function GownReviews({ gownId }: { gownId: string }) {
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/reviews/${gownId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setReviews(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch reviews:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, [gownId]);
+
+  if (loading) {
+    return (
+      <div className="animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
+        <div className="h-4 w-48 bg-neutral-200 rounded animate-pulse mb-6"></div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, idx) => (
+            <div key={idx} className="group">
+              <div className="relative w-full aspect-square overflow-hidden rounded bg-neutral-200 animate-pulse"></div>
+              <div className="h-4 w-full bg-neutral-200 rounded animate-pulse mt-2"></div>
+              <div className="h-3 w-24 bg-neutral-200 rounded animate-pulse mt-1"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
+      <div className="mb-8 text-center">
+        <h2 className="font-vegawanty text-3xl text-foreground sm:text-4xl mb-2">Client Stories</h2>
+        <p className="font-manrope text-sm text-secondary/70">
+          See how our clients wore this gown
+        </p>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        {reviews.map((review, index) => (
+          <div
+            key={review.id}
+            className="group block animate-fade-in-up"
+            style={{ animationDelay: `${0.9 + index * 0.05}s` }}
+          >
+            <div className="relative w-full aspect-square overflow-hidden rounded-sm bg-neutral-50 group-hover:shadow-lg transition-all duration-300">
+              {review.thumbnailMediaUrl ? (
+                <Image
+                  src={normalizeImageUrl(review.thumbnailMediaUrl, 600, 600, 85)}
+                  alt={`Review by ${review.clientName}`}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center bg-secondary/10">
+                  <div className="text-center p-4">
+                    <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-secondary/20 mx-auto">
+                      <span className="font-vegawanty text-lg font-semibold text-secondary">
+                        {review.clientName.charAt(0)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="mt-3">
+              <h4 className="font-vegawanty text-lg text-foreground">
+                {review.clientName}
+              </h4>
+              {review.comment && (
+                <p className="mt-1 font-manrope text-xs text-secondary/70 line-clamp-2">
+                  "{review.comment}"
+                </p>
+              )}
+            </div>
+          </div>
         ))}
       </div>
     </div>
@@ -903,7 +998,7 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
     const fetchSuggestedAddOns = async () => {
       try {
         setLoading(true);
-        
+
         if (!suggestedAddOns || suggestedAddOns.length === 0) {
           setAddOnsByCategory({});
           setLoading(false);
@@ -911,7 +1006,7 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
         }
 
         // Fetch each suggested add-on by ID
-        const addOnPromises = suggestedAddOns.map((addOnId) => 
+        const addOnPromises = suggestedAddOns.map((addOnId) =>
           fetch(`/api/addons/${addOnId}`)
             .then((res) => (res.ok ? res.json() : null))
             .catch(() => null)
@@ -999,7 +1094,7 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
           <p className="font-manrope text-sm text-secondary/70">
             No specific add-ons are suggested for this gown, but you can explore our full collection
           </p>
-          <Link 
+          <Link
             href="/addons"
             className="inline-block mt-4 px-6 py-2 bg-secondary text-white rounded-full hover:bg-secondary/90 transition-all duration-200 hover:scale-105"
           >
@@ -1018,7 +1113,7 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
           Complete your magical look with these recommended accessories for this gown
         </p>
       </div>
-      
+
       <div className="space-y-12">
         {categories.map((category, categoryIndex) => (
           <div key={category} className="animate-fade-in-up" style={{ animationDelay: `${1.1 + categoryIndex * 0.1}s` }}>
@@ -1038,13 +1133,13 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
                 {getCategoryDescription(category)}
               </p>
             </div>
-            
+
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {(expanded[category] ? addOnsByCategory[category] : addOnsByCategory[category].slice(0, 6)).map((addon, itemIndex) => (
-                <Link 
-                  key={addon.id} 
-                  href={`/addons/${addon.type}/${addon.id}`} 
-                  className="group block animate-fade-in-up" 
+                <Link
+                  key={addon.id}
+                  href={`/addons/${addon.type}/${addon.id}`}
+                  className="group block animate-fade-in-up"
                   style={{ animationDelay: `${1.2 + categoryIndex * 0.1 + itemIndex * 0.05}s` }}
                 >
                   <div className="relative w-full aspect-[4/5] overflow-hidden rounded-sm bg-neutral-50 group-hover:shadow-lg transition-all duration-300">

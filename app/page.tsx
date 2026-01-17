@@ -45,9 +45,9 @@ export default function Home() {
       }
       `}</style>
       <FadeInOnScroll delay={0.1} className="w-full h-fit bg-background">
-        <Hero/>
+        <Hero />
       </FadeInOnScroll>
-      
+
       <FadeInOnScroll delay={0.1} className="w-full h-fit bg-background">
         <Collections />
       </FadeInOnScroll>
@@ -60,7 +60,7 @@ export default function Home() {
       <FadeInOnScroll delay={0.2} className="w-full h-fit bg-background">
         <VotingEvent />
       </FadeInOnScroll>
-      
+
     </div>
   );
 }
@@ -68,20 +68,20 @@ export default function Home() {
 
 function Hero() {
   const router = useRouter();
-  
+
   return (
-    <div 
-      className="w-full h-fit bg-cover bg-top pl-5 pr-28 py-16 space-y-3 md:pl-16 md:pr-20 md:py-44 flex flex-col items-start justify-center text-left text-background font-manrope" 
+    <div
+      className="w-full h-fit bg-cover bg-top pl-5 pr-28 py-16 space-y-3 md:pl-16 md:pr-20 md:py-44 flex flex-col items-start justify-center text-left text-background font-manrope"
       style={{ backgroundImage: `linear-gradient(to right, #B38882 -20%, transparent), url(${heroBg.src})` }}>
-      <Image src={Logo4fg} alt="Logo 4" className="w-20 md:w-36"/>
+      <Image src={Logo4fg} alt="Logo 4" className="w-20 md:w-36" />
       <h1 className=" font-vegawanty text-4xl md:text-6xl text-background">Where Fairytales Come to Life</h1>
       <ExpandableText
         text="Discover a world of enchanting fashion, where every piece tells a story and every outfit is a journey into the mystical. Our collection is designed to inspire your imagination and elevate your wardrobe with unique, handcrafted garments that blend fantasy with elegance."
         color="text-background"
       />
       <div className="w-full flex flex-row items-center justify-start space-x-4 mt-5">
-        <button className="font-manrope text-sm md:text-lg bg-primary text-foreground hover:text-white bg-white border-2 border-white rounded px-4 py-2 hover:bg-transparent transition-colors duration-300" 
-        onClick={() => router.push('/collections')}>
+        <button className="font-manrope text-sm md:text-lg bg-primary text-foreground hover:text-white bg-white border-2 border-white rounded px-4 py-2 hover:bg-transparent transition-colors duration-300"
+          onClick={() => router.push('/collections')}>
           Browse Our Gowns
         </button>
         {/* <button className="font-manrope text-sm md:text-lg bg-transparent border-2 border-background text-background px-4 py-2 rounded hover:bg-white hover:text-secondary transition-colors duration-300">
@@ -97,6 +97,15 @@ type ReviewCardPosition = "active" | "previous" | "next";
 type ReviewWithImages = ReviewResponse & {
   images: string[];
 };
+
+// Helper function to normalize protocol-relative URLs
+const normalizeMediaUrl = (url: string): string => {
+  if (url.startsWith('//')) {
+    return `https:${url}`;
+  }
+  return url;
+};
+
 const CARD_TRANSITION = { duration: 0.6, ease: [0.22, 1, 0.36, 1] } as const;
 
 function ReviewsSection() {
@@ -370,10 +379,10 @@ function ReviewCard(props: ReviewCardProps) {
       >
         {hasImages ? (
           <div className="flex w-[40%] flex-col gap-3 md:gap-4 md:w-[44%]">
-            <div className="relative aspect-square w-full overflow-hidden rounded bg-foreground/5">
+            <div className="relative w-full overflow-hidden rounded bg-foreground/5">
               <motion.div
                 key={`${review.id}-${currentImageIndex}`}
-                className="relative h-full w-full"
+                className="relative w-fit h-full"
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.2}
@@ -382,14 +391,32 @@ function ReviewCard(props: ReviewCardProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.35 }}
               >
-                <Image
-                  src={images[currentImageIndex]}
-                  alt={`${safeName} review image ${currentImageIndex + 1}`}
-                  fill
-                  sizes="(min-width: 1024px) 22rem, 90vw"
-                  className="object-cover"
-                  priority={position === 'active'}
-                />
+                {(() => {
+                  const currentMedia = normalizeMediaUrl(images[currentImageIndex]);
+                  const isVideo = /\.(mp4|mov|webm)$/i.test(currentMedia);
+
+                  if (isVideo) {
+                    return (
+                      <video
+                        src={currentMedia}
+                        className="w-full h-auto max-h-[400px] object-contain"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                      />
+                    );
+                  }
+
+                  return (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={currentMedia}
+                      alt={`${safeName} review image ${currentImageIndex + 1}`}
+                      className="w-full h-auto max-h-[400px] object-contain"
+                    />
+                  );
+                })()}
               </motion.div>
 
               {images.length > 1 && (
@@ -457,7 +484,7 @@ function ReviewCard(props: ReviewCardProps) {
   );
 }
 
-function  Collections() {
+function Collections() {
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = React.useState(false);
   const [showRightArrow, setShowRightArrow] = React.useState(true);
@@ -496,7 +523,7 @@ function  Collections() {
       {/* Explore Section */}
       <div className="w-full h-fit flex flex-col md:flex-row-reverse md:gap-10 md:px-16 md:py-20 items-center justify-start md:justify-evenly px-6 py-4 space-y-6" style={{ background: 'linear-gradient(135deg, #f4c4b0 0%, #f5e6d3 40%, #e8d4d8 70%, #d9b8c4 100%)' }}>
         <div className="flex flex-col items-center justify-center">
-          <Image src={Icon6} alt="Icon 6" className="w-24 h-24 md:w-40 md:h-40 mb-[-10px]"/>
+          <Image src={Icon6} alt="Icon 6" className="w-24 h-24 md:w-40 md:h-40 mb-[-10px]" />
           <h2 className="font-vegawanty text-foreground-darker text-5xl md:text-7xl">Explore</h2>
           <p className="font-manrope text-md md:text-lg text-foreground-darker text-center max-w-2xl mt-2">
             Explore our curated collections that blend fantasy and fashion, each piece crafted to inspire and enchant.
@@ -512,7 +539,7 @@ function  Collections() {
           </a>
           <a
             className="row-span-1 h-72 md:h-full col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover transition-transform duration-300 hover:scale-105"
-            style={{ 
+            style={{
               backgroundImage: `linear-gradient(to top, #4E4E4E, transparent), url(${exploreAddons.src})`,
               backgroundPosition: 'center 15%'
             }}
@@ -522,7 +549,7 @@ function  Collections() {
           </a>
           <a
             className="row-span-1 h-72 md:h-full col-span-1 flex items-center justify-center text-background font-vegawanty text-3xl bg-cover transition-transform duration-300 hover:scale-105"
-            style={{ 
+            style={{
               backgroundImage: `linear-gradient(to top, #4E4E4E, transparent), url(${exploreCustomMadeGowns.src})`,
               backgroundPosition: 'center 10%'
             }}
@@ -537,11 +564,11 @@ function  Collections() {
       <div className="w-full py-8 md:py-12">
         <div className="px-6 md:px-16">
           <h2 className="font-vegawanty text-4xl md:text-5xl font-light text-foreground mb-2">Collections</h2>
-        <p className="font-manrope text-md md:text-lg text-foreground/70 max-w-2xl mb-6">
-          Discover our signature collections—each one an exclusive curation of enchanting designs to inspire your perfect look.
-        </p>
+          <p className="font-manrope text-md md:text-lg text-foreground/70 max-w-2xl mb-6">
+            Discover our signature collections—each one an exclusive curation of enchanting designs to inspire your perfect look.
+          </p>
         </div>
-        
+
         {/* Horizontal scrollable container */}
         <div className="relative px-6 md:px-16">
           {/* Left Arrow - Desktop Only */}
@@ -570,14 +597,14 @@ function  Collections() {
             </button>
           )}
 
-          <div 
+          <div
             ref={scrollContainerRef}
             className="flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide"
-            style={{ 
+            style={{
               scrollSnapType: 'x mandatory',
               scrollPaddingLeft: '1.5rem',
-              scrollbarWidth: 'none', 
-              msOverflowStyle: 'none' 
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none'
             }}
           >
             {collections.map((collection) => (
@@ -606,7 +633,7 @@ function  Collections() {
           </div>
         </div>
       </div>
-      
+
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
@@ -628,22 +655,22 @@ function Featured() {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         // Fetch all gowns and filter by featured IDs
         const response = await fetch('/api/gowns?limit=1000');
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch featured gowns');
         }
-        
+
         const data = await response.json();
         const allGowns = data.items || [];
-        
+
         // Filter to only include gowns with IDs in featuredGownIds, maintaining the order
         const featured = featuredGownIds
           .map((id: string) => allGowns.find((gown: Gown) => gown.id === id))
           .filter((gown: Gown | undefined): gown is Gown => gown !== undefined);
-        
+
         setFeaturedGowns(featured);
       } catch (err) {
         console.error('Error fetching featured gowns:', err);
@@ -724,22 +751,22 @@ interface FeaturedGownsCardProps {
 
 function FeaturedGownsCard(props: FeaturedGownsCardProps) {
   const { gown, onClick } = props;
-  
+
   // Get the first available image from the gown
-  const gownImage = gown.longGownPictures[0] || 
-                   gown.filipinianaPictures[0] || 
-                   gown.pixiePictures[0] || 
-                   gown.trainPictures[0] || 
-                   sampleGown1.src;
-  
+  const gownImage = gown.longGownPictures[0] ||
+    gown.filipinianaPictures[0] ||
+    gown.pixiePictures[0] ||
+    gown.trainPictures[0] ||
+    sampleGown1.src;
+
   // Format price for display
   const price = gown.metroManilaRate > 0 ? gown.metroManilaRate : gown.pixieMetroManilaRate;
   const formattedPrice = price > 0 ? `₱${price.toLocaleString()}` : '';
 
   return (
-    <div 
+    <div
       className="relative w-full aspect-[2/3] flex items-center justify-center text-background font-vegawanty bg-cover bg-center transition-all duration-300 hover:scale-[1.02] shadow-lg group cursor-pointer overflow-hidden rounded"
-      style={{ 
+      style={{
         backgroundImage: `linear-gradient(to top, rgba(99, 102, 83, 0.8), rgba(99, 102, 83, 0.3), transparent), url(${gownImage})`,
       }}
       onClick={onClick}
@@ -750,7 +777,7 @@ function FeaturedGownsCard(props: FeaturedGownsCardProps) {
             <h2 className="text-sm md:text-base lg:text-lg mb-1 font-vegawanty drop-shadow-lg">
               {gown.name}
             </h2>
-            
+
             {/* Collection badge */}
             {gown.collection.length > 0 && (
               <div className="mb-1">
@@ -760,31 +787,31 @@ function FeaturedGownsCard(props: FeaturedGownsCardProps) {
               </div>
             )}
           </div>
-          
+
           {/* Hover overlay with more details */}
           <div className="absolute inset-0 bg-tertiary/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-3 md:p-4">
             <h3 className="text-base md:text-lg font-vegawanty text-background mb-1 md:mb-2 text-center">
               {gown.name}
             </h3>
-            
+
             {gown.collection.length > 0 && (
               <p className="text-xs md:text-sm font-manrope text-background/80 mb-1 md:mb-2 text-center">
                 {gown.collection.join(', ')}
               </p>
             )}
-            
+
             {gown.color.length > 0 && (
               <p className="text-xs font-manrope text-background/80 mb-1 md:mb-2 text-center line-clamp-2">
                 Available in: {gown.color.join(', ')}
               </p>
             )}
-            
+
             {formattedPrice && (
               <p className="text-sm md:text-base font-manrope font-semibold text-background mb-2">
                 {formattedPrice}
               </p>
             )}
-            
+
             <button className="bg-background text-tertiary px-2 py-1 md:px-3 md:py-1.5 rounded font-manrope text-[10px] md:text-xs hover:bg-background/90 transition-colors duration-300">
               View Details
             </button>
