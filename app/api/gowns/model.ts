@@ -15,7 +15,9 @@ export interface Gown {
   forSaleRateLong: number;
   forSaleRatePixie: number;
   bust: string;
+  bustAlt: string;
   waist: string;
+  waistAlt: string;
   arms: string;
   backing: string;
   lenght: string;

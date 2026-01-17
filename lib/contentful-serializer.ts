@@ -95,11 +95,15 @@ export interface SerializedGownEntry {
   forSaleRateLong: number;
   forSaleRatePixie: number;
   bust: string;
+  bustAlt: string;
   waist: string;
+  waistAlt: string;
   arms: string;
   backing: string;
   lenght: string;
+  sleeves: string;
   longGownPictures: string[];
+  longGownPicturesAlt: string[];
   filipinianaPictures: string[];
   pixiePictures: string[];
   trainPictures: string[];
@@ -131,14 +135,18 @@ export function serializeGownsResponse(
     const forSaleRateLong = ensureNumber(fields.forSaleRateLong) ?? 0;
     const forSaleRatePixie = ensureNumber(fields.forSaleRatePixie) ?? 0;
     const bust = ensureString(fields.bust) ?? '';
+    const bustAlt = ensureString(fields.bustAlt) ?? '';
     const waist = ensureString(fields.waist) ?? '';
+    const waistAlt = ensureString(fields.waistAlt) ?? '';
     const arms = ensureString(fields.arms) ?? '';
     const backing = ensureString(fields.backing) ?? '';
     const lenght = ensureString(fields.lenght) ?? '';
+    const sleeves = ensureString(fields.sleeves) ?? '';
     const addOns = extractIdArray(fields.addOns);
     const relatedGownIds = extractIdArray(fields.relatedGowns);
 
     const longGownPictures = normalizeAssetUrls(fields.longGownPicture);
+    const longGownPicturesAlt = normalizeAssetUrls(fields.longGownPictureAlt);
     const filipinianaPictures = normalizeAssetUrls(fields.filipinianaPicture);
     const pixiePictures = normalizeAssetUrls(fields.pixiePicture);
     const trainPictures = normalizeAssetUrls(fields.trainPicture);
@@ -160,11 +168,15 @@ export function serializeGownsResponse(
       forSaleRateLong,
       forSaleRatePixie,
       bust,
+      bustAlt,
       waist,
+      waistAlt,
       arms,
       backing,
       lenght,
+      sleeves,
       longGownPictures,
+      longGownPicturesAlt,
       filipinianaPictures,
       pixiePictures,
       trainPictures,
@@ -216,11 +228,21 @@ export function deserializeGownsResponse(
         forSaleRateLong: entry.forSaleRateLong,
         forSaleRatePixie: entry.forSaleRatePixie,
         bust: entry.bust,
+        bustAlt: entry.bustAlt,
         waist: entry.waist,
+        waistAlt: entry.waistAlt,
         arms: entry.arms,
         backing: entry.backing,
         lenght: entry.lenght,
+        sleeves: entry.sleeves,
         longGownPicture: entry.longGownPictures.map((url) => ({
+          fields: {
+            file: {
+              url,
+            },
+          },
+        })),
+        longGownPictureAlt: entry.longGownPicturesAlt.map((url) => ({
           fields: {
             file: {
               url,
@@ -281,11 +303,15 @@ export interface SerializedGownEntrySingle {
   forSaleRateLong: number;
   forSaleRatePixie: number;
   bust: string;
+  bustAlt: string;
   waist: string;
+  waistAlt: string;
   arms: string;
   backing: string;
   lenght: string;
+  sleeves: string;
   longGownPictures: string[];
+  longGownPicturesAlt: string[];
   filipinianaPictures: string[];
   pixiePictures: string[];
   trainPictures: string[];
@@ -314,14 +340,18 @@ export function serializeGownEntry(response: ContentfulEntryResponse): Serialize
   const forSaleRateLong = ensureNumber(fields.forSaleRateLong) ?? 0;
   const forSaleRatePixie = ensureNumber(fields.forSaleRatePixie) ?? 0;
   const bust = ensureString(fields.bust) ?? '';
+  const bustAlt = ensureString(fields.bustAlt) ?? '';
   const waist = ensureString(fields.waist) ?? '';
+  const waistAlt = ensureString(fields.waistAlt) ?? '';
   const arms = ensureString(fields.arms) ?? '';
   const backing = ensureString(fields.backing) ?? '';
   const lenght = ensureString(fields.lenght) ?? '';
+  const sleeves = ensureString(fields.sleeves) ?? '';
   const addOns = extractIdArray(fields.addOns);
   const relatedGownIds = extractIdArray(fields.relatedGowns);
 
   const longGownPictures = normalizeAssetUrls(fields.longGownPicture);
+  const longGownPicturesAlt = normalizeAssetUrls(fields.longGownPictureAlt);
   const filipinianaPictures = normalizeAssetUrls(fields.filipinianaPicture);
   const pixiePictures = normalizeAssetUrls(fields.pixiePicture);
   const trainPictures = normalizeAssetUrls(fields.trainPicture);
@@ -343,11 +373,15 @@ export function serializeGownEntry(response: ContentfulEntryResponse): Serialize
     forSaleRateLong,
     forSaleRatePixie,
     bust,
+    bustAlt,
     waist,
+    waistAlt,
     arms,
     backing,
     lenght,
+    sleeves,
     longGownPictures,
+    longGownPicturesAlt,
     filipinianaPictures,
     pixiePictures,
     trainPictures,
@@ -394,11 +428,21 @@ export function deserializeGownEntry(serialized: SerializedGownEntrySingle): Con
       forSaleRateLong: serialized.forSaleRateLong,
       forSaleRatePixie: serialized.forSaleRatePixie,
       bust: serialized.bust,
+      bustAlt: serialized.bustAlt,
       waist: serialized.waist,
+      waistAlt: serialized.waistAlt,
       arms: serialized.arms,
       backing: serialized.backing,
       lenght: serialized.lenght,
+      sleeves: serialized.sleeves,
       longGownPicture: serialized.longGownPictures.map((url) => ({
+        fields: {
+          file: {
+            url,
+          },
+        },
+      })),
+      longGownPictureAlt: serialized.longGownPicturesAlt.map((url) => ({
         fields: {
           file: {
             url,

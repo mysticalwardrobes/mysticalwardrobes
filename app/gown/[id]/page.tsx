@@ -738,16 +738,28 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                 <tbody>
                   <tr className="bg-white">
                     <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
-                      {getMeasurementForSize(gown.bust, selectedSizeOption)}
-                      {getMeasurementForSize(gown.bust, selectedSizeOption) !== '-' && (
-                        <span className="text-xs text-neutral-500 ml-1">in</span>
+                      {getMeasurementForSize(
+                        selectedCorsetVariant === 2 && gown.bustAlt ? gown.bustAlt : gown.bust,
+                        selectedSizeOption
                       )}
+                      {getMeasurementForSize(
+                        selectedCorsetVariant === 2 && gown.bustAlt ? gown.bustAlt : gown.bust,
+                        selectedSizeOption
+                      ) !== '-' && (
+                          <span className="text-xs text-neutral-500 ml-1">in</span>
+                        )}
                     </td>
                     <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
-                      {getMeasurementForSize(gown.waist, selectedSizeOption)}
-                      {getMeasurementForSize(gown.waist, selectedSizeOption) !== '-' && (
-                        <span className="text-xs text-neutral-500 ml-1">in</span>
+                      {getMeasurementForSize(
+                        selectedCorsetVariant === 2 && gown.waistAlt ? gown.waistAlt : gown.waist,
+                        selectedSizeOption
                       )}
+                      {getMeasurementForSize(
+                        selectedCorsetVariant === 2 && gown.waistAlt ? gown.waistAlt : gown.waist,
+                        selectedSizeOption
+                      ) !== '-' && (
+                          <span className="text-xs text-neutral-500 ml-1">in</span>
+                        )}
                     </td>
                     <td className="px-4 py-3 text-sm font-medium text-neutral-800 text-center border-r border-neutral-200">
                       {getMeasurementForSize(gown.sleeves, selectedSizeOption)}

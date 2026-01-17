@@ -201,7 +201,9 @@ export async function GET(request: NextRequest) {
       const forSaleRateLong = ensureNumber(fields.forSaleRateLong) ?? 0;
       const forSaleRatePixie = ensureNumber(fields.forSaleRatePixie) ?? 0;
       const bust = ensureString(fields.bust) ?? '';
+      const bustAlt = ensureString(fields.bustAlt) ?? '';
       const waist = ensureString(fields.waist) ?? '';
+      const waistAlt = ensureString(fields.waistAlt) ?? '';
       const arms = ensureString(fields.arms) ?? '';
       const backing = ensureString(fields.backing) ?? '';
       const lenght = ensureString(fields.lenght) ?? '';
@@ -235,7 +237,9 @@ export async function GET(request: NextRequest) {
         forSaleRateLong,
         forSaleRatePixie,
         bust,
+        bustAlt,
         waist,
+        waistAlt,
         arms,
         backing,
         lenght,
