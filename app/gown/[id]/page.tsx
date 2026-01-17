@@ -81,6 +81,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
   const [isPixie, setIsPixie] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedImageType, setSelectedImageType] = useState<'longGown' | 'filipiniana' | 'pixie' | 'train'>('longGown');
+  const [selectedCorsetVariant, setSelectedCorsetVariant] = useState<1 | 2>(1);
   const [selectedSizeOption, setSelectedSizeOption] = useState(0);
   const [showAllTags, setShowAllTags] = useState(false);
   const { trackGownClick } = useAnalytics();
@@ -155,6 +156,10 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
     if (!gown) return [];
     switch (selectedImageType) {
       case 'longGown':
+        // If alt pictures exist and corset variant 2 is selected, use alt pictures
+        if (selectedCorsetVariant === 2 && gown.longGownPicturesAlt && gown.longGownPicturesAlt.length > 0) {
+          return gown.longGownPicturesAlt;
+        }
         return gown.longGownPictures;
       case 'filipiniana':
         return gown.filipinianaPictures;
@@ -473,6 +478,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                       setSelectedImageType('filipiniana');
                       setSelectedImageIndex(0);
                       setIsPixie(false);
+                      setSelectedCorsetVariant(1);
                     }}
                     className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${selectedImageType === 'filipiniana' && !isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
                       }`}
@@ -487,6 +493,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                       setSelectedImageType('pixie');
                       setSelectedImageIndex(0);
                       setIsPixie(true);
+                      setSelectedCorsetVariant(1);
                     }}
                     className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${selectedImageType === 'pixie' && isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
                       }`}
@@ -501,6 +508,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                       setSelectedImageType('train');
                       setSelectedImageIndex(0);
                       setIsPixie(false);
+                      setSelectedCorsetVariant(1);
                     }}
                     className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${selectedImageType === 'train' && !isPixie ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
                       }`}
@@ -510,6 +518,35 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                 )}
               </div>
             </div>
+
+            {/* Corset Variant Toggle - Only show when Long Gown is selected and alt pictures exist */}
+            {selectedImageType === 'longGown' && gown.longGownPicturesAlt && gown.longGownPicturesAlt.length > 0 && (
+              <div>
+                <div className="text-[11px] tracking-wide uppercase text-neutral-500 mb-2">Corset Style</div>
+                <div className="inline-flex rounded-full bg-neutral-50 p-1">
+                  <button
+                    onClick={() => {
+                      setSelectedCorsetVariant(1);
+                      setSelectedImageIndex(0);
+                    }}
+                    className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${selectedCorsetVariant === 1 ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                      }`}
+                  >
+                    Corset 1
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedCorsetVariant(2);
+                      setSelectedImageIndex(0);
+                    }}
+                    className={`px-3 py-1.5 text-sm rounded-full transition-all duration-200 hover:scale-105 ${selectedCorsetVariant === 2 ? "bg-white shadow-sm" : "text-neutral-600 hover:text-neutral-800"
+                      }`}
+                  >
+                    Corset 2
+                  </button>
+                </div>
+              </div>
+            )}
 
             <div>
               <div className="text-[11px] tracking-wide uppercase text-neutral-500 mb-2">Location</div>

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { client } from '@/app/api/config';
 import { Gown } from './model';
-import { 
-  CACHE_DURATION, 
+import {
+  CACHE_DURATION,
   CACHE_CONTROL_HEADER,
   ContentfulEntriesResponse,
   CacheEntry,
@@ -12,10 +12,10 @@ import {
 } from '@/app/api/cache-config';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getJSON, setJSON } from '@/lib/redis';
-import { 
-  serializeGownsResponse, 
+import {
+  serializeGownsResponse,
   deserializeGownsResponse,
-  SerializedGownEntry 
+  SerializedGownEntry
 } from '@/lib/contentful-serializer';
 
 // Cache configuration
@@ -137,14 +137,14 @@ export async function GET(request: NextRequest) {
     const now = Date.now();
     let response: ContentfulEntriesResponse;
     let dataSource: 'cache' | 'contentful' = 'cache';
-    
+
     // Try to get from Redis cache (stored as serialized data)
     interface SerializedCacheEntry {
       serialized: SerializedGownEntry[];
       timestamp: number;
     }
     const cachedData = await getJSON<SerializedCacheEntry>(REDIS_CACHE_KEY);
-    
+
     if (cachedData) {
       // Deserialize cached data from Redis (no expiration - invalidated via webhook)
       response = deserializeGownsResponse(cachedData.serialized);
@@ -160,9 +160,9 @@ export async function GET(request: NextRequest) {
         limit: 1000, // Maximum allowed by Contentful API to fetch all items
       });
       const fetchDuration = Date.now() - fetchStart;
-      
+
       dataSource = 'contentful';
-      
+
       // Serialize and store in Redis cache (no expiration - invalidated via webhook)
       const serialized = serializeGownsResponse(response);
       const cacheEntry: SerializedCacheEntry = {
@@ -170,7 +170,7 @@ export async function GET(request: NextRequest) {
         timestamp: now
       };
       await setJSON(REDIS_CACHE_KEY, cacheEntry);
-      
+
       if (cachedData) {
         console.log('🔄 REDIS CACHE MISS: Fetched fresh gowns data from Contentful');
       } else {
@@ -213,6 +213,7 @@ export async function GET(request: NextRequest) {
 
       // Extract image URLs (handle arrays of images)
       const longGownPictures = normalizeAssetUrls(fields.longGownPicture);
+      const longGownPicturesAlt = normalizeAssetUrls(fields.longGownPictureAlt);
       const filipinianaPictures = normalizeAssetUrls(fields.filipinianaPicture);
       const pixiePictures = normalizeAssetUrls(fields.pixiePicture);
       const trainPictures = normalizeAssetUrls(fields.trainPicture);
@@ -240,6 +241,7 @@ export async function GET(request: NextRequest) {
         lenght,
         sleeves,
         longGownPictures,
+        longGownPicturesAlt,
         filipinianaPictures,
         pixiePictures,
         trainPictures,
@@ -253,18 +255,18 @@ export async function GET(request: NextRequest) {
       console.log(`Filtering by collection: "${collection}"`);
       const allCollections = gowns.flatMap(g => g.collection);
       console.log(`Available collections:`, [...new Set(allCollections)]);
-      
-      gowns = gowns.filter(gown => 
+
+      gowns = gowns.filter(gown =>
         gown.collection.some(c => c.toLowerCase().trim() === collection.toLowerCase().trim())
       );
-      
+
       console.log(`Found ${gowns.length} gowns in collection "${collection}"`);
     }
 
     // Filter by tags
     if (tags.length > 0) {
-      gowns = gowns.filter(gown => 
-        tags.some(tag => 
+      gowns = gowns.filter(gown =>
+        tags.some(tag =>
           gown.tags.some(gownTag => gownTag.toLowerCase().includes(tag.toLowerCase()))
         )
       );
@@ -272,8 +274,8 @@ export async function GET(request: NextRequest) {
 
     // Filter by colors
     if (colors.length > 0) {
-      gowns = gowns.filter(gown => 
-        colors.some(color => 
+      gowns = gowns.filter(gown =>
+        colors.some(color =>
           gown.color.some(gownColor => gownColor.toLowerCase().includes(color.toLowerCase()))
         )
       );
@@ -281,8 +283,8 @@ export async function GET(request: NextRequest) {
 
     // Filter by bestFor
     if (bestFor.length > 0) {
-      gowns = gowns.filter(gown => 
-        bestFor.some(bf => 
+      gowns = gowns.filter(gown =>
+        bestFor.some(bf =>
           gown.bestFor.some(gownBestFor => gownBestFor.toLowerCase().includes(bf.toLowerCase()))
         )
       );
@@ -290,8 +292,8 @@ export async function GET(request: NextRequest) {
 
     // Filter by skirt styles
     if (skirtStyles.length > 0) {
-      gowns = gowns.filter(gown => 
-        skirtStyles.some(style => 
+      gowns = gowns.filter(gown =>
+        skirtStyles.some(style =>
           gown.skirtStyle.some(gownStyle => gownStyle.toLowerCase().includes(style.toLowerCase()))
         )
       );
@@ -301,7 +303,7 @@ export async function GET(request: NextRequest) {
     if (minPrice || maxPrice) {
       const min = minPrice ? parseInt(minPrice) : 0;
       const max = maxPrice ? parseInt(maxPrice) : Infinity;
-      
+
       gowns = gowns.filter(gown => {
         const price = gown.metroManilaRate > 0 ? gown.metroManilaRate : gown.pixieMetroManilaRate;
         return price >= min && price <= max;
@@ -311,7 +313,7 @@ export async function GET(request: NextRequest) {
     // Search by name, collection, bestFor, color, or tags
     if (search) {
       const searchLower = search.toLowerCase();
-      gowns = gowns.filter(gown => 
+      gowns = gowns.filter(gown =>
         gown.name.toLowerCase().includes(searchLower) ||
         gown.collection.some(c => c.toLowerCase().includes(searchLower)) ||
         gown.bestFor.some(b => b.toLowerCase().includes(searchLower)) ||
@@ -327,7 +329,7 @@ export async function GET(request: NextRequest) {
         // Fetch click counts from Supabase for last 30 days (with caching)
         try {
           let clickCounts: Map<string, number>;
-          
+
           // Check if we have valid cached popularity data
           if (popularityCache && isPopularityCacheValid(popularityCache.timestamp)) {
             clickCounts = popularityCache.clickCounts;
@@ -341,26 +343,26 @@ export async function GET(request: NextRequest) {
             const popularityFetchStart = Date.now();
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            
+
             const { data: clickData } = await supabaseAdmin
               .from('analytics_gown_clicks')
               .select('gown_id')
               .gte('created_at', thirtyDaysAgo.toISOString());
-            
+
             const popularityFetchDuration = Date.now() - popularityFetchStart;
-            
+
             // Count clicks per gown
             clickCounts = new Map<string, number>();
             clickData?.forEach(click => {
               clickCounts.set(click.gown_id, (clickCounts.get(click.gown_id) || 0) + 1);
             });
-            
+
             // Update cache
             popularityCache = {
               clickCounts,
               timestamp: Date.now()
             };
-            
+
             if (popularityCache) {
               console.log('🔄 POPULARITY CACHE MISS: Fetched fresh click data from Supabase');
             } else {
@@ -371,7 +373,7 @@ export async function GET(request: NextRequest) {
             console.log(`   Unique gowns with clicks: ${clickCounts.size}`);
             console.log(`   Cache will expire in: ${POPULARITY_CACHE_DURATION / 1000}s (15 minutes)`);
           }
-          
+
           // Sort by click count (descending), then by name
           gowns.sort((a, b) => {
             const clicksA = clickCounts.get(a.id) || 0;
@@ -425,10 +427,10 @@ export async function GET(request: NextRequest) {
         collections: availableCollections,
         total: availableCollections.length
       });
-      
+
       // Add cache headers
       collectionsResponse.headers.set('Cache-Control', CACHE_CONTROL_HEADER);
-      
+
       // Log collections list request
       const collectionsRequestTime = Date.now() - requestStart;
       console.log('📋 COLLECTIONS LIST REQUEST:');
@@ -437,7 +439,7 @@ export async function GET(request: NextRequest) {
       console.log(`   Collections: ${availableCollections.join(', ')}`);
       console.log(`   Total request time: ${collectionsRequestTime}ms`);
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      
+
       return collectionsResponse;
     }
 

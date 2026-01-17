@@ -21,6 +21,7 @@ export interface Gown {
   lenght: string;
   sleeves: string;
   longGownPictures: string[];
+  longGownPicturesAlt: string[];
   filipinianaPictures: string[];
   pixiePictures: string[];
   trainPictures: string[];

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { client } from '@/app/api/config';
 import { Gown } from '../model';
-import { 
-  CACHE_DURATION, 
+import {
+  CACHE_DURATION,
   CACHE_CONTROL_HEADER,
   ContentfulEntryResponse,
   CacheEntry,
@@ -11,10 +11,10 @@ import {
   getCacheExpiry
 } from '@/app/api/cache-config';
 import { getJSON, setJSON } from '@/lib/redis';
-import { 
-  serializeGownEntry, 
+import {
+  serializeGownEntry,
   deserializeGownEntry,
-  SerializedGownEntrySingle 
+  SerializedGownEntrySingle
 } from '@/lib/contentful-serializer';
 
 // Cache configuration
@@ -108,9 +108,9 @@ const normalizeAssetUrls = (value: unknown): string[] => {
 
   const urls = collect
     .map((item) => extractAssetUrl(item))
-    .filter((url): url is string => 
-      typeof url === 'string' && 
-      url !== 'null' && 
+    .filter((url): url is string =>
+      typeof url === 'string' &&
+      url !== 'null' &&
       url.trim() !== ''
     );
 
@@ -143,14 +143,14 @@ export async function GET(
     const redisCacheKey = `gown:${id}`;
     let response: ContentfulEntryResponse;
     let dataSource: 'cache' | 'contentful' = 'cache';
-    
+
     // Try to get from Redis cache (stored as serialized data)
     interface SerializedCacheEntry {
       serialized: SerializedGownEntrySingle;
       timestamp: number;
     }
     const cachedEntry = await getJSON<SerializedCacheEntry>(redisCacheKey);
-    
+
     if (cachedEntry) {
       // Deserialize cached data from Redis (no expiration - invalidated via webhook)
       response = deserializeGownEntry(cachedEntry.serialized);
@@ -163,9 +163,9 @@ export async function GET(
         include: 10, // Include linked assets (images)
       });
       const fetchDuration = Date.now() - fetchStart;
-      
+
       dataSource = 'contentful';
-      
+
       // Serialize and store in Redis cache (no expiration - invalidated via webhook)
       const serialized = serializeGownEntry(response);
       const cacheEntry: SerializedCacheEntry = {
@@ -173,7 +173,7 @@ export async function GET(
         timestamp: now
       };
       await setJSON(redisCacheKey, cacheEntry);
-      
+
       console.log('🔄 REDIS CACHE MISS: Fetched fresh gown from Contentful');
       console.log(`   Fetch duration: ${fetchDuration}ms`);
       console.log(`   Cache stored in Redis (no expiration - invalidated via webhook)`);
@@ -216,6 +216,7 @@ export async function GET(
 
     // Extract image URLs (handle arrays of images)
     const longGownPictures = normalizeAssetUrls(fields.longGownPicture);
+    const longGownPicturesAlt = normalizeAssetUrls(fields.longGownPictureAlt);
     const filipinianaPictures = normalizeAssetUrls(fields.filipinianaPicture);
     const pixiePictures = normalizeAssetUrls(fields.pixiePicture);
     const trainPictures = normalizeAssetUrls(fields.trainPicture);
@@ -243,6 +244,7 @@ export async function GET(
       lenght,
       sleeves,
       longGownPictures,
+      longGownPicturesAlt,
       filipinianaPictures,
       pixiePictures,
       trainPictures,
