@@ -194,86 +194,102 @@ export function deserializeGownsResponse(
   serialized: SerializedGownEntry[]
 ): ContentfulEntriesResponse {
   return {
-    items: serialized.map((entry) => ({
-      sys: {
-        id: entry.id,
-        type: 'Entry',
-        createdAt: '',
-        updatedAt: '',
-        revision: 0,
-        contentType: {
-          sys: {
-            type: 'Link',
-            linkType: 'ContentType',
-            id: 'gown',
+    items: serialized.map((entry) => {
+      // Ensure all arrays have defaults to handle stale cache entries missing newer fields
+      const longGownPictures = entry.longGownPictures ?? [];
+      const longGownPicturesAlt = entry.longGownPicturesAlt ?? [];
+      const filipinianaPictures = entry.filipinianaPictures ?? [];
+      const pixiePictures = entry.pixiePictures ?? [];
+      const trainPictures = entry.trainPictures ?? [];
+      const addOns = entry.addOns ?? [];
+      const relatedGownIds = entry.relatedGownIds ?? [];
+      const collection = entry.collection ?? [];
+      const bestFor = entry.bestFor ?? [];
+      const tags = entry.tags ?? [];
+      const color = entry.color ?? [];
+      const skirtStyle = entry.skirtStyle ?? [];
+
+      return {
+        sys: {
+          id: entry.id,
+          type: 'Entry',
+          createdAt: '',
+          updatedAt: '',
+          revision: 0,
+          contentType: {
+            sys: {
+              type: 'Link',
+              linkType: 'ContentType',
+              id: 'gown',
+            },
+          },
+          metadata: {
+            tags: [],
           },
         },
-        metadata: {
-          tags: [],
+        fields: {
+          name: entry.name ?? 'Untitled Gown',
+          collection,
+          bestFor,
+          tags,
+          color,
+          skirtStyle,
+          metroManilaRate: entry.metroManilaRate ?? 0,
+          luzonRate: entry.luzonRate ?? 0,
+          outsideLuzonRate: entry.outsideLuzonRate ?? 0,
+          pixieMetroManilaRate: entry.pixieMetroManilaRate ?? 0,
+          pixieLuzonRate: entry.pixieLuzonRate ?? 0,
+          pixieOutsideLuzonRate: entry.pixieOutsideLuzonRate ?? 0,
+          forSaleRateLong: entry.forSaleRateLong ?? 0,
+          forSaleRatePixie: entry.forSaleRatePixie ?? 0,
+          bust: entry.bust ?? '',
+          bustAlt: entry.bustAlt ?? '',
+          waist: entry.waist ?? '',
+          waistAlt: entry.waistAlt ?? '',
+          arms: entry.arms ?? '',
+          backing: entry.backing ?? '',
+          lenght: entry.lenght ?? '',
+          sleeves: entry.sleeves ?? '',
+          longGownPicture: longGownPictures.map((url) => ({
+            fields: {
+              file: {
+                url,
+              },
+            },
+          })),
+          longGownPictureAlt: longGownPicturesAlt.map((url) => ({
+            fields: {
+              file: {
+                url,
+              },
+            },
+          })),
+          filipinianaPicture: filipinianaPictures.map((url) => ({
+            fields: {
+              file: {
+                url,
+              },
+            },
+          })),
+          pixiePicture: pixiePictures.map((url) => ({
+            fields: {
+              file: {
+                url,
+              },
+            },
+          })),
+          trainPicture: trainPictures.map((url) => ({
+            fields: {
+              file: {
+                url,
+              },
+            },
+          })),
+          addOns,
+          relatedGowns: relatedGownIds, // Store as string array (IDs only)
         },
-      },
-      fields: {
-        name: entry.name,
-        collection: entry.collection,
-        bestFor: entry.bestFor,
-        tags: entry.tags,
-        color: entry.color,
-        skirtStyle: entry.skirtStyle,
-        metroManilaRate: entry.metroManilaRate,
-        luzonRate: entry.luzonRate,
-        outsideLuzonRate: entry.outsideLuzonRate,
-        pixieMetroManilaRate: entry.pixieMetroManilaRate,
-        pixieLuzonRate: entry.pixieLuzonRate,
-        pixieOutsideLuzonRate: entry.pixieOutsideLuzonRate,
-        forSaleRateLong: entry.forSaleRateLong,
-        forSaleRatePixie: entry.forSaleRatePixie,
-        bust: entry.bust,
-        bustAlt: entry.bustAlt,
-        waist: entry.waist,
-        waistAlt: entry.waistAlt,
-        arms: entry.arms,
-        backing: entry.backing,
-        lenght: entry.lenght,
-        sleeves: entry.sleeves,
-        longGownPicture: entry.longGownPictures.map((url) => ({
-          fields: {
-            file: {
-              url,
-            },
-          },
-        })),
-        longGownPictureAlt: entry.longGownPicturesAlt.map((url) => ({
-          fields: {
-            file: {
-              url,
-            },
-          },
-        })),
-        filipinianaPicture: entry.filipinianaPictures.map((url) => ({
-          fields: {
-            file: {
-              url,
-            },
-          },
-        })),
-        pixiePicture: entry.pixiePictures.map((url) => ({
-          fields: {
-            file: {
-              url,
-            },
-          },
-        })),
-        trainPicture: entry.trainPictures.map((url) => ({
-          fields: {
-            file: {
-              url,
-            },
-          },
-        })),
-        addOns: entry.addOns,
-        relatedGowns: entry.relatedGownIds, // Store as string array (IDs only)
-      },
-    })) as any,
+      };
+    }) as any,
     total: serialized.length,
     skip: 0,
     limit: serialized.length,
@@ -394,6 +410,20 @@ export function serializeGownEntry(response: ContentfulEntryResponse): Serialize
  * Deserialize a single gown entry back to Contentful-like structure
  */
 export function deserializeGownEntry(serialized: SerializedGownEntrySingle): ContentfulEntryResponse {
+  // Ensure all arrays have defaults to handle stale cache entries missing newer fields
+  const longGownPictures = serialized.longGownPictures ?? [];
+  const longGownPicturesAlt = serialized.longGownPicturesAlt ?? [];
+  const filipinianaPictures = serialized.filipinianaPictures ?? [];
+  const pixiePictures = serialized.pixiePictures ?? [];
+  const trainPictures = serialized.trainPictures ?? [];
+  const addOns = serialized.addOns ?? [];
+  const relatedGownIds = serialized.relatedGownIds ?? [];
+  const collection = serialized.collection ?? [];
+  const bestFor = serialized.bestFor ?? [];
+  const tags = serialized.tags ?? [];
+  const color = serialized.color ?? [];
+  const skirtStyle = serialized.skirtStyle ?? [];
+
   return {
     sys: {
       id: serialized.id,
@@ -413,65 +443,65 @@ export function deserializeGownEntry(serialized: SerializedGownEntrySingle): Con
       },
     },
     fields: {
-      name: serialized.name,
-      collection: serialized.collection,
-      bestFor: serialized.bestFor,
-      tags: serialized.tags,
-      color: serialized.color,
-      skirtStyle: serialized.skirtStyle,
-      metroManilaRate: serialized.metroManilaRate,
-      luzonRate: serialized.luzonRate,
-      outsideLuzonRate: serialized.outsideLuzonRate,
-      pixieMetroManilaRate: serialized.pixieMetroManilaRate,
-      pixieLuzonRate: serialized.pixieLuzonRate,
-      pixieOutsideLuzonRate: serialized.pixieOutsideLuzonRate,
-      forSaleRateLong: serialized.forSaleRateLong,
-      forSaleRatePixie: serialized.forSaleRatePixie,
-      bust: serialized.bust,
-      bustAlt: serialized.bustAlt,
-      waist: serialized.waist,
-      waistAlt: serialized.waistAlt,
-      arms: serialized.arms,
-      backing: serialized.backing,
-      lenght: serialized.lenght,
-      sleeves: serialized.sleeves,
-      longGownPicture: serialized.longGownPictures.map((url) => ({
+      name: serialized.name ?? 'Untitled Gown',
+      collection,
+      bestFor,
+      tags,
+      color,
+      skirtStyle,
+      metroManilaRate: serialized.metroManilaRate ?? 0,
+      luzonRate: serialized.luzonRate ?? 0,
+      outsideLuzonRate: serialized.outsideLuzonRate ?? 0,
+      pixieMetroManilaRate: serialized.pixieMetroManilaRate ?? 0,
+      pixieLuzonRate: serialized.pixieLuzonRate ?? 0,
+      pixieOutsideLuzonRate: serialized.pixieOutsideLuzonRate ?? 0,
+      forSaleRateLong: serialized.forSaleRateLong ?? 0,
+      forSaleRatePixie: serialized.forSaleRatePixie ?? 0,
+      bust: serialized.bust ?? '',
+      bustAlt: serialized.bustAlt ?? '',
+      waist: serialized.waist ?? '',
+      waistAlt: serialized.waistAlt ?? '',
+      arms: serialized.arms ?? '',
+      backing: serialized.backing ?? '',
+      lenght: serialized.lenght ?? '',
+      sleeves: serialized.sleeves ?? '',
+      longGownPicture: longGownPictures.map((url) => ({
         fields: {
           file: {
             url,
           },
         },
       })),
-      longGownPictureAlt: serialized.longGownPicturesAlt.map((url) => ({
+      longGownPictureAlt: longGownPicturesAlt.map((url) => ({
         fields: {
           file: {
             url,
           },
         },
       })),
-      filipinianaPicture: serialized.filipinianaPictures.map((url) => ({
+      filipinianaPicture: filipinianaPictures.map((url) => ({
         fields: {
           file: {
             url,
           },
         },
       })),
-      pixiePicture: serialized.pixiePictures.map((url) => ({
+      pixiePicture: pixiePictures.map((url) => ({
         fields: {
           file: {
             url,
           },
         },
       })),
-      trainPicture: serialized.trainPictures.map((url) => ({
+      trainPicture: trainPictures.map((url) => ({
         fields: {
           file: {
             url,
           },
         },
       })),
-      addOns: serialized.addOns,
-      relatedGowns: serialized.relatedGownIds, // Return as string array (IDs only)
+      addOns,
+      relatedGowns: relatedGownIds, // Return as string array (IDs only)
     },
   } as unknown as ContentfulEntryResponse;
 }
