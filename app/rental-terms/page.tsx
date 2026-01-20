@@ -553,7 +553,8 @@ export default function RentalTermsPage() {
                 8. Photo Usage Rights
               </h2>
               <ul className="list-disc list-inside space-y-2">
-                <li>Mystical Wardrobes reserves the right to use photos of clients wearing our gowns for marketing, promotional, and portfolio purposes, including but not limited to our website, social media platforms, advertisements, and other marketing materials.</li>
+                <li>Mystical Wardrobes reserves the right to use photos and videos of clients wearing our gowns for marketing, promotional, and portfolio purposes, including but not limited to our website, social media platforms, advertisements, and other marketing materials.</li>
+                <li>While we collect photos and videos from clients for potential marketing use, we are not obligated to post all submitted content. Due to the volume of marketing materials we receive and our content lineup, not all collected photos and videos are guaranteed to be posted.</li>
                 <li>If you do not wish for your photos to be used, you must notify us in writing (via email, social media message, or other official channels) at the time of booking or before your event date.</li>
                 <li>By proceeding with your rental without specifying otherwise, you grant Mystical Wardrobes permission to use your photos as described above.</li>
               </ul>
