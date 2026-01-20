@@ -93,7 +93,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "How long is a standard fitting session?",
-        answer: "Standard fitting time is 30 minutes. An extension of up to 30 minutes may be allowed if there is no next client booked after your slot, for a ₱300 extension fee."
+        answer: "Clients have 30-40 minutes allotted for their fitting and decision making. An extension of up to 30 minutes may be allowed if there is no next client booked after your slot, for a ₱300 extension fee."
       },
       {
         question: "How many gowns can I try on during a fitting session?",
@@ -246,7 +246,7 @@ function FAQAccordion({ faq, isOpen, onToggle }: FAQAccordionProps) {
           +
         </span>
       </button>
-      
+
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
