@@ -25,6 +25,7 @@ const sortByAtom = atom<string>(DEFAULT_SORT_BY);
 const filterDrawerAtom = atom(false);
 const currentPageAtom = atom(1);
 const totalItemsAtom = atom(0);
+const addonSearchAtom = atom<string>('');
 
 const sortOptions = [
   { value: "name", label: "Name A-Z" },
@@ -34,7 +35,7 @@ const sortOptions = [
 
 function FiltersPanel({ type }: { type: string }) {
   const [priceRange, setPriceRange] = useAtom(priceRangeAtom);
-  
+
   // Determine if this is a style extension or add-on
   const isStyleExtension = type === 'hood' || type === 'train';
   const sectionTitle = isStyleExtension ? 'Style Extensions' : 'Accessories';
@@ -116,28 +117,26 @@ function FiltersPanel({ type }: { type: string }) {
           >
             All Categories
           </Link>
-          
+
           {/* Style Extensions */}
           <div>
             <h3 className="font-manrope text-xs uppercase tracking-wider text-secondary/60 mb-2">Style Extensions</h3>
             <div className="space-y-2 ml-2">
               <Link
                 href="/addons/hood"
-                className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${
-                  'hood' === type 
-                    ? 'text-secondary font-semibold' 
-                    : 'text-secondary/70 hover:text-secondary/90'
-                }`}
+                className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${'hood' === type
+                  ? 'text-secondary font-semibold'
+                  : 'text-secondary/70 hover:text-secondary/90'
+                  }`}
               >
                 Hoods
               </Link>
               <Link
                 href="/addons-style-extensions/train"
-                className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${
-                  'train' === type 
-                    ? 'text-secondary font-semibold' 
-                    : 'text-secondary/70 hover:text-secondary/90'
-                }`}
+                className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${'train' === type
+                  ? 'text-secondary font-semibold'
+                  : 'text-secondary/70 hover:text-secondary/90'
+                  }`}
               >
                 Trains
               </Link>
@@ -152,11 +151,10 @@ function FiltersPanel({ type }: { type: string }) {
                 <Link
                   key={category}
                   href={`/addons/${category}`}
-                  className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${
-                    category === type 
-                      ? 'text-secondary font-semibold' 
-                      : 'text-secondary/70 hover:text-secondary/90'
-                  }`}
+                  className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${category === type
+                    ? 'text-secondary font-semibold'
+                    : 'text-secondary/70 hover:text-secondary/90'
+                    }`}
                   style={{ animationDelay: `${0.3 + index * 0.05}s` }}
                 >
                   {category === 'necklace' ? 'Necklaces' : category === 'gloves' ? 'Gloves' : category + 's'}
@@ -180,6 +178,8 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
   const [priceRange] = useAtom(priceRangeAtom);
   const [currentPage, setCurrentPage] = useAtom(currentPageAtom);
   const [totalItems, setTotalItems] = useAtom(totalItemsAtom);
+  const [addonSearch, setAddonSearch] = useAtom(addonSearchAtom);
+  const [isSearching, setIsSearching] = useState(false);
 
   const toggleFilterDrawer = () => {
     setIsFilterDrawerOpen((isOpen) => !isOpen);
@@ -188,7 +188,13 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
   useEffect(() => {
     const fetchAddOns = async () => {
       try {
-        setLoading(true);
+        // Only show full loading skeleton on initial load
+        if (addOns.length === 0) {
+          setLoading(true);
+        } else {
+          setIsSearching(true);
+        }
+
         const searchParams = new URLSearchParams({
           type: type,
           sortBy: sortBy,
@@ -198,6 +204,11 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
           limit: ITEMS_PER_PAGE.toString(),
         });
 
+        // Add search query
+        if (addonSearch.trim()) {
+          searchParams.set('search', addonSearch.trim());
+        }
+
         console.log(`Fetching addons for type: "${type}"`);
         const response = await fetch(`/api/addons?${searchParams}`);
         if (!response.ok) {
@@ -205,11 +216,11 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
         }
         const data = await response.json();
         console.log(`API response for type "${type}":`, data);
-        
+
         // Handle both response formats: { items: [], total: number } or just []
         const items = Array.isArray(data) ? data : (data.items || []);
         const total = Array.isArray(data) ? data.length : (data.total || 0);
-        
+
         console.log(`Found ${items.length} items for type "${type}"`);
         setAddOns(items);
         setTotalItems(total);
@@ -218,16 +229,17 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
         setError(err instanceof Error ? err.message : 'Failed to load add-ons');
       } finally {
         setLoading(false);
+        setIsSearching(false);
       }
     };
 
     fetchAddOns();
-  }, [type, sortBy, priceRange, currentPage]);
+  }, [type, sortBy, priceRange, currentPage, addonSearch]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [type, sortBy, priceRange, setCurrentPage]);
+  }, [type, sortBy, priceRange, addonSearch, setCurrentPage]);
 
   const isStyleExtension = type === 'hood' || type === 'train';
   const sectionName = isStyleExtension ? 'Style Extensions' : 'Accessories';
@@ -302,6 +314,38 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
               {getTypeDescription(type)}
             </p>
           </header>
+
+          {/* Search Bar */}
+          <div className="animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search by name..."
+                value={addonSearch}
+                onChange={(e) => setAddonSearch(e.target.value)}
+                className="w-full rounded-lg border border-secondary/30 bg-white px-4 py-3 pl-12 text-sm text-secondary placeholder:text-secondary/50 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all duration-200 hover:border-secondary/50"
+              />
+              <svg
+                className="absolute left-4 top-3.5 h-5 w-5 text-secondary/50"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              {addonSearch && (
+                <button
+                  onClick={() => setAddonSearch('')}
+                  className="absolute right-4 top-3.5 text-secondary/50 hover:text-secondary transition-colors"
+                  aria-label="Clear search"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </div>
 
           {/* Why Petticoats Matter Banner - Only show on petticoat page */}
           {type === 'petticoat' && (
@@ -436,7 +480,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                 </svg>
                 Previous
               </button>
-              
+
               <div className="flex items-center gap-1">
                 {Array.from({ length: Math.ceil(totalItems / ITEMS_PER_PAGE) }, (_, i) => i + 1)
                   .filter(page => {
@@ -452,11 +496,10 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                         )}
                         <button
                           onClick={() => setCurrentPage(page)}
-                          className={`rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 ${
-                            page === currentPage
-                              ? 'bg-secondary text-white'
-                              : 'text-secondary hover:bg-secondary/10'
-                          }`}
+                          className={`rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 ${page === currentPage
+                            ? 'bg-secondary text-white'
+                            : 'text-secondary hover:bg-secondary/10'
+                            }`}
                         >
                           {page}
                         </button>
@@ -464,7 +507,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                     );
                   })}
               </div>
-              
+
               <button
                 onClick={() => setCurrentPage(prev => Math.min(Math.ceil(totalItems / ITEMS_PER_PAGE), prev + 1))}
                 disabled={currentPage >= Math.ceil(totalItems / ITEMS_PER_PAGE)}

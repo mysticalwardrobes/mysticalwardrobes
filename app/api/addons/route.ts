@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { client } from '@/app/api/config';
 import { AddOn } from './model';
-import { 
-  CACHE_DURATION, 
+import {
+  CACHE_DURATION,
   CACHE_CONTROL_HEADER,
   ContentfulEntriesResponse,
   CacheEntry,
@@ -11,10 +11,10 @@ import {
   getCacheExpiry
 } from '@/app/api/cache-config';
 import { getJSON, setJSON } from '@/lib/redis';
-import { 
-  serializeAddonsResponse, 
+import {
+  serializeAddonsResponse,
   deserializeAddonsResponse,
-  SerializedAddonEntry 
+  SerializedAddonEntry
 } from '@/lib/contentful-serializer';
 
 // Cache configuration
@@ -70,6 +70,7 @@ export async function GET(request: NextRequest) {
     const requestStart = Date.now();
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
+    const search = searchParams.get('search');
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
     const sortBy = searchParams.get('sortBy') || 'name';
@@ -84,14 +85,14 @@ export async function GET(request: NextRequest) {
     const now = Date.now();
     let response: ContentfulEntriesResponse;
     let dataSource: 'cache' | 'contentful' = 'cache';
-    
+
     // Try to get from Redis cache (stored as serialized data)
     interface SerializedCacheEntry {
       serialized: SerializedAddonEntry[];
       timestamp: number;
     }
     const cachedData = await getJSON<SerializedCacheEntry>(REDIS_CACHE_KEY);
-    
+
     if (cachedData) {
       // Deserialize cached data from Redis (no expiration - invalidated via webhook)
       response = deserializeAddonsResponse(cachedData.serialized);
@@ -106,9 +107,9 @@ export async function GET(request: NextRequest) {
         limit: 1000, // Maximum allowed by Contentful API to fetch all items
       });
       const fetchDuration = Date.now() - fetchStart;
-      
+
       dataSource = 'contentful';
-      
+
       // Serialize and store in Redis cache (no expiration - invalidated via webhook)
       const serialized = serializeAddonsResponse(response);
       const cacheEntry: SerializedCacheEntry = {
@@ -116,7 +117,7 @@ export async function GET(request: NextRequest) {
         timestamp: now
       };
       await setJSON(REDIS_CACHE_KEY, cacheEntry);
-      
+
       if (cachedData) {
         console.log('🔄 REDIS CACHE MISS: Fetched fresh addons data from Contentful');
       } else {
@@ -139,7 +140,7 @@ export async function GET(request: NextRequest) {
       const luzonRate = ensureNumber(fields.luzonRate) ?? 0;
       const outsideLuzonRate = ensureNumber(fields.outsideLuzonRate) ?? 0;
       const forSaleRate = ensureNumber(fields.forSaleRate);
-      
+
       const pictures = normalizeAssetUrls(fields.pictures);
 
       return {
@@ -167,11 +168,22 @@ export async function GET(request: NextRequest) {
       console.log(`   Found ${addOns.length} addons matching type "${type}"`);
     }
 
+    // Filter by search query
+    if (search && search.trim()) {
+      const searchLower = search.toLowerCase().trim();
+      addOns = addOns.filter(addon =>
+        addon.name.toLowerCase().includes(searchLower) ||
+        addon.description.toLowerCase().includes(searchLower)
+      );
+      console.log(`   Search query: "${search}"`);
+      console.log(`   Found ${addOns.length} addons matching search`);
+    }
+
     // Filter by price range
     if (minPrice || maxPrice) {
       const min = minPrice ? parseInt(minPrice) : 0;
       const max = maxPrice ? parseInt(maxPrice) : Infinity;
-      
+
       addOns = addOns.filter(addon => {
         const price = addon.metroManilaRate;
         return price >= min && price <= max;

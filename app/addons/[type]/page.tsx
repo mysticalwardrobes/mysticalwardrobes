@@ -34,7 +34,7 @@ const sortOptions = [
 
 function FiltersPanel({ type }: { type: string }) {
   const [priceRange, setPriceRange] = useAtom(priceRangeAtom);
-  
+
   // Local state for temporary filter values
   const [localPriceRange, setLocalPriceRange] = useState(priceRange);
 
@@ -42,7 +42,7 @@ function FiltersPanel({ type }: { type: string }) {
   useEffect(() => {
     setLocalPriceRange(priceRange);
   }, [priceRange]);
-  
+
   // Determine if this is a style extension or add-on
   const isStyleExtension = type === 'hood';
   const sectionTitle = isStyleExtension ? 'Style Extensions' : 'Accessories';
@@ -72,8 +72,8 @@ function FiltersPanel({ type }: { type: string }) {
   };
 
   // Check if there are any active filters
-  const hasActiveFilters = 
-    localPriceRange[0] > 0 || 
+  const hasActiveFilters =
+    localPriceRange[0] > 0 ||
     localPriceRange[1] < 2000;
 
   return (
@@ -139,18 +139,17 @@ function FiltersPanel({ type }: { type: string }) {
           >
             All Categories
           </Link>
-          
+
           {/* Style Extensions */}
           <div>
             <h3 className="font-manrope text-xs uppercase tracking-wider text-secondary/60 mb-2">Style Extensions</h3>
             <div className="space-y-2 ml-2">
               <Link
                 href="/addons/hood"
-                className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${
-                  'hood' === type 
-                    ? 'text-secondary font-semibold' 
+                className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${'hood' === type
+                    ? 'text-secondary font-semibold'
                     : 'text-secondary/70 hover:text-secondary/90'
-                }`}
+                  }`}
               >
                 Hoods
               </Link>
@@ -165,11 +164,10 @@ function FiltersPanel({ type }: { type: string }) {
                 <Link
                   key={category}
                   href={`/addons/${category}`}
-                  className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${
-                    category === type 
-                      ? 'text-secondary font-semibold' 
+                  className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${category === type
+                      ? 'text-secondary font-semibold'
                       : 'text-secondary/70 hover:text-secondary/90'
-                  }`}
+                    }`}
                   style={{ animationDelay: `${0.3 + index * 0.05}s` }}
                 >
                   {category === 'necklace' ? 'Necklaces' : category === 'gloves' ? 'Gloves' : category + 's'}
@@ -455,7 +453,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                 </svg>
                 Previous
               </button>
-              
+
               <div className="flex items-center gap-1">
                 {Array.from({ length: Math.ceil(totalItems / ITEMS_PER_PAGE) }, (_, i) => i + 1)
                   .filter(page => {
@@ -471,11 +469,10 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                         )}
                         <button
                           onClick={() => setCurrentPage(page)}
-                          className={`rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 ${
-                            page === currentPage
+                          className={`rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 ${page === currentPage
                               ? 'bg-secondary text-white'
                               : 'text-secondary hover:bg-secondary/10'
-                          }`}
+                            }`}
                         >
                           {page}
                         </button>
@@ -483,7 +480,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                     );
                   })}
               </div>
-              
+
               <button
                 onClick={() => setCurrentPage(prev => Math.min(Math.ceil(totalItems / ITEMS_PER_PAGE), prev + 1))}
                 disabled={currentPage >= Math.ceil(totalItems / ITEMS_PER_PAGE)}
