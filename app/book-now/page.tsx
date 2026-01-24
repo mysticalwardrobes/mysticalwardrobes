@@ -46,8 +46,8 @@ export default function BookNowPage() {
               <button
                 onClick={() => setActiveTab("rental")}
                 className={`px-6 py-3 font-manrope text-sm md:text-base rounded-lg transition-all duration-300 ${activeTab === "rental"
-                    ? "bg-secondary text-background shadow-lg"
-                    : "bg-white text-secondary border-2 border-secondary/20 hover:border-secondary/50"
+                  ? "bg-secondary text-background shadow-lg"
+                  : "bg-white text-secondary border-2 border-secondary/20 hover:border-secondary/50"
                   }`}
               >
                 Book a Rental
@@ -55,8 +55,8 @@ export default function BookNowPage() {
               <button
                 onClick={() => setActiveTab("fitting")}
                 className={`px-6 py-3 font-manrope text-sm md:text-base rounded-lg transition-all duration-300 ${activeTab === "fitting"
-                    ? "bg-secondary text-background shadow-lg"
-                    : "bg-white text-secondary border-2 border-secondary/20 hover:border-secondary/50"
+                  ? "bg-secondary text-background shadow-lg"
+                  : "bg-white text-secondary border-2 border-secondary/20 hover:border-secondary/50"
                   }`}
               >
                 Book a Fitting
@@ -64,8 +64,8 @@ export default function BookNowPage() {
               <button
                 onClick={() => setActiveTab("custom")}
                 className={`px-6 py-3 font-manrope text-sm md:text-base rounded-lg transition-all duration-300 ${activeTab === "custom"
-                    ? "bg-secondary text-background shadow-lg"
-                    : "bg-white text-secondary border-2 border-secondary/20 hover:border-secondary/50"
+                  ? "bg-secondary text-background shadow-lg"
+                  : "bg-white text-secondary border-2 border-secondary/20 hover:border-secondary/50"
                   }`}
               >
                 Start a Custom Order
@@ -327,6 +327,10 @@ function BookFittingSection() {
               <li className="flex items-start gap-2">
                 <span className="text-secondary font-bold">•</span>
                 <span>Paying the ₱800 fitting fee does not reserve any gown for your fitting date or your event date. A gown is only reserved once you officially book it for your event.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-secondary font-bold">•</span>
+                <span>You can book your gown online; however, if you decide to schedule a fitting at a later time, the same fitting policy will still apply but you're only allowed to fit 1 gown only. Please note that we cannot guarantee the availability of the gown for fitting at that time, even if it has already been booked for your event date.</span>
               </li>
             </ul>
 

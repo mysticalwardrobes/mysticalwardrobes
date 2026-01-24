@@ -108,6 +108,7 @@ export default function RentalTermsPage() {
                   <li>Some gowns may not be available on your fitting date, as they may already be booked by other clients. That's why we ask for your top 8–15 choices, so we can easily remove any unavailable gowns and proceed with the rest.</li>
                   <li>We're unable to update every fitting client in real time about each gown's status, so please message us a few days before your fitting and we'll send an updated list of gowns that are available to try.</li>
                   <li>Paying the ₱800 fitting fee does not reserve any gown for your fitting date or your event date. A gown is only reserved once you officially book it for your event.</li>
+                  <li>You can book your gown online; however, if you decide to schedule a fitting at a later time, the same fitting policy will still apply but you're only allowed to fit 1 gown only. Please note that we cannot guarantee the availability of the gown for fitting at that time, even if it has already been booked for your event date.</li>
                 </ul>
 
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-4">

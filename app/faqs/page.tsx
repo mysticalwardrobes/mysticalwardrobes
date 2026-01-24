@@ -102,6 +102,10 @@ const faqData: FAQCategory[] = [
       {
         question: "Is gown availability guaranteed for fitting appointments?",
         answer: "Gown availability is not guaranteed, as some pieces may be booked online at the same time. Real-time availability updates are provided only if you inquire directly."
+      },
+      {
+        question: "Can I schedule a fitting for a gown I already booked online?",
+        answer: "You can book your gown online; however, if you decide to schedule a fitting at a later time, the same fitting policy will still apply but you're only allowed to fit 1 gown only. Please note that we cannot guarantee the availability of the gown for fitting at that time, even if it has already been booked for your event date."
       }
     ]
   },
