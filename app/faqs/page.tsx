@@ -93,7 +93,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "How long is a standard fitting session?",
-        answer: "Clients have 30-40 minutes allotted for their fitting and decision making. An extension of up to 30 minutes may be allowed if there is no next client booked after your slot, for a ₱300 extension fee."
+        answer: "Clients have a strict 30-minute allotment for fitting and decision-making. To maximize this time and keep our schedule on track, fittings are limited to gowns only. Accessories are unavailable for fitting but can be selected via our website. An extension of up to 30 minutes may be allowed if there is no next client booked after your slot, for a ₱400 extension fee."
       },
       {
         question: "How many gowns can I try on during a fitting session?",

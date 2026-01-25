@@ -85,7 +85,7 @@ export default function RentalTermsPage() {
                       <td className="py-3 px-4 align-top">Extension Fee</td>
                       <td className="py-3 px-4 align-top">₱400.00</td>
                       <td className="py-3 px-4 align-top">
-                        An extension of up to 30 minutes may be allowed if there is no next client booked after your slot. A ₱300.00 extension fee will be charged.
+                        An extension of up to 30 minutes may be allowed if there is no next client booked after your slot. A ₱400.00 extension fee will be charged.
                       </td>
                     </tr>
                   </tbody>
@@ -97,7 +97,7 @@ export default function RentalTermsPage() {
               <ul className="mt-4 list-disc list-inside space-y-2">
                 <li>Only 3–4 gowns will be prepared per session.</li>
                 <li>Real-time availability updates are provided only if you inquire directly.</li>
-                <li>Clients have 30-40 minutes allotted for their fitting and decision making. Extensions of up to 30 minutes may be allowed if there is no next client after your slot; a ₱300.00 extension fee applies.</li>
+                <li>Clients have a strict 30-minute allotment for fitting and decision-making. To maximize this time and keep our schedule on track, fittings are limited to gowns only. Accessories are unavailable for fitting but can be selected via our website. Extensions of up to 30 minutes may be allowed if there is no next client after your slot; a ₱400.00 extension fee applies.</li>
               </ul>
 
               <div className="mt-6 pt-6 border-t border-foreground/10">
