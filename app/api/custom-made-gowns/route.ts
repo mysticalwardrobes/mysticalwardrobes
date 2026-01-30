@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { client } from '@/app/api/config';
 import { CustomMadeGown, CustomMadeGownsResponse } from './model';
-import { 
-  CUSTOM_MADE_GOWNS_CACHE_DURATION, 
+import {
+  CUSTOM_MADE_GOWNS_CACHE_DURATION,
   CACHE_CONTROL_HEADER,
   ContentfulEntriesResponse,
   CacheEntry,
@@ -71,13 +71,13 @@ export async function GET(request: NextRequest) {
 
     // Prepare variables for data source
     const now = Date.now();
-    let response: ContentfulEntriesResponse;
+    let response: ContentfulEntriesResponse | undefined;
     let dataSource: 'cache' | 'contentful' = 'contentful';
-    
+
     // Optionally check Redis cache first
     if (USE_REDIS_CACHE) {
       const cachedData = await getJSON<CacheEntry<ContentfulEntriesResponse>>(REDIS_CACHE_KEY);
-      
+
       if (cachedData) {
         // Use cached data from Redis (no expiration - invalidated via webhook)
         response = cachedData.data;
@@ -96,9 +96,9 @@ export async function GET(request: NextRequest) {
         include: 10, // Include linked assets (images)
       });
       const fetchDuration = Date.now() - fetchStart;
-      
+
       dataSource = 'contentful';
-      
+
       // Store in Redis cache (no expiration - invalidated via webhook)
       if (USE_REDIS_CACHE) {
         const cacheEntry: CacheEntry<ContentfulEntriesResponse> = {
@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
           timestamp: now
         };
         await setJSON(REDIS_CACHE_KEY, cacheEntry);
-        
+
         console.log(
           '🆕 INITIAL OR REFRESHED FETCH: Fetched custom made gowns data from Contentful and stored in Redis'
         );
