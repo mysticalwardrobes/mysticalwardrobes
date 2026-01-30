@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { invalidateContentfulCache } from '@/lib/redis';
+import { USE_REDIS_CACHE, invalidateContentfulCache } from '@/lib/redis';
 
 /**
  * Contentful Webhook Endpoint
@@ -55,21 +55,37 @@ export async function POST(request: NextRequest) {
       console.log(`   Entry ID: ${sys.id || 'N/A'}`);
     }
 
-    // Invalidate all Contentful cache
-    const result = await invalidateContentfulCache();
+    // Invalidate all Contentful cache if Redis is enabled; otherwise, no-op
+    if (USE_REDIS_CACHE) {
+      const result = await invalidateContentfulCache();
 
-    console.log('✅ Cache invalidation complete');
-    console.log(`   Gowns cache cleared: ${result.gowns} keys`);
-    console.log(`   Addons cache cleared: ${result.addons} keys`);
-    console.log(`   Custom-made gowns cache cleared: ${result.customMadeGowns} keys`);
-    console.log(`   Total keys cleared: ${result.total}`);
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('✅ Cache invalidation complete');
+      console.log(`   Gowns cache cleared: ${result.gowns} keys`);
+      console.log(`   Addons cache cleared: ${result.addons} keys`);
+      console.log(`   Custom-made gowns cache cleared: ${result.customMadeGowns} keys`);
+      console.log(`   Total keys cleared: ${result.total}`);
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
-    return NextResponse.json({
-      success: true,
-      message: 'Cache invalidated successfully',
-      cleared: result,
-    });
+      return NextResponse.json({
+        success: true,
+        message: 'Cache invalidated successfully',
+        cleared: result,
+      });
+    } else {
+      console.log('ℹ️ Redis cache disabled: skipping Redis invalidation');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+      return NextResponse.json({
+        success: true,
+        message: 'Redis cache is disabled; no cache invalidation performed',
+        cleared: {
+          gowns: 0,
+          addons: 0,
+          customMadeGowns: 0,
+          total: 0,
+        },
+      });
+    }
   } catch (error) {
     console.error('❌ Error processing Contentful webhook:', error);
     return NextResponse.json(

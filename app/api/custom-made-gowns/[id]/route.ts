@@ -10,7 +10,7 @@ import {
   getCacheAge,
   getCacheExpiry
 } from '@/app/api/cache-config';
-import { getJSON, setJSON } from '@/lib/redis';
+import { USE_REDIS_CACHE, getJSON, setJSON } from '@/lib/redis';
 
 // Cache configuration
 export const revalidate = 3600;
@@ -69,21 +69,26 @@ export async function GET(
     console.log(`   Gown ID: ${id}`);
     console.log(`   Timestamp: ${new Date().toISOString()}`);
 
-    // Check Redis cache first for this specific custom gown
+    // Prepare variables for data source
     const now = Date.now();
     const redisCacheKey = `custom-made-gown:${id}`;
     let response: ContentfulEntriesResponse;
-    let dataSource: 'cache' | 'contentful' = 'cache';
+    let dataSource: 'cache' | 'contentful' = 'contentful';
     
-    // Try to get from Redis cache
-    const cachedData = await getJSON<CacheEntry<ContentfulEntriesResponse>>(redisCacheKey);
-    
-    if (cachedData) {
-      // Use cached data from Redis (no expiration - invalidated via webhook)
-      response = cachedData.data;
-      console.log('✅ REDIS CACHE HIT: Using cached custom gown data from Redis');
-      console.log(`   Cache age: ${getCacheAge(cachedData.timestamp)}s`);
-    } else {
+    // Optionally check Redis cache first for this specific custom gown
+    if (USE_REDIS_CACHE) {
+      const cachedData = await getJSON<CacheEntry<ContentfulEntriesResponse>>(redisCacheKey);
+      
+      if (cachedData) {
+        // Use cached data from Redis (no expiration - invalidated via webhook)
+        response = cachedData.data;
+        dataSource = 'cache';
+        console.log('✅ REDIS CACHE HIT: Using cached custom gown data from Redis');
+        console.log(`   Cache age: ${getCacheAge(cachedData.timestamp)}s`);
+      }
+    }
+
+    if (!response) {
       // Fetch fresh data from Contentful
       const fetchStart = Date.now();
       response = await client.getEntries({
@@ -96,16 +101,22 @@ export async function GET(
       dataSource = 'contentful';
       
       // Store in Redis cache (no expiration - invalidated via webhook)
-      const cacheEntry: CacheEntry<ContentfulEntriesResponse> = {
-        data: response,
-        timestamp: now
-      };
-      await setJSON(redisCacheKey, cacheEntry);
-      
-      console.log('🔄 REDIS CACHE MISS: Fetched fresh custom gown data from Contentful');
-      console.log(`   Fetch duration: ${fetchDuration}ms`);
-      console.log(`   Cache stored in Redis (no expiration - invalidated via webhook)`);
-      console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
+      if (USE_REDIS_CACHE) {
+        const cacheEntry: CacheEntry<ContentfulEntriesResponse> = {
+          data: response,
+          timestamp: now
+        };
+        await setJSON(redisCacheKey, cacheEntry);
+        
+        console.log(
+          '🔄 REDIS CACHE MISS: Fetched fresh custom gown data from Contentful and stored in Redis'
+        );
+        console.log(`   Fetch duration: ${fetchDuration}ms`);
+        console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
+      } else {
+        console.log('ℹ️ Redis cache disabled: fetched custom gown directly from Contentful');
+        console.log(`   Fetch duration: ${fetchDuration}ms`);
+      }
     }
 
     // Check if gown was found

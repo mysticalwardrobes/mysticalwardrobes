@@ -10,7 +10,7 @@ import {
   getCacheAge,
   getCacheExpiry
 } from '@/app/api/cache-config';
-import { getJSON, setJSON } from '@/lib/redis';
+import { USE_REDIS_CACHE, getJSON, setJSON } from '@/lib/redis';
 import {
   serializeAddonsResponse,
   deserializeAddonsResponse,
@@ -81,25 +81,31 @@ export async function GET(request: NextRequest) {
     console.log('🔍 NEW ADDONS API REQUEST');
     console.log(`   Timestamp: ${new Date().toISOString()}`);
 
-    // Check Redis cache first
+    // Prepare variables for data source
     const now = Date.now();
-    let response: ContentfulEntriesResponse;
-    let dataSource: 'cache' | 'contentful' = 'cache';
+    let response: ContentfulEntriesResponse | undefined;
+    let dataSource: 'cache' | 'contentful' = 'contentful';
 
-    // Try to get from Redis cache (stored as serialized data)
-    interface SerializedCacheEntry {
-      serialized: SerializedAddonEntry[];
-      timestamp: number;
+    // Optionally check Redis cache first
+    if (USE_REDIS_CACHE) {
+      interface SerializedCacheEntry {
+        serialized: SerializedAddonEntry[];
+        timestamp: number;
+      }
+      const cachedData = await getJSON<SerializedCacheEntry>(REDIS_CACHE_KEY);
+
+      if (cachedData) {
+        // Deserialize cached data from Redis (no expiration - invalidated via webhook)
+        response = deserializeAddonsResponse(cachedData.serialized);
+        dataSource = 'cache';
+        console.log('✅ REDIS CACHE HIT: Using cached addons data from Redis');
+        console.log(`   Cache age: ${getCacheAge(cachedData.timestamp)}s`);
+        console.log(`   Total items in cache: ${response.items.length}`);
+      }
     }
-    const cachedData = await getJSON<SerializedCacheEntry>(REDIS_CACHE_KEY);
 
-    if (cachedData) {
-      // Deserialize cached data from Redis (no expiration - invalidated via webhook)
-      response = deserializeAddonsResponse(cachedData.serialized);
-      console.log('✅ REDIS CACHE HIT: Using cached addons data from Redis');
-      console.log(`   Cache age: ${getCacheAge(cachedData.timestamp)}s`);
-      console.log(`   Total items in cache: ${response.items.length}`);
-    } else {
+    // If no valid cache (or Redis disabled), fetch from Contentful
+    if (!response) {
       // Fetch fresh data from Contentful
       const fetchStart = Date.now();
       response = await client.getEntries({
@@ -111,17 +117,23 @@ export async function GET(request: NextRequest) {
       dataSource = 'contentful';
 
       // Serialize and store in Redis cache (no expiration - invalidated via webhook)
-      const serialized = serializeAddonsResponse(response);
-      const cacheEntry: SerializedCacheEntry = {
-        serialized,
-        timestamp: now
-      };
-      await setJSON(REDIS_CACHE_KEY, cacheEntry);
+      if (USE_REDIS_CACHE) {
+        const serialized = serializeAddonsResponse(response);
+        interface SerializedCacheEntry {
+          serialized: SerializedAddonEntry[];
+          timestamp: number;
+        }
+        const cacheEntry: SerializedCacheEntry = {
+          serialized,
+          timestamp: now
+        };
+        await setJSON(REDIS_CACHE_KEY, cacheEntry);
 
-      if (cachedData) {
-        console.log('🔄 REDIS CACHE MISS: Fetched fresh addons data from Contentful');
+        console.log(
+          '🆕 INITIAL OR REFRESHED FETCH: Fetched addons data from Contentful and stored in Redis'
+        );
       } else {
-        console.log('🆕 INITIAL FETCH: Fetched addons data from Contentful');
+        console.log('ℹ️ Redis cache disabled: fetched addons data directly from Contentful');
       }
       console.log(`   Fetch duration: ${fetchDuration}ms`);
       console.log(`   Total items fetched: ${response.items.length}`);
@@ -129,8 +141,11 @@ export async function GET(request: NextRequest) {
       console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
     }
 
+    // At this point, response is guaranteed to be defined
+    const resolvedResponse = response;
+
     // Transform Contentful entries to our AddOn interface
-    let addOns: AddOn[] = response.items.map((item) => {
+    let addOns: AddOn[] = resolvedResponse.items.map((item) => {
       const fields = isRecord(item.fields) ? (item.fields as Record<string, unknown>) : {};
 
       const name = ensureString(fields.name) ?? 'Untitled Add-On';

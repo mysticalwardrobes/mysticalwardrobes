@@ -1,5 +1,11 @@
 import { createClient } from 'redis';
 
+// Feature flag: toggle Redis cache usage across the app
+// When false, all helpers in this file become no-ops that fall back to direct data fetching.
+// Default is enabled to preserve existing behavior unless explicitly disabled.
+export const USE_REDIS_CACHE =
+  process.env.USE_REDIS_CACHE === 'false' ? false : true;
+
 // Redis connection configuration
 // Note: Use REDIS_URL for standard Redis connections (e.g., redis://localhost:6379)
 // For Upstash, use the Redis protocol endpoint, not the REST endpoint
@@ -35,13 +41,16 @@ function getRedisClient() {
 
 /**
  * Get a value from Redis by key
+ * If Redis cache is disabled, returns null without attempting any connection.
  * @param key - The key to retrieve
  * @returns The value if found, null otherwise
  */
 export async function get(key: string): Promise<string | null> {
+  if (!USE_REDIS_CACHE) return null;
+
   try {
     const client = getRedisClient();
-    
+
     if (!client.isOpen) {
       await client.connect();
     }
@@ -82,9 +91,11 @@ export async function set(
   value: string,
   expirationSeconds?: number
 ): Promise<boolean> {
+  if (!USE_REDIS_CACHE) return true;
+
   try {
     const client = getRedisClient();
-    
+
     if (!client.isOpen) {
       await client.connect();
     }
@@ -114,6 +125,8 @@ export async function setJSON(
   value: any,
   expirationSeconds?: number
 ): Promise<boolean> {
+  if (!USE_REDIS_CACHE) return true;
+
   try {
     const jsonString = JSON.stringify(value);
     return await set(key, jsonString, expirationSeconds);
@@ -125,13 +138,16 @@ export async function setJSON(
 
 /**
  * Delete a key from Redis
+ * If Redis cache is disabled, this is a no-op that returns true.
  * @param key - The key to delete
  * @returns true if successful, false otherwise
  */
 export async function del(key: string): Promise<boolean> {
+  if (!USE_REDIS_CACHE) return true;
+
   try {
     const client = getRedisClient();
-    
+
     if (!client.isOpen) {
       await client.connect();
     }
@@ -146,13 +162,16 @@ export async function del(key: string): Promise<boolean> {
 
 /**
  * Check if a key exists in Redis
+ * If Redis cache is disabled, always returns false.
  * @param key - The key to check
  * @returns true if key exists, false otherwise
  */
 export async function exists(key: string): Promise<boolean> {
+  if (!USE_REDIS_CACHE) return false;
+
   try {
     const client = getRedisClient();
-    
+
     if (!client.isOpen) {
       await client.connect();
     }
@@ -167,14 +186,17 @@ export async function exists(key: string): Promise<boolean> {
 
 /**
  * Set expiration time for a key
+ * If Redis cache is disabled, this is a no-op that returns true.
  * @param key - The key to set expiration for
  * @param seconds - Expiration time in seconds
  * @returns true if successful, false otherwise
  */
 export async function expire(key: string, seconds: number): Promise<boolean> {
+  if (!USE_REDIS_CACHE) return true;
+
   try {
     const client = getRedisClient();
-    
+
     if (!client.isOpen) {
       await client.connect();
     }
@@ -189,13 +211,16 @@ export async function expire(key: string, seconds: number): Promise<boolean> {
 
 /**
  * Delete multiple keys by pattern
+ * If Redis cache is disabled, this is a no-op that returns 0.
  * @param pattern - Pattern to match keys (e.g., 'gowns:*', 'addons:*')
  * @returns Number of keys deleted
  */
 export async function deleteByPattern(pattern: string): Promise<number> {
+  if (!USE_REDIS_CACHE) return 0;
+
   try {
     const client = getRedisClient();
-    
+
     if (!client.isOpen) {
       await client.connect();
     }
@@ -203,7 +228,7 @@ export async function deleteByPattern(pattern: string): Promise<number> {
     // Use SCAN to find all keys matching the pattern
     const keys: string[] = [];
     let cursor = '0';
-    
+
     do {
       const result = await client.scan(cursor, {
         MATCH: pattern,
@@ -296,9 +321,11 @@ export async function invalidateContentfulCache(): Promise<{
 
 /**
  * Close Redis connection
- * Useful for cleanup in serverless environments
+ * Useful for cleanup in serverless environments. No-op when cache is disabled.
  */
 export async function close(): Promise<void> {
+  if (!USE_REDIS_CACHE) return;
+
   try {
     if (redisClient && redisClient.isOpen) {
       await redisClient.quit();

@@ -11,7 +11,7 @@ import {
   getCacheExpiry
 } from '@/app/api/cache-config';
 import { supabaseAdmin } from '@/lib/supabase';
-import { getJSON, setJSON } from '@/lib/redis';
+import { USE_REDIS_CACHE, getJSON, setJSON } from '@/lib/redis';
 import {
   serializeGownsResponse,
   deserializeGownsResponse,
@@ -133,25 +133,30 @@ export async function GET(request: NextRequest) {
     console.log('🔍 NEW GOWNS API REQUEST');
     console.log(`   Timestamp: ${new Date().toISOString()}`);
 
-    // Check Redis cache first
+    // Prepare variables for data source
     const now = Date.now();
-    let response: ContentfulEntriesResponse;
-    let dataSource: 'cache' | 'contentful' = 'cache';
+    let response: ContentfulEntriesResponse | undefined;
+    let dataSource: 'cache' | 'contentful' = 'contentful';
 
-    // Try to get from Redis cache (stored as serialized data)
-    interface SerializedCacheEntry {
-      serialized: SerializedGownEntry[];
-      timestamp: number;
+    // Optionally check Redis cache first
+    if (USE_REDIS_CACHE) {
+      interface SerializedCacheEntry {
+        serialized: SerializedGownEntry[];
+        timestamp: number;
+      }
+      const cachedData = await getJSON<SerializedCacheEntry>(REDIS_CACHE_KEY);
+
+      if (cachedData) {
+        // Deserialize cached data from Redis (no expiration - invalidated via webhook)
+        response = deserializeGownsResponse(cachedData.serialized);
+        dataSource = 'cache';
+        console.log('✅ REDIS CACHE HIT: Using cached gowns data from Redis');
+        console.log(`   Cache age: ${getCacheAge(cachedData.timestamp)}s`);
+        console.log(`   Total items in cache: ${response.items.length}`);
+      }
     }
-    const cachedData = await getJSON<SerializedCacheEntry>(REDIS_CACHE_KEY);
 
-    if (cachedData) {
-      // Deserialize cached data from Redis (no expiration - invalidated via webhook)
-      response = deserializeGownsResponse(cachedData.serialized);
-      console.log('✅ REDIS CACHE HIT: Using cached gowns data from Redis');
-      console.log(`   Cache age: ${getCacheAge(cachedData.timestamp)}s`);
-      console.log(`   Total items in cache: ${response.items.length}`);
-    } else {
+    if (!response) {
       // Fetch fresh data from Contentful
       const fetchStart = Date.now();
       response = await client.getEntries({
@@ -164,26 +169,33 @@ export async function GET(request: NextRequest) {
       dataSource = 'contentful';
 
       // Serialize and store in Redis cache (no expiration - invalidated via webhook)
-      const serialized = serializeGownsResponse(response);
-      const cacheEntry: SerializedCacheEntry = {
-        serialized,
-        timestamp: now
-      };
-      await setJSON(REDIS_CACHE_KEY, cacheEntry);
+      if (USE_REDIS_CACHE) {
+        const serialized = serializeGownsResponse(response);
+        interface SerializedCacheEntry {
+          serialized: SerializedGownEntry[];
+          timestamp: number;
+        }
+        const cacheEntry: SerializedCacheEntry = {
+          serialized,
+          timestamp: now
+        };
+        await setJSON(REDIS_CACHE_KEY, cacheEntry);
 
-      if (cachedData) {
-        console.log('🔄 REDIS CACHE MISS: Fetched fresh gowns data from Contentful');
+        console.log(
+          '🆕 INITIAL OR REFRESHED FETCH: Fetched gowns data from Contentful and stored in Redis'
+        );
       } else {
-        console.log('🆕 INITIAL FETCH: Fetched gowns data from Contentful');
+        console.log('ℹ️ Redis cache disabled: fetched gowns data directly from Contentful');
       }
       console.log(`   Fetch duration: ${fetchDuration}ms`);
       console.log(`   Total items fetched: ${response.items.length}`);
-      console.log(`   Cache stored in Redis (no expiration - invalidated via webhook)`);
-      console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
     }
 
+    // At this point, response is guaranteed to be defined
+    const resolvedResponse = response;
+
     // Transform Contentful entries to our Gown interface
-    let gowns: Gown[] = response.items.map((item) => {
+    let gowns: Gown[] = resolvedResponse.items.map((item) => {
       const fields = isRecord(item.fields) ? (item.fields as Record<string, unknown>) : {};
 
       const name = ensureString(fields.name) ?? 'Untitled Gown';
