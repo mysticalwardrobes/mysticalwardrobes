@@ -25,6 +25,7 @@ import { collections, type Collection } from "@/app/config/collections";
 import { featuredGownIds } from "@/app/config/featured";
 import VotingEvent from "@/components/voting/VotingEvent";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { extractTextFromPortableText } from "@/lib/sanity";
 
 // Helper function to chunk array
 const chunkArray = <T,>(arr: T[], size: number): T[][] => {
@@ -131,7 +132,7 @@ function ReviewsSection() {
         }
 
         const normalized: ReviewWithImages[] = data
-          .filter((review) => Boolean(review.comment?.trim()))
+          .filter((review) => Boolean(extractTextFromPortableText(review.comment)))
           .slice(0, 10)
           .map((review) => {
             const images = [
@@ -358,7 +359,7 @@ function ReviewCard(props: ReviewCardProps) {
   };
 
   const safeName = review.clientName?.trim() ? review.clientName.trim() : 'Mystical Wardrobes Client';
-  const safeComment = review.comment?.trim() ?? 'This fairy has left a sprinkle of magic for us.';
+  const safeComment = extractTextFromPortableText(review.comment) || 'This fairy has left a sprinkle of magic for us.';
 
   return (
     <motion.article

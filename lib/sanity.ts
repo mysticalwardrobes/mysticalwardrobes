@@ -1,4 +1,25 @@
 import { createClient } from '@sanity/client';
+import { PortableTextBlock } from '@sanity/types';
+
+/**
+ * Helper function to extract plain text from Portable Text blocks
+ * @param blocks - Array of Portable Text blocks
+ * @returns Plain text string extracted from blocks
+ */
+export function extractTextFromPortableText(blocks: PortableTextBlock[] | null | undefined): string {
+  if (!blocks || !Array.isArray(blocks)) {
+    return '';
+  }
+  
+  return blocks
+    .filter((block): block is PortableTextBlock & { children?: Array<{ text?: string }> } => 
+      block._type === 'block' && 'children' in block
+    )
+    .flatMap(block => block.children?.map((child: { text?: string }) => child.text) || [])
+    .filter(Boolean)
+    .join(' ')
+    .trim();
+}
 
 /**
  * Sanity client configuration
@@ -89,4 +110,75 @@ export const GOWN_DETAIL_QUERY = `*[_type == "gown" && _id == $id][0] {
   "trainPictures": trainPicture[].asset->url,
   "addOns": addOns[]._ref,
   "relatedGowns": relatedGowns[]._ref
+}`;
+
+/**
+ * GROQ Queries for Reviews
+ */
+export const REVIEWS_LIST_QUERY = `*[_type == "reviews"] {
+  "id": _id,
+  clientName,
+  comment,
+  "thumbnailMediaUrl": media.asset->url,
+  "otherMediaUrls": otherMedia[].asset->url,
+  "gownId": gown._ref,
+  "otherGownsIds": otherGowns[]._ref
+}`;
+
+export const REVIEWS_BY_GOWN_QUERY = `*[_type == "reviews" && (gown._ref == $gownId || $gownId in otherGowns[]._ref)] {
+  "id": _id,
+  clientName,
+  comment,
+  "thumbnailMediaUrl": media.asset->url,
+  "otherMediaUrls": otherMedia[].asset->url,
+  "gownId": gown._ref,
+  "otherGownsIds": otherGowns[]._ref
+}`;
+
+/**
+ * GROQ Queries for Prom Queens
+ */
+export const PROMQUEENS_LIST_QUERY = `*[_type == "promQueens"] {
+  "id": _id,
+  clientName,
+  "pictureUrl": picture.asset->url,
+  "gownId": gown._ref,
+  "gownName": gown->name
+}`;
+
+/**
+ * GROQ Queries for Custom Made Gowns
+ */
+export const CUSTOM_MADE_GOWNS_LIST_QUERY = `*[_type == "customMadeGowns"] {
+  "id": _id,
+  title,
+  gownFor,
+  location,
+  clientName,
+  description,
+  preOrderPrice,
+  pixiePreOrderPrice,
+  hoodPreOrderPrice,
+  flowyPreOrderPrice,
+  "longGownPicture": longGownPicture[].asset->url,
+  "pixiePicture": pixiePicture[].asset->url,
+  "hoodPicture": hoodPicture[].asset->url,
+  "flowyPictures": flowyPictures[].asset->url
+}`;
+
+export const CUSTOM_MADE_GOWN_DETAIL_QUERY = `*[_type == "customMadeGowns" && _id == $id][0] {
+  "id": _id,
+  title,
+  gownFor,
+  location,
+  clientName,
+  description,
+  preOrderPrice,
+  pixiePreOrderPrice,
+  hoodPreOrderPrice,
+  flowyPreOrderPrice,
+  "longGownPicture": longGownPicture[].asset->url,
+  "pixiePicture": pixiePicture[].asset->url,
+  "hoodPicture": hoodPicture[].asset->url,
+  "flowyPictures": flowyPictures[].asset->url
 }`;

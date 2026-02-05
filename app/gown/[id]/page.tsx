@@ -10,6 +10,7 @@ import { collections as collectionConfig } from "@/app/config/collections";
 import React from "react";
 import { div } from "framer-motion/client";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { extractTextFromPortableText } from "@/lib/sanity";
 
 type Props = {
   params: { id: string };
@@ -1042,9 +1043,9 @@ function GownReviews({ gownId }: { gownId: string }) {
               <h4 className="font-vegawanty text-lg text-foreground">
                 {review.clientName}
               </h4>
-              {review.comment && (
+              {review.comment && extractTextFromPortableText(review.comment) && (
                 <p className="mt-1 font-manrope text-xs text-secondary/70 line-clamp-2">
-                  "{review.comment}"
+                  "{extractTextFromPortableText(review.comment)}"
                 </p>
               )}
             </div>

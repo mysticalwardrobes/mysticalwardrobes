@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { CustomMadeGown } from "@/app/api/custom-made-gowns/model";
+import { extractTextFromPortableText } from "@/lib/sanity";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -321,11 +322,11 @@ export default function CustomGownPage({ params }: Props) {
         </div>
 
         {/* Description Section */}
-        {gown.description && (
+        {gown.description && extractTextFromPortableText(gown.description) && (
           <div className="rounded p-5 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
             <h3 className="text-sm font-semibold mb-4 tracking-wide uppercase text-neutral-700">About This Creation</h3>
             <p className="text-sm leading-relaxed text-neutral-700 whitespace-pre-line">
-              {gown.description}
+              {extractTextFromPortableText(gown.description)}
             </p>
           </div>
         )}
