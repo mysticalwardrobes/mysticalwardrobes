@@ -451,15 +451,15 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                         <p className="font-manrope text-sm uppercase tracking-[0.35em] text-secondary/70">
                           From ₱{addon.metroManilaRate.toLocaleString()}
                         </p>
-                        {addon.forSaleRate && (
+                        {/* {addon.forSaleRate && (
                           <p className="font-manrope text-xs text-secondary/60">
                             Sale: ₱{addon.forSaleRate.toLocaleString()}
                           </p>
-                        )}
+                        )} */}
                       </div>
-                      <p className="font-manrope text-xs text-secondary/60 line-clamp-2">
+                      {/* <p className="font-manrope text-xs text-secondary/60 line-clamp-2">
                         {addon.description}
-                      </p>
+                      </p> */}
                     </div>
                   </Link>
                 </motion.article>

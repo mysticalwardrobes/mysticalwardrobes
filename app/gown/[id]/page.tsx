@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 import { Gown } from "@/app/api/gowns/model";
-import { AddOn } from "@/app/api/addons/model";
+import { AddOnDetail } from "@/app/api/addons/model";
 import { Review } from "@/app/api/reviews/model";
 import { collections as collectionConfig } from "@/app/config/collections";
 import React from "react";
@@ -1039,7 +1039,7 @@ function GownReviews({ gownId }: { gownId: string }) {
 }
 
 function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
-  const [addOnsByCategory, setAddOnsByCategory] = useState<Record<string, AddOn[]>>({});
+  const [addOnsByCategory, setAddOnsByCategory] = useState<Record<string, AddOnDetail[]>>({});
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
@@ -1060,7 +1060,7 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
             .then((res) => (res.ok ? res.json() : null))
             .catch(() => null)
         );
-        const fetchedAddOns = (await Promise.all(addOnPromises)).filter(Boolean) as AddOn[];
+        const fetchedAddOns = (await Promise.all(addOnPromises)).filter(Boolean) as AddOnDetail[];
 
         // Group fetched add-ons by category (type)
         const grouped = fetchedAddOns.reduce((acc, addon) => {
@@ -1069,7 +1069,7 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
           }
           acc[addon.type].push(addon);
           return acc;
-        }, {} as Record<string, AddOn[]>);
+        }, {} as Record<string, AddOnDetail[]>);
 
         setAddOnsByCategory(grouped);
       } catch (err) {
@@ -1227,9 +1227,16 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 font-manrope text-xs text-secondary/70 line-clamp-2">
-                      {addon.description}
-                    </p>
+                    {addon.description && addon.description.length > 0 && (
+                      <p className="mt-1 font-manrope text-xs text-secondary/70 line-clamp-2">
+                        {addon.description
+                          .filter((block): block is typeof block & { children?: Array<{ text?: string }> } => 
+                            block._type === 'block' && 'children' in block
+                          )
+                          .flatMap(block => block.children?.map((child: { text?: string }) => child.text) || [])
+                          .join(' ')}
+                      </p>
+                    )}
                   </div>
                 </Link>
               ))}
