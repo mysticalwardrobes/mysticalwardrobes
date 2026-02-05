@@ -4,7 +4,7 @@ import { useState, useEffect, use, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { AddOn } from "@/app/api/addons/model";
+import { AddOnDetail } from "@/app/api/addons/model";
 import AddOnDetailSkeleton from "@/components/AddOnDetailSkeleton";
 
 interface PageProps {
@@ -15,7 +15,7 @@ type LocationKey = "METRO_MANILA" | "LUZON" | "OUTSIDE_LUZON";
 
 export default function AddOnDetailPage({ params }: { params: Promise<{ type: string; id: string }> }) {
   const { type, id } = use(params);
-  const [addOn, setAddOn] = useState<AddOn | null>(null);
+  const [addOn, setAddOn] = useState<AddOnDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -112,7 +112,7 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
             <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-secondary/10">
               {addOn.pictures && addOn.pictures.length > 0 ? (
                 <Image
-                  src={'https:' + addOn.pictures[selectedImageIndex]}
+                  src={addOn.pictures[selectedImageIndex].startsWith('http') ? addOn.pictures[selectedImageIndex] : 'https:' + addOn.pictures[selectedImageIndex]}
                   alt={addOn.name}
                   fill
                   className="object-cover"
@@ -141,7 +141,7 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
                     }`}
                   >
                     <Image
-                      src={'https:' + picture}
+                      src={picture.startsWith('http') ? picture : 'https:' + picture}
                       alt={`${addOn.name} ${index + 1}`}
                       fill
                       className="object-cover"
@@ -162,7 +162,17 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
                 </span>
               </div>
               <h1 className="font-vegawanty text-3xl text-foreground sm:text-4xl">{addOn.name}</h1>
-              <p className="mt-4 font-manrope text-lg text-secondary/80">{addOn.description}</p>
+              {addOn.description && addOn.description.length > 0 && (
+                <p className="mt-4 font-manrope text-lg text-secondary/80">
+                  {/* Extract plain text from Portable Text blocks */}
+                  {addOn.description
+                    .filter((block): block is typeof block & { children?: Array<{ text?: string }> } => 
+                      block._type === 'block' && 'children' in block
+                    )
+                    .flatMap(block => block.children?.map((child: { text?: string }) => child.text) || [])
+                    .join(' ')}
+                </p>
+              )}
             </div>
 
             {/* Pricing */}
