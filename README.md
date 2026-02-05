@@ -1,5 +1,33 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Environment Variables
+
+### Sanity CMS Configuration
+
+The following environment variables are required for Sanity CMS integration:
+
+```bash
+# Sanity project ID (get from sanity.io/manage)
+NEXT_PUBLIC_SANITY_PROJECT_ID=yz23zros
+
+# Sanity dataset name (default: production)
+NEXT_PUBLIC_SANITY_DATASET=production
+
+# Sanity API version (YYYY-MM-DD format)
+SANITY_API_VERSION=2024-01-01
+
+# Sanity API read token (optional, only needed for private datasets)
+# Generate at: sanity.io/manage -> API -> Tokens
+SANITY_API_READ_TOKEN=
+```
+
+### Redis Cache Configuration
+
+```bash
+REDIS_URL=redis://localhost:6379
+USE_REDIS_CACHE=true
+```
+
 ## Getting Started
 
 First, run the development server:
