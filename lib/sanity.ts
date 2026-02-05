@@ -37,3 +37,56 @@ export const ADDON_DETAIL_QUERY = `*[_type == "addOns" && _id == $id][0] {
   forSaleRate,
   "pictures": pictures[].asset->url
 }`;
+
+/**
+ * GROQ Queries for Gowns
+ */
+
+// Optimized query for list view - only fetches fields needed for collections page
+// Used for filtering, sorting, and displaying gown cards
+export const GOWNS_LIST_QUERY = `*[_type == "gown"] {
+  "id": _id,
+  name,
+  collection,
+  bestFor,
+  tags,
+  color,
+  skirtStyle,
+  metroManilaRate,
+  pixieMetroManilaRate,
+  "longGownPictures": longGownPicture[].asset->url,
+  "filipinianaPictures": filipinianaPicture[].asset->url,
+  "pixiePictures": pixiePicture[].asset->url,
+  "trainPictures": trainPicture[].asset->url
+}`;
+
+export const GOWN_DETAIL_QUERY = `*[_type == "gown" && _id == $id][0] {
+  "id": _id,
+  name,
+  collection,
+  bestFor,
+  tags,
+  color,
+  skirtStyle,
+  metroManilaRate,
+  luzonRate,
+  outsideLuzonRate,
+  pixieMetroManilaRate,
+  pixieLuzonRate,
+  pixieOutsideLuzonRate,
+  forSaleRateLong,
+  forSaleRatePixie,
+  bust,
+  bustAlt,
+  waist,
+  waistAlt,
+  lenght,
+  sleeves,
+  "longGownPictures": longGownPicture[].asset->url,
+  "longGownPicturesAlt": longGownPictureAlt[].asset->url,
+  "filipinianaPictures": filipinianaPicture[].asset->url,
+  "pixiePictures": pixiePicture[].asset->url,
+  "trainPictures": trainPicture[].asset->url,
+  "addOns": addOns[]._ref,
+  "relatedGowns": relatedGowns[]._ref
+}`;

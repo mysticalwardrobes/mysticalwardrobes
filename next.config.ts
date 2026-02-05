@@ -3,11 +3,16 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     // Vercel's image optimization is now enabled
-    // We use Contentful's image API for optimization as well
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'images.ctfassets.net',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
         port: '',
         pathname: '/**',
       },

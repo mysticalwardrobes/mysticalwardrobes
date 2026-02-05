@@ -31,8 +31,8 @@ const getCollectionSlugFromName = (name: string) => {
   return encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"));
 };
 
-// Helper function to normalize and optimize image URLs from Contentful
-// Uses Contentful's image API to optimize images, avoiding Vercel's optimization limits
+// Helper function to normalize and optimize image URLs from Contentful or Sanity
+// Uses CDN image APIs to optimize images, avoiding Vercel's optimization limits
 const normalizeImageUrl = (url: string, width?: number, height?: number, quality: number = 80): string => {
   if (!url || url === 'null' || url.trim() === '') {
     return '/assets/sample_gown-1.jpg';
@@ -61,6 +61,23 @@ const normalizeImageUrl = (url: string, width?: number, height?: number, quality
       if (height && !urlObj.searchParams.has('h')) urlObj.searchParams.set('h', height.toString());
       if (!urlObj.searchParams.has('q')) urlObj.searchParams.set('q', quality.toString());
       if (!urlObj.searchParams.has('fm')) urlObj.searchParams.set('fm', 'webp'); // Use WebP format for better compression
+      return urlObj.toString();
+    } catch (e) {
+      // If URL parsing fails, return normalized URL as-is
+      return normalizedUrl;
+    }
+  }
+
+  // If it's a Sanity CDN URL, add optimization parameters
+  if (normalizedUrl.includes('cdn.sanity.io')) {
+    try {
+      const urlObj = new URL(normalizedUrl);
+      // Only add parameters if they don't already exist (preserve existing params)
+      if (width && !urlObj.searchParams.has('w')) urlObj.searchParams.set('w', width.toString());
+      if (height && !urlObj.searchParams.has('h')) urlObj.searchParams.set('h', height.toString());
+      if (!urlObj.searchParams.has('q')) urlObj.searchParams.set('q', quality.toString());
+      if (!urlObj.searchParams.has('auto')) urlObj.searchParams.set('auto', 'format'); // Use auto format for best compression
+      if (!urlObj.searchParams.has('fit')) urlObj.searchParams.set('fit', 'clip'); // Fit mode
       return urlObj.toString();
     } catch (e) {
       // If URL parsing fails, return normalized URL as-is
