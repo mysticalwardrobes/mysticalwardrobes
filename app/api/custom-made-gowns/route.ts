@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { client } from '@/app/api/config';
+import { sanityClient, CUSTOM_MADE_GOWNS_LIST_QUERY } from '@/lib/sanity';
 import { CustomMadeGown, CustomMadeGownsResponse } from './model';
 import {
-  CUSTOM_MADE_GOWNS_CACHE_DURATION,
   CACHE_CONTROL_HEADER,
-  ContentfulEntriesResponse,
-  CacheEntry,
-  isCacheValid,
   getCacheAge,
-  getCacheExpiry
 } from '@/app/api/cache-config';
 import { USE_REDIS_CACHE, getJSON, setJSON } from '@/lib/redis';
 
@@ -16,48 +11,13 @@ import { USE_REDIS_CACHE, getJSON, setJSON } from '@/lib/redis';
 export const revalidate = 3600;
 
 // Redis cache key for all custom made gowns
-const REDIS_CACHE_KEY = 'custom-made-gowns:all';
+const REDIS_CACHE_KEY = 'custom-made-gowns:all:sanity';
 
-// Helper functions for Contentful data extraction
-const isRecord = (value: unknown): value is Record<string, unknown> => {
-  return typeof value === 'object' && value !== null;
-};
-
-const ensureString = (value: unknown): string | null => {
-  return typeof value === 'string' && value.trim().length > 0 ? value : null;
-};
-
-const ensureNumber = (value: unknown): number | null => {
-  return typeof value === 'number' && !isNaN(value) ? value : null;
-};
-
-const extractAssetUrl = (value: unknown): string | null => {
-  if (!isRecord(value) || !('fields' in value)) {
-    return null;
-  }
-
-  const fields = (value as { fields?: unknown }).fields;
-  if (!isRecord(fields) || !('file' in fields)) {
-    return null;
-  }
-
-  const file = (fields as { file?: unknown }).file;
-  if (!isRecord(file) || !('url' in file)) {
-    return null;
-  }
-
-  return ensureString((file as { url?: unknown }).url);
-};
-
-const normalizeAssetUrls = (value: unknown): string[] => {
-  const collect = Array.isArray(value) ? value : value != null ? [value] : [];
-
-  const urls = collect
-    .map((item) => extractAssetUrl(item))
-    .filter((url): url is string => typeof url === 'string');
-
-  return urls;
-};
+// Serialized cache entry structure for Redis
+interface SerializedCacheEntry {
+  data: CustomMadeGown[];
+  timestamp: number;
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -71,96 +31,79 @@ export async function GET(request: NextRequest) {
 
     // Prepare variables for data source
     const now = Date.now();
-    let response: ContentfulEntriesResponse | undefined;
-    let dataSource: 'cache' | 'contentful' = 'contentful';
+    let customGownsData: CustomMadeGown[] | undefined;
+    let dataSource: 'cache' | 'sanity' = 'sanity';
 
     // Optionally check Redis cache first
     if (USE_REDIS_CACHE) {
-      const cachedData = await getJSON<CacheEntry<ContentfulEntriesResponse>>(REDIS_CACHE_KEY);
+      const cachedData = await getJSON<SerializedCacheEntry>(REDIS_CACHE_KEY);
 
       if (cachedData) {
         // Use cached data from Redis (no expiration - invalidated via webhook)
-        response = cachedData.data;
+        customGownsData = cachedData.data;
         dataSource = 'cache';
         console.log('✅ REDIS CACHE HIT: Using cached custom made gowns data from Redis');
         console.log(`   Cache age: ${getCacheAge(cachedData.timestamp)}s`);
-        console.log(`   Total items in cache: ${response.items.length}`);
+        console.log(`   Total items in cache: ${customGownsData.length}`);
       }
     }
 
-    if (!response) {
-      // Fetch fresh data from Contentful
+    if (!customGownsData) {
+      // Fetch fresh data from Sanity
       const fetchStart = Date.now();
-      response = await client.getEntries({
-        content_type: 'customMadeGowns',
-        include: 10, // Include linked assets (images)
-      });
+      const sanityResponse = await sanityClient.fetch<CustomMadeGown[] | null>(CUSTOM_MADE_GOWNS_LIST_QUERY);
       const fetchDuration = Date.now() - fetchStart;
 
-      dataSource = 'contentful';
+      // Handle null response
+      if (!sanityResponse || !Array.isArray(sanityResponse)) {
+        console.log('⚠️ No custom made gowns found in Sanity or invalid response');
+        customGownsData = [];
+      } else {
+        // Map Sanity response to ensure proper defaults
+        customGownsData = sanityResponse.map((item) => ({
+          id: item.id,
+          title: item.title ?? 'Untitled Custom Gown',
+          gownFor: item.gownFor ?? '',
+          location: item.location ?? '',
+          clientName: item.clientName ?? undefined,
+          description: item.description ?? null, // Portable Text array from Sanity
+          preOrderPrice: item.preOrderPrice ?? 0,
+          pixiePreOrderPrice: item.pixiePreOrderPrice ?? undefined,
+          hoodPreOrderPrice: item.hoodPreOrderPrice ?? undefined,
+          flowyPreOrderPrice: item.flowyPreOrderPrice ?? undefined,
+          longGownPicture: item.longGownPicture?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+          pixiePicture: item.pixiePicture?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+          hoodPicture: item.hoodPicture?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+          flowyPictures: item.flowyPictures?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+        }));
+      }
+
+      dataSource = 'sanity';
 
       // Store in Redis cache (no expiration - invalidated via webhook)
       if (USE_REDIS_CACHE) {
-        const cacheEntry: CacheEntry<ContentfulEntriesResponse> = {
-          data: response,
+        const cacheEntry: SerializedCacheEntry = {
+          data: customGownsData,
           timestamp: now
         };
         await setJSON(REDIS_CACHE_KEY, cacheEntry);
 
         console.log(
-          '🆕 INITIAL OR REFRESHED FETCH: Fetched custom made gowns data from Contentful and stored in Redis'
+          '🆕 INITIAL OR REFRESHED FETCH: Fetched custom made gowns data from Sanity and stored in Redis'
         );
       } else {
-        console.log('ℹ️ Redis cache disabled: fetched custom made gowns data directly from Contentful');
+        console.log('ℹ️ Redis cache disabled: fetched custom made gowns data directly from Sanity');
       }
       console.log(`   Fetch duration: ${fetchDuration}ms`);
-      console.log(`   Total items fetched: ${response.items.length}`);
+      console.log(`   Total items fetched: ${customGownsData.length}`);
     }
 
-    // Transform Contentful entries to our CustomMadeGown interface
-    const customGowns: CustomMadeGown[] = response.items.map((item) => {
-      const fields = isRecord(item.fields) ? (item.fields as Record<string, unknown>) : {};
-
-      const title = ensureString(fields.title) ?? 'Untitled Custom Gown';
-      const gownFor = ensureString(fields.gownFor) ?? '';
-      const location = ensureString(fields.location) ?? '';
-      const description = ensureString(fields.description) ?? '';
-      const clientName = ensureString(fields.clientName) ?? undefined;
-      const preOrderPrice = ensureNumber(fields.preOrderPrice) ?? 0;
-      const pixiePreOrderPrice = ensureNumber(fields.pixiePreOrderPrice) ?? undefined;
-      const hoodPreOrderPrice = ensureNumber(fields.hoodPreOrderPrice) ?? undefined;
-      const flowyPreOrderPrice = ensureNumber(fields.flowyPreOrderPrice) ?? undefined;
-
-      // Extract image URLs from different image arrays
-      const longGownPicture = normalizeAssetUrls(fields.longGownPicture);
-      const pixiePicture = normalizeAssetUrls(fields.pixiePicture);
-      const hoodPicture = normalizeAssetUrls(fields.hoodPicture);
-      const flowyPictures = normalizeAssetUrls(fields.flowyPictures);
-
-      return {
-        id: String(item.sys.id),
-        title,
-        gownFor,
-        location,
-        clientName,
-        description,
-        preOrderPrice,
-        pixiePreOrderPrice,
-        hoodPreOrderPrice,
-        flowyPreOrderPrice,
-        longGownPicture,
-        pixiePicture,
-        hoodPicture,
-        flowyPictures,
-      };
-    });
-
     // Apply limit if specified
-    const limitedGowns = limit > 0 ? customGowns.slice(0, limit) : customGowns;
+    const limitedGowns = limit > 0 ? customGownsData.slice(0, limit) : customGownsData;
 
     const responseData: CustomMadeGownsResponse = {
       items: limitedGowns,
-      total: customGowns.length
+      total: customGownsData.length
     };
 
     const nextResponse = NextResponse.json(responseData);
@@ -173,13 +116,13 @@ export async function GET(request: NextRequest) {
     console.log('📤 RESPONSE:');
     console.log(`   Data source: ${dataSource.toUpperCase()}`);
     console.log(`   Items in response: ${limitedGowns.length}`);
-    console.log(`   Total items available: ${customGowns.length}`);
+    console.log(`   Total items available: ${customGownsData.length}`);
     console.log(`   Total request time: ${totalRequestTime}ms`);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     return nextResponse;
   } catch (error) {
-    console.error('Error fetching custom made gowns from Contentful:', error);
+    console.error('❌ Error fetching custom made gowns from Sanity:', error);
     return NextResponse.json(
       { error: 'Failed to fetch custom made gowns' },
       { status: 500 }

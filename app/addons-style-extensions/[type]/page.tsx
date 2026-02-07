@@ -428,7 +428,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                     <div className="relative aspect-[4/5] w-full overflow-hidden bg-secondary/10">
                       {addon.pictures && addon.pictures.length > 0 ? (
                         <Image
-                          src={'https:' + addon.pictures[0]}
+                          src={addon.pictures[0].startsWith('http') ? addon.pictures[0] : 'https:' + addon.pictures[0]}
                           alt={addon.name}
                           fill
                           className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -451,15 +451,15 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
                         <p className="font-manrope text-sm uppercase tracking-[0.35em] text-secondary/70">
                           From ₱{addon.metroManilaRate.toLocaleString()}
                         </p>
-                        {addon.forSaleRate && (
+                        {/* {addon.forSaleRate && (
                           <p className="font-manrope text-xs text-secondary/60">
                             Sale: ₱{addon.forSaleRate.toLocaleString()}
                           </p>
-                        )}
+                        )} */}
                       </div>
-                      <p className="font-manrope text-xs text-secondary/60 line-clamp-2">
+                      {/* <p className="font-manrope text-xs text-secondary/60 line-clamp-2">
                         {addon.description}
-                      </p>
+                      </p> */}
                     </div>
                   </Link>
                 </motion.article>
