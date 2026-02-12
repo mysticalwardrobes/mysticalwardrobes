@@ -168,6 +168,9 @@ export default function RentalTermsPage() {
               <p>
                 The rental period starts on the day we ship out the gown. For Luzon Provinces: 6-7 days (excluding Sundays and holidays) or 9 days (including Saturdays and Sundays). We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed.
               </p>
+              <p className="mt-4">
+                Delivery is booked in batches, so exact time can&apos;t be guaranteed. Lalamove window: 3:00–5:00 PM (earlier if possible, not guaranteed). Delivery address must be finalized at least 2 days before—changes within 2 days can&apos;t be accommodated.
+              </p>
             </section>
           </FadeInOnScroll>
 
@@ -180,6 +183,37 @@ export default function RentalTermsPage() {
                 <li>We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed.</li>
                 <li>The client shoulders all shipping fees.</li>
               </ul>
+
+              <div className="mt-6 pt-6 border-t border-foreground/10">
+                <h3 className="font-semibold text-foreground mb-3 text-lg flex items-center gap-2">
+                  <span className="text-red-600" aria-hidden>🔴</span>
+                  Metro Manila &amp; Greater Metro Manila Delivery Advisory
+                </h3>
+                <p className="mb-3">
+                  During peak season, we deliver many gowns daily. Deliveries are booked in batches, so we can&apos;t guarantee an exact delivery time.
+                </p>
+                <p className="mb-3">
+                  <strong>Lalamove booking window:</strong> 3:00–5:00 PM (earlier if possible, not guaranteed). Please expect your gown within the day.
+                </p>
+                <p className="mb-3">
+                  We may ask you to fill in your details via a Lalamove link, if needed. <strong>Note:</strong> Some deliveries are handled by a single rider for a batch, so a Lalamove link may not always be provided.
+                </p>
+                <p className="mb-3">
+                  <strong>Return day:</strong> We will book Lalamove for gown pickup around 8:00 AM (strict). Late returns may affect the next renter and may incur a penalty as stated in our rental policy.
+                </p>
+                <p className="mb-3">
+                  <strong>Shipping fees:</strong> Delivery and return fees are shouldered by the client (please refer to Lalamove Priority Rate).
+                </p>
+                <p className="mb-3">
+                  📞 Please keep your contact number active and reachable for coordination.
+                </p>
+                <div className="bg-amber-50/80 border border-amber-200 rounded-lg p-4">
+                  <p className="font-semibold text-foreground mb-2">IMPORTANT — Address changes</p>
+                  <p>
+                    Delivery addresses must be finalized at least 2 days before the delivery date. Requests within this window cannot be accommodated because logistics and shipping details are already scheduled.
+                  </p>
+                </div>
+              </div>
             </section>
           </FadeInOnScroll>
 
