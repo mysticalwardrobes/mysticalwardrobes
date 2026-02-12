@@ -259,7 +259,7 @@ export default function RentalTermsPage() {
                       <td className="py-3 px-4 align-top">
                         <ul className="list-disc list-inside space-y-1">
                           <li>The gown was reserved exclusively for your date. Since we don't charge a security deposit, the remaining balance must be settled. Down-payments are non-refundable.</li>
-                          <li>If approved under the Store Credit Policy, only the eligible portion of the amount you've already paid may be converted to store credit instead of being forfeited.</li>
+                          <li>If approved under the Store Credit Policy, only the eligible portion of the amount you've already paid may be converted to store credit instead of being forfeited. The remaining balance is still due and must be settled regardless of any store credit approval.</li>
                         </ul>
                       </td>
                     </tr>
@@ -568,7 +568,7 @@ export default function RentalTermsPage() {
                 9. Updates
               </h2>
               <ul className="list-disc list-inside space-y-2">
-                <li>Last updated on October 15, 2025</li>
+                <li>Last updated on February 12, 2026</li>
                 <li>These terms may be updated at any time without prior notice. The latest version will always be posted on our website.</li>
               </ul>
             </section>
