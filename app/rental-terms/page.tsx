@@ -168,52 +168,157 @@ export default function RentalTermsPage() {
               <p>
                 The rental period starts on the day we ship out the gown. For Luzon Provinces: 6-7 days (excluding Sundays and holidays) or 9 days (including Saturdays and Sundays). We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed.
               </p>
-              <p className="mt-4">
-                Delivery is booked in batches, so exact time can&apos;t be guaranteed. Lalamove window: 3:00–5:00 PM (earlier if possible, not guaranteed). Delivery address must be finalized at least 2 days before—changes within 2 days can&apos;t be accommodated.
-              </p>
             </section>
           </FadeInOnScroll>
 
           <FadeInOnScroll delay={0.35}>
-            <section className="bg-white/95 rounded-lg border border-foreground/10 p-6 shadow-md md:p-8">
-              <h2 className="font-vegawanty text-2xl text-foreground md:text-3xl mb-4">
-                4. Shipping
-              </h2>
-              <ul className="list-disc list-inside space-y-2">
-                <li>We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed.</li>
-                <li>The client shoulders all shipping fees.</li>
-              </ul>
+            <section className="bg-white/95 rounded-lg border border-foreground/10 p-6 shadow-md md:p-8 space-y-6">
+              <div>
+                <h2 className="font-vegawanty text-2xl text-foreground md:text-3xl mb-1">
+                  4. Delivery &amp; Rider Booking Policy
+                </h2>
+                <p className="text-sm italic">(For Metro Manila &amp; Greater Metro Manila clients)</p>
+                <p className="mt-3">
+                  To ensure faster and smoother deliveries, please take note of our updated process:
+                </p>
+              </div>
 
-              <div className="mt-6 pt-6 border-t border-foreground/10">
-                <h3 className="font-semibold text-foreground mb-3 text-lg flex items-center gap-2">
-                  <span className="text-red-600" aria-hidden>🔴</span>
-                  Metro Manila &amp; Greater Metro Manila Delivery Advisory
+              {/* RIDER or 3RD PARTY PICKUP */}
+              <div>
+                <h3 className="font-semibold text-foreground text-lg mb-2 uppercase">
+                  Rider or 3rd Party Pickup
                 </h3>
-                <p className="mb-3">
-                  During peak season, we deliver many gowns daily. Deliveries are booked in batches, so we can&apos;t guarantee an exact delivery time.
-                </p>
-                <p className="mb-3">
-                  <strong>Lalamove booking window:</strong> 3:00–5:00 PM (earlier if possible, not guaranteed). Please expect your gown within the day.
-                </p>
-                <p className="mb-3">
-                  We may ask you to fill in your details via a Lalamove link, if needed. <strong>Note:</strong> Some deliveries are handled by a single rider for a batch, so a Lalamove link may not always be provided.
-                </p>
-                <p className="mb-3">
-                  <strong>Return day:</strong> We will book Lalamove for gown pickup around 8:00 AM (strict). Late returns may affect the next renter and may incur a penalty as stated in our rental policy.
-                </p>
-                <p className="mb-3">
-                  <strong>Shipping fees:</strong> Delivery and return fees are shouldered by the client (please refer to Lalamove Priority Rate).
-                </p>
-                <p className="mb-3">
-                  📞 Please keep your contact number active and reachable for coordination.
-                </p>
-                <div className="bg-amber-50/80 border border-amber-200 rounded-lg p-4">
-                  <p className="font-semibold text-foreground mb-2">IMPORTANT — Address changes</p>
-                  <p>
-                    Delivery addresses must be finalized at least 2 days before the delivery date. Requests within this window cannot be accommodated because logistics and shipping details are already scheduled.
-                  </p>
+                <ul className="list-disc list-inside space-y-2">
+                  <li>Clients <strong>will book their own rider</strong> for both delivery and return.</li>
+                  <li>If you&apos;re unable to book, message us—<strong>we&apos;ll guide you or assist if needed.</strong></li>
+                  <li>
+                    Delivery/Return Details (Required)
+                    <br />
+                    <span className="ml-6 block mt-1">Even if the client books the rider, the client is still <strong>required to submit the pickup and delivery details</strong> in advance <strong>for record purposes</strong>.</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* CLIENT PICKUP */}
+              <div>
+                <h3 className="font-semibold text-foreground text-lg mb-2 uppercase">
+                  Client Pickup
+                </h3>
+                <ul className="list-disc list-inside space-y-2">
+                  <li>Clients may personally pick up the gown at our location (by appointment).</li>
+                  <li><strong>Pickup is first confirmed by our team</strong> once the items are ready.</li>
+                  <li>Upon pickup, the client (or authorized representative) must sign the Release Logbook.</li>
+                  <li>Please do not arrive without confirmation, as packing and release are scheduled.</li>
+                </ul>
+              </div>
+
+              <p className="italic">
+                <strong>Mystical Wardrobes may take over rider booking only when necessary</strong> to maintain delivery schedules or timelines.
+              </p>
+
+              {/* Standard Delivery & Return Windows */}
+              <div>
+                <h3 className="font-semibold text-foreground text-lg mb-2">
+                  Standard Delivery &amp; Return Windows (Metro Manila)
+                </h3>
+                <ul className="list-disc list-inside space-y-2">
+                  <li>
+                    Delivery dispatch: 3:00 PM – 5:00 PM — Please message us first before booking or pickup so we can confirm the pickup is ready.
+                  </li>
+                  <li>
+                    Return pickup: 8:00 AM – 9:00 AM (strict) — Please book <strong>strictly within this window</strong>, unless we specifically advise an <strong>earlier pickup</strong> or a different arrangement.
+                  </li>
+                </ul>
+              </div>
+
+              {/* Delivery Updates */}
+              <div>
+                <h3 className="font-semibold text-foreground text-lg mb-3">
+                  Delivery Updates
+                </h3>
+
+                {/* If Client Pick-up */}
+                <div className="mb-4">
+                  <h4 className="text-foreground mb-2">
+                    If Client Pick-up
+                  </h4>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>You may <strong>personally inspect the gown&apos;s condition</strong> before release.</li>
+                    <li>Please sign the Release Logbook to confirm all items were received complete.</li>
+                    <li>
+                      Provide the following details upon pickup:
+                      <ul className="list-[circle] list-inside ml-6 mt-1 space-y-1">
+                        <li>Gown name</li>
+                        <li>Client/Account name</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* If 3rd-Party Rider */}
+                <div>
+                  <h4 className="text-foreground mb-2">
+                    If 3rd-Party Rider (Lalamove / Grab / etc.)
+                  </h4>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Upon receiving the items, the client is required to immediately check and confirm that all items are complete.</li>
+                    <li>
+                      The rider must know the following details:
+                      <ul className="list-[circle] list-inside ml-6 mt-1 space-y-1">
+                        <li>Gown name</li>
+                        <li>Client/Account name</li>
+                      </ul>
+                    </li>
+                  </ul>
                 </div>
               </div>
+
+              {/* Return Process */}
+              <div>
+                <h3 className="font-semibold text-foreground text-lg mb-2">
+                  Return Process
+                </h3>
+                <p className="mb-2">
+                  Return pickup window: 8:00 AM – 9:00 AM (strict)
+                </p>
+                <ul className="list-disc list-inside space-y-2">
+                  <li>Please book your return pickup within this window, unless we specifically advise an earlier pickup or a different arrangement.</li>
+                </ul>
+                <p className="mt-3">Upon return, please provide:</p>
+                <ul className="list-disc list-inside space-y-1 mt-1">
+                  <li>Gown name</li>
+                  <li>Account name / Client name</li>
+                </ul>
+                <p className="mt-2">So we can mark the item as returned in our system.</p>
+              </div>
+
+              {/* Important Notes */}
+              <div>
+                <h3 className="font-semibold text-foreground text-lg mb-2">
+                  Important Notes
+                </h3>
+                <ul className="list-disc list-inside space-y-2">
+                  <li>Deliveries are sometimes done in batches, so a Lalamove link may not always be available.</li>
+                  <li>We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed.</li>
+                  <li>Status updates will be provided instead.</li>
+                  <li>
+                    <strong>Delivery addresses must be finalized</strong> at least <strong>2 days before</strong> the delivery date. Address changes requested within <strong>2 days</strong> of the delivery date cannot be accommodated because shipping details are already scheduled and recorded.
+                  </li>
+                  <li><strong>Shipping fee</strong> is based on Lalamove Priority Rate (or agreed rate).</li>
+                </ul>
+              </div>
+
+              {/* Policy Note */}
+              <div className="bg-amber-50/80 border border-amber-200 rounded-lg p-4">
+                <p className="text-foreground mb-2">Policy Note:</p>
+                <p>
+                  Failure to follow booking windows and coordination timelines may result in delays that can affect the next renter. Mystical Wardrobes will not be liable for delays caused by late booking or unconfirmed coordination.
+                </p>
+              </div>
+
+              <p>
+                This updated process allows faster dispatch and avoids delays caused by centralized booking.
+              </p>
             </section>
           </FadeInOnScroll>
 
@@ -602,7 +707,7 @@ export default function RentalTermsPage() {
                 9. Updates
               </h2>
               <ul className="list-disc list-inside space-y-2">
-                <li>Last updated on February 12, 2026</li>
+                <li>Last updated on February 14, 2026</li>
                 <li>These terms may be updated at any time without prior notice. The latest version will always be posted on our website.</li>
               </ul>
             </section>
