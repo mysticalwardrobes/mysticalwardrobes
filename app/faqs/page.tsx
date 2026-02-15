@@ -100,6 +100,10 @@ const faqData: FAQCategory[] = [
         answer: "Only 3–4 gowns will be prepared per session."
       },
       {
+        question: "How many companions can I bring to a fitting?",
+        answer: "Clients may only bring 2–3 companions inside the fitting area. This is to maintain a comfortable and organized space for everyone."
+      },
+      {
         question: "Is gown availability guaranteed for fitting appointments?",
         answer: "Gown availability is not guaranteed, as some pieces may be booked online at the same time. Real-time availability updates are provided only if you inquire directly."
       },
@@ -110,19 +114,43 @@ const faqData: FAQCategory[] = [
     ]
   },
   {
-    title: "Rental Timeline & Shipping",
+    title: "Delivery & Return Coordination",
     faqs: [
       {
         question: "When does the rental period begin?",
         answer: "The rental period starts on the day we ship out the gown. Courier working days exclude Sundays and holidays if we will use LBC."
       },
       {
+        question: "How does delivery work for Metro Manila?",
+        answer: "Clients will book their own rider (Lalamove, Grab, etc.) for both delivery and return. If you're unable to book, message us and we'll guide you or assist if needed. Mystical Wardrobes may take over rider booking only when necessary to maintain delivery schedules/timelines. Client pick-up is also available by appointment only."
+      },
+      {
+        question: "What details do I need to submit for delivery?",
+        answer: "Even if you book the rider yourself, you are still required to submit delivery and return details in advance for documentation and smooth coordination, including: your name, contact number(s), and exact pin location / address."
+      },
+      {
+        question: "What are the standard delivery and return windows?",
+        answer: "Delivery dispatch window is 3:00 PM – 5:00 PM. Please message us first before booking/pickup so we can confirm the items are ready. Return booking must be made between 8:00 AM – 9:00 AM (STRICT). The gown must be received by Mystical Wardrobes by 9:00 AM – 1:00 PM, especially for Greater Metro Manila locations."
+      },
+      {
+        question: "Can I pool my return with other deliveries?",
+        answer: "No. Return bookings must be EXCLUSIVE only — no pooling or multi-drop. Inform your rider that this is an exclusive return and must follow the receiving timeline. Late arrivals may affect the next booking and may incur penalties."
+      },
+      {
         question: "Who is responsible for shipping fees?",
-        answer: "The client shoulders all shipping fees."
+        answer: "Delivery and return shipping fees are shouldered by the client. Shipping fees are based on Lalamove Priority Rate (or agreed rate)."
+      },
+      {
+        question: "Can I change my delivery address last minute?",
+        answer: "Delivery addresses must be finalized at least 2 days before the delivery date. Address changes requested within 2 days cannot be accommodated because logistics details are already scheduled and recorded."
       },
       {
         question: "Are you responsible for shipping delays?",
-        answer: "We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed."
+        answer: "We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed. Deliveries may be handled in batches, so a Lalamove link may not always be available — status updates will be provided instead."
+      },
+      {
+        question: "What do I need to provide when returning the gown?",
+        answer: "Upon return, please provide: your gown name and client/account name, so we can properly record the return in our system."
       }
     ]
   },
