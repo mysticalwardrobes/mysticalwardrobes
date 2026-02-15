@@ -238,16 +238,11 @@ function CustomGownCard({ gown }: CustomGownCardProps) {
           </p>
         )}
         
-        <div className="flex items-center gap-2 mb-3">
-          <span className="inline-block bg-secondary/10 text-secondary text-xs px-2 py-1 rounded-full font-manrope">
-            {gown.gownFor}
-          </span>
-          {gown.location && (
-            <span className="text-foreground/60 text-sm font-manrope">
-              • {gown.location}
-            </span>
-          )}
-        </div>
+        {gown.location && (
+          <p className="text-foreground/60 text-sm font-manrope mb-3">
+            {gown.location}
+          </p>
+        )}
 
         {gown.preOrderPrice > 0 && (
           <p className="font-manrope font-semibold text-lg text-foreground mb-3">
