@@ -382,6 +382,60 @@ export default function RentalTermsPage() {
                   </ul>
                 </div>
               </div>
+
+              <hr className="border-foreground/10" />
+
+              {/* 4.7 Why We Follow Lalamove Priority Rates */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground text-xl mb-2">
+                  4.7 Why We Follow Lalamove Priority Rates (and Why Client Pooling is Not Allowed)
+                </h3>
+                <p>
+                  To keep scheduling fair and operations smooth during peak season, Mystical Wardrobes follows the <strong>Lalamove Priority Rate</strong> as the standard basis for shipping fees (unless there is an agreed fixed amount). Please note that <strong>we do not earn from shipping fees</strong>—the amount goes directly to the rider/courier.
+                </p>
+
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Why shipping may be handled &ldquo;by batch&rdquo;</h4>
+                  <p className="mt-2">
+                    During peak season, we handle a high volume of deliveries and returns daily (around <strong>100–150 gowns/day</strong>). To meet strict timelines—especially for next-day bookings—we sometimes coordinate deliveries and returns <strong>by batch</strong> using our own trusted riders.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Why Mystical Wardrobes may pool using our own riders</h4>
+                  <p className="mb-2">
+                    When we pool orders through <strong>our own riders</strong>, it is done with controlled routing and internal scheduling to ensure:
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 ml-2">
+                    <li>gowns arrive within our required receiving time</li>
+                    <li>gowns are handled properly during transit</li>
+                    <li>we can track riders directly and coordinate real-time updates</li>
+                  </ul>
+                  <p className="mt-2">
+                    Pooling under our supervision helps prevent delays that could affect the next renter.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2 text-red-700">Why client-booked pooling / multi-drop is NOT allowed</h4>
+                  <p className="mb-3">
+                    If the rider is booked by the client under <strong>pooling/multi-drop</strong>, we do not have direct control over the route and schedule. Based on experience, even when booked early, some pooled riders arrive <strong>very late (ex. 12 midnight–3 AM)</strong> due to multiple stops. This disrupts our production, cleaning, repairs, and next-day dispatch.
+                  </p>
+                  <p className="mb-3">
+                    We have also had cases where gowns were <strong>mishandled, dropped, or lost</strong> during client-booked bookings, and unfortunately these were not shouldered by the rider or client.
+                  </p>
+                  <p>
+                    Because each gown is a single unit per design and often reserved back-to-back, we enforce a strict policy:
+                  </p>
+                  <div className="bg-red-50/80 border border-red-200 rounded-lg p-4 mt-3">
+                    <ul className="list-disc list-inside space-y-2">
+                      <li>Return bookings must be <strong>EXCLUSIVE</strong> (not pooled with other deliveries).</li>
+                      <li>Inform your rider that this is an <strong>exclusive return</strong> and must follow the receiving timeline.</li>
+                      <li>Late arrivals may affect the next booking and <strong>may incur penalties</strong>.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </section>
           </FadeInOnScroll>
 

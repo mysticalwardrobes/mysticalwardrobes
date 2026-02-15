@@ -138,7 +138,19 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "Who is responsible for shipping fees?",
-        answer: "Delivery and return shipping fees are shouldered by the client. Shipping fees are based on Lalamove Priority Rate (or agreed rate)."
+        answer: "Delivery and return shipping fees are shouldered by the client. Shipping fees are based on Lalamove Priority Rate (or agreed rate). Please note that Mystical Wardrobes does not earn from shipping fees — the amount goes directly to the rider/courier."
+      },
+      {
+        question: "Why does Mystical Wardrobes follow Lalamove Priority Rates?",
+        answer: "To keep scheduling fair and operations smooth during peak season, we follow the Lalamove Priority Rate as the standard basis for shipping fees (unless there is an agreed fixed amount). We do not earn from shipping fees — the amount goes directly to the rider/courier."
+      },
+      {
+        question: "Why are deliveries sometimes handled \"by batch\"?",
+        answer: "During peak season, we handle a high volume of deliveries and returns daily (around 100–150 gowns/day). To meet strict timelines — especially for next-day bookings — we sometimes coordinate deliveries and returns by batch using our own trusted riders. Pooling under our supervision helps prevent delays that could affect the next renter."
+      },
+      {
+        question: "Why is client-booked pooling / multi-drop NOT allowed for returns?",
+        answer: "If the rider is booked by the client under pooling/multi-drop, we do not have direct control over the route and schedule. Based on experience, even when booked early, some pooled riders arrive very late (e.g. 12 midnight–3 AM) due to multiple stops. This disrupts our production, cleaning, repairs, and next-day dispatch. We have also had cases where gowns were mishandled, dropped, or lost during client-booked pooled bookings. Because each gown is a single unit per design and often reserved back-to-back, return bookings must be EXCLUSIVE — no pooling or multi-drop."
       },
       {
         question: "Can I change my delivery address last minute?",
