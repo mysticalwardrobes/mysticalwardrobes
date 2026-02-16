@@ -95,7 +95,7 @@ export default function RentalTermsPage() {
                 Note: Fitting schedules are confirmed only after payment of the fitting or rescheduling fee. Gown availability is not guaranteed, as some pieces may be booked online at the same time.
               </p>
               <ul className="mt-4 list-disc list-inside space-y-2">
-                <li>Only 3–4 gowns will be prepared per session.</li>
+                <li>Only 2-3 gowns will be prepared per session.</li>
                 <li>Real-time availability updates are provided only if you inquire directly.</li>
                 <li>Clients may only bring <strong>2–3 companions</strong> inside the fitting area. This is to maintain a comfortable and organized space for everyone.</li>
                 <li>Clients have a strict 30-minute allotment for fitting and decision-making. To maximize this time and keep our schedule on track, fittings are limited to gowns only. Accessories are unavailable for fitting but can be selected via our website. Extensions of up to 30 minutes may be allowed if there is no next client after your slot; a ₱400.00 extension fee applies.</li>
