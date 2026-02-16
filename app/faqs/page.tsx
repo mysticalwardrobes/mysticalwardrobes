@@ -97,7 +97,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "How many gowns can I try on during a fitting session?",
-        answer: "Only 3–4 gowns will be prepared per session."
+        answer: "Only 2–3 gowns will be prepared per session."
       },
       {
         question: "How many companions can I bring to a fitting?",
