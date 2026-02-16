@@ -540,7 +540,7 @@ export default function RentalTermsPage() {
                     <tr className="border-b border-foreground/10">
                       <td className="py-3 px-4 align-top">Rescheduling Fees</td>
                       <td className="py-3 px-4 align-top">
-                        Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
+                        Metro Manila: ₱3,000<br />Outside Metro Manila: ₱4,000
                       </td>
                       <td className="py-3 px-4 align-top">
                         This applies if you move your event date—even if the event is canceled—as your original slot was already reserved. This option is not available if you decide just 2 days before your scheduled delivery. If your first-choice gown isn't available on the new date, you'll need to choose from what's available. The fee still applies, as the gown was previously blocked for your original schedule.
@@ -549,7 +549,7 @@ export default function RentalTermsPage() {
                     <tr>
                       <td className="py-3 px-4 align-top">Changing of Gown Fees</td>
                       <td className="py-3 px-4 align-top">
-                        Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
+                        Metro Manila: ₱3,000<br />Outside Metro Manila: ₱4,000
                       </td>
                       <td className="py-3 px-4 align-top">
                         Upon approval and subject to availability. One change per booking. If the new gown's rate is higher, the difference must be paid; if lower, no refunds are issued.
