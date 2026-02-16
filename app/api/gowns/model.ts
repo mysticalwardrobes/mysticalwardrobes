@@ -1,4 +1,6 @@
-export interface Gown {
+// List view interface - optimized for collections page display
+// Contains only fields needed for filtering, sorting, and card display
+export interface GownListItem {
   id: string;
   name: string;
   collection: string[];
@@ -7,9 +9,17 @@ export interface Gown {
   color: string[];
   skirtStyle: string[];
   metroManilaRate: number;
+  pixieMetroManilaRate: number;
+  longGownPictures: string[];
+  filipinianaPictures: string[];
+  pixiePictures: string[];
+  trainPictures: string[];
+}
+
+// Full detail interface - all fields for gown detail page
+export interface Gown extends GownListItem {
   luzonRate: number;
   outsideLuzonRate: number;
-  pixieMetroManilaRate: number;
   pixieLuzonRate: number;
   pixieOutsideLuzonRate: number;
   forSaleRateLong: number;
@@ -18,15 +28,9 @@ export interface Gown {
   bustAlt: string;
   waist: string;
   waistAlt: string;
-  arms: string;
-  backing: string;
   lenght: string;
   sleeves: string;
-  longGownPictures: string[];
   longGownPicturesAlt: string[];
-  filipinianaPictures: string[];
-  pixiePictures: string[];
-  trainPictures: string[];
   addOns: string[];
   relatedGowns: string[];
 }

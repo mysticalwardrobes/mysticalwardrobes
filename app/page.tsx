@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
@@ -18,13 +18,14 @@ import exploreRentalGowns from "@/public/assets/explore/RentalGowns.jpg"
 import FadeInOnScroll from "@/components/FadeInOnScroll";
 import ExpandableText from "@/components/ExpandableText";
 import type { Review as ReviewResponse } from "@/app/api/reviews/model";
-import type { Gown } from "@/app/api/gowns/model";
+import type { GownListItem } from "@/app/api/gowns/model";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { collections, type Collection } from "@/app/config/collections";
 import { featuredGownIds } from "@/app/config/featured";
 import VotingEvent from "@/components/voting/VotingEvent";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { extractTextFromPortableText } from "@/lib/sanity";
 
 // Helper function to chunk array
 const chunkArray = <T,>(arr: T[], size: number): T[][] => {
@@ -131,7 +132,7 @@ function ReviewsSection() {
         }
 
         const normalized: ReviewWithImages[] = data
-          .filter((review) => Boolean(review.comment?.trim()))
+          .filter((review) => Boolean(extractTextFromPortableText(review.comment)))
           .slice(0, 10)
           .map((review) => {
             const images = [
@@ -358,7 +359,7 @@ function ReviewCard(props: ReviewCardProps) {
   };
 
   const safeName = review.clientName?.trim() ? review.clientName.trim() : 'Mystical Wardrobes Client';
-  const safeComment = review.comment?.trim() ?? 'This fairy has left a sprinkle of magic for us.';
+  const safeComment = extractTextFromPortableText(review.comment) || 'This fairy has left a sprinkle of magic for us.';
 
   return (
     <motion.article
@@ -644,7 +645,7 @@ function Collections() {
 }
 
 function Featured() {
-  const [featuredGowns, setFeaturedGowns] = useState<Gown[]>([]);
+  const [featuredGowns, setFeaturedGowns] = useState<GownListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -668,8 +669,8 @@ function Featured() {
 
         // Filter to only include gowns with IDs in featuredGownIds, maintaining the order
         const featured = featuredGownIds
-          .map((id: string) => allGowns.find((gown: Gown) => gown.id === id))
-          .filter((gown: Gown | undefined): gown is Gown => gown !== undefined);
+          .map((id: string) => allGowns.find((gown: GownListItem) => gown.id === id))
+          .filter((gown: GownListItem | undefined): gown is GownListItem => gown !== undefined);
 
         setFeaturedGowns(featured);
       } catch (err) {
@@ -745,7 +746,7 @@ function Featured() {
 }
 
 interface FeaturedGownsCardProps {
-  gown: Gown;
+  gown: GownListItem;
   onClick: () => void;
 }
 

@@ -97,7 +97,11 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "How many gowns can I try on during a fitting session?",
-        answer: "Only 3–4 gowns will be prepared per session."
+        answer: "Only 2–3 gowns will be prepared per session."
+      },
+      {
+        question: "How many companions can I bring to a fitting?",
+        answer: "Clients may only bring 2–3 companions inside the fitting area. This is to maintain a comfortable and organized space for everyone."
       },
       {
         question: "Is gown availability guaranteed for fitting appointments?",
@@ -110,19 +114,55 @@ const faqData: FAQCategory[] = [
     ]
   },
   {
-    title: "Rental Timeline & Shipping",
+    title: "Delivery & Return Coordination",
     faqs: [
       {
         question: "When does the rental period begin?",
         answer: "The rental period starts on the day we ship out the gown. Courier working days exclude Sundays and holidays if we will use LBC."
       },
       {
+        question: "How does delivery work for Metro Manila?",
+        answer: "Clients will book their own rider (Lalamove, Grab, etc.) for both delivery and return. If you're unable to book, message us and we'll guide you or assist if needed. Mystical Wardrobes may take over rider booking only when necessary to maintain delivery schedules/timelines. Client pick-up is also available by appointment only."
+      },
+      {
+        question: "What details do I need to submit for delivery?",
+        answer: "Even if you book the rider yourself, you are still required to submit delivery and return details in advance for documentation and smooth coordination, including: your name, contact number(s), and exact pin location / address."
+      },
+      {
+        question: "What are the standard delivery and return windows?",
+        answer: "Delivery dispatch window is 3:00 PM – 5:00 PM. Please message us first before booking/pickup so we can confirm the items are ready. Return booking must be made between 8:00 AM – 9:00 AM (STRICT). The gown must be received by Mystical Wardrobes by 9:00 AM – 1:00 PM, especially for Greater Metro Manila locations."
+      },
+      {
+        question: "Can I pool my return with other deliveries?",
+        answer: "No. Return bookings must be EXCLUSIVE only — no pooling or multi-drop. Inform your rider that this is an exclusive return and must follow the receiving timeline. Late arrivals may affect the next booking and may incur penalties."
+      },
+      {
         question: "Who is responsible for shipping fees?",
-        answer: "The client shoulders all shipping fees."
+        answer: "Delivery and return shipping fees are shouldered by the client. Shipping fees are based on Lalamove Priority Rate (or agreed rate). Please note that Mystical Wardrobes does not earn from shipping fees — the amount goes directly to the rider/courier."
+      },
+      {
+        question: "Why does Mystical Wardrobes follow Lalamove Priority Rates?",
+        answer: "To keep scheduling fair and operations smooth during peak season, we follow the Lalamove Priority Rate as the standard basis for shipping fees (unless there is an agreed fixed amount). We do not earn from shipping fees — the amount goes directly to the rider/courier."
+      },
+      {
+        question: "Why are deliveries sometimes handled \"by batch\"?",
+        answer: "During peak season, we handle a high volume of deliveries and returns daily (around 100–150 gowns/day). To meet strict timelines — especially for next-day bookings — we sometimes coordinate deliveries and returns by batch using our own trusted riders. Pooling under our supervision helps prevent delays that could affect the next renter."
+      },
+      {
+        question: "Why is client-booked pooling / multi-drop NOT allowed for returns?",
+        answer: "If the rider is booked by the client under pooling/multi-drop, we do not have direct control over the route and schedule. Based on experience, even when booked early, some pooled riders arrive very late (e.g. 12 midnight–3 AM) due to multiple stops. This disrupts our production, cleaning, repairs, and next-day dispatch. We have also had cases where gowns were mishandled, dropped, or lost during client-booked pooled bookings. Because each gown is a single unit per design and often reserved back-to-back, return bookings must be EXCLUSIVE — no pooling or multi-drop."
+      },
+      {
+        question: "Can I change my delivery address last minute?",
+        answer: "Delivery addresses must be finalized at least 2 days before the delivery date. Address changes requested within 2 days cannot be accommodated because logistics details are already scheduled and recorded."
       },
       {
         question: "Are you responsible for shipping delays?",
-        answer: "We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed."
+        answer: "We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed. Deliveries may be handled in batches, so a Lalamove link may not always be available — status updates will be provided instead."
+      },
+      {
+        question: "What do I need to provide when returning the gown?",
+        answer: "Upon return, please provide: your gown name and client/account name, so we can properly record the return in our system."
       }
     ]
   },

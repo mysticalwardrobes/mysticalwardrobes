@@ -1,109 +1,66 @@
-import { NextResponse } from 'next/server'
-import { client } from '@/app/api/config'
-
-import { Review } from './model'
-
-const isRecord = (value: unknown): value is Record<string, unknown> => {
-  return typeof value === 'object' && value !== null
-}
-
-const ensureString = (value: unknown): string | null => {
-  return typeof value === 'string' && value.trim().length > 0 ? value : null
-}
-
-const extractAssetUrl = (value: unknown): string | null => {
-  if (!isRecord(value) || !('fields' in value)) {
-    return null
-  }
-
-  const fields = (value as { fields?: unknown }).fields
-  if (!isRecord(fields) || !('file' in fields)) {
-    return null
-  }
-
-  const file = (fields as { file?: unknown }).file
-  if (!isRecord(file) || !('url' in file)) {
-    return null
-  }
-
-  return ensureString((file as { url?: unknown }).url)
-}
-
-const extractEntryId = (value: unknown): string | null => {
-  if (!isRecord(value) || !('sys' in value)) {
-    return null
-  }
-
-  const sys = (value as { sys?: unknown }).sys
-  if (!isRecord(sys)) {
-    return null
-  }
-
-  return ensureString((sys as { id?: unknown }).id)
-}
-
-const normalizeAssetUrls = (value: unknown): string[] | null => {
-  const collect = Array.isArray(value) ? value : value != null ? [value] : []
-
-  const urls = collect
-    .map((item) => extractAssetUrl(item))
-    .filter((url): url is string => typeof url === 'string')
-
-  return urls.length > 0 ? urls : null
-}
-
-const normalizeEntryIds = (value: unknown): string[] | null => {
-  const collect = Array.isArray(value) ? value : value != null ? [value] : []
-
-  const ids = collect
-    .map((item) => extractEntryId(item))
-    .filter((id): id is string => typeof id === 'string' && id.length > 0)
-
-  return ids.length > 0 ? ids : null
-}
+import { NextResponse } from 'next/server';
+import { sanityClient, REVIEWS_LIST_QUERY } from '@/lib/sanity';
+import { Review } from './model';
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
+  try {
+    const { searchParams } = new URL(request.url);
 
-  // Parse query parameters
-  const random = searchParams.get('random') === 'true'
-  const limit = parseInt(searchParams.get('limit') || '0', 10)
+    // Parse query parameters
+    const random = searchParams.get('random') === 'true';
+    const limit = parseInt(searchParams.get('limit') || '0', 10);
 
-  const response = await client.getEntries({
-    content_type: 'reviews',
-    limit: 1000, // Maximum allowed by Contentful API to fetch all items
-  })
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('🔍 NEW REVIEWS API REQUEST');
+    console.log(`   Timestamp: ${new Date().toISOString()}`);
 
-  let items: Review[] = response.items.map((item) => {
-    const fields = isRecord(item.fields) ? (item.fields as Record<string, unknown>) : {}
+    // Fetch reviews from Sanity
+    const fetchStart = Date.now();
+    const sanityResponse = await sanityClient.fetch<Review[] | null>(REVIEWS_LIST_QUERY);
+    const fetchDuration = Date.now() - fetchStart;
 
-    const clientName = ensureString(fields.clientName) ?? ''
-    const comment = ensureString(fields.comment) ?? ''
-    const thumbnailMediaUrl = extractAssetUrl(fields.media)
-    const otherMediaUrls = normalizeAssetUrls(fields.otherMedia)
-    const gownId = extractEntryId(fields.gown)
-    const otherGownsIds = normalizeEntryIds(fields.otherGowns)
-
-    return {
-      id: String(item.sys.id),
-      clientName,
-      comment,
-      thumbnailMediaUrl,
-      otherMediaUrls,
-      gownId,
-      otherGownsIds,
+    // Handle null response
+    if (!sanityResponse || !Array.isArray(sanityResponse)) {
+      console.log('⚠️ No reviews found in Sanity or invalid response');
+      return NextResponse.json([]);
     }
-  })
 
-  // Apply random selection if requested
-  if (random) {
-    items = items.sort(() => Math.random() - 0.5)
+    // Map Sanity response to ensure proper defaults
+    let items: Review[] = sanityResponse.map((item) => ({
+      id: item.id,
+      clientName: item.clientName ?? '',
+      comment: item.comment ?? null, // Portable Text array from Sanity
+      thumbnailMediaUrl: item.thumbnailMediaUrl ?? null,
+      otherMediaUrls: item.otherMediaUrls?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? null,
+      gownId: item.gownId ?? null,
+      otherGownsIds: item.otherGownsIds?.filter((id): id is string => typeof id === 'string' && id.length > 0) ?? null,
+    }));
+
+    console.log(`   Fetch duration: ${fetchDuration}ms`);
+    console.log(`   Total items fetched: ${items.length}`);
+
+    // Apply random selection if requested
+    if (random) {
+      items = items.sort(() => Math.random() - 0.5);
+    }
+
+    // Apply limit if specified
+    if (limit > 0) {
+      items = items.slice(0, limit);
+    }
+
+    console.log('📤 RESPONSE:');
+    console.log(`   Random: ${random}`);
+    console.log(`   Limit: ${limit > 0 ? limit : 'none'}`);
+    console.log(`   Items in response: ${items.length}`);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+    return NextResponse.json(items);
+  } catch (error) {
+    console.error('❌ Error fetching reviews from Sanity:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch reviews' },
+      { status: 500 }
+    );
   }
-
-  // Apply limit if specified
-  if (limit > 0) {
-    items = items.slice(0, limit)
-  }
-
-  return NextResponse.json(items)
 }

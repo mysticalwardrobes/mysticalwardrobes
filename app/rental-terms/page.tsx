@@ -95,9 +95,10 @@ export default function RentalTermsPage() {
                 Note: Fitting schedules are confirmed only after payment of the fitting or rescheduling fee. Gown availability is not guaranteed, as some pieces may be booked online at the same time.
               </p>
               <ul className="mt-4 list-disc list-inside space-y-2">
+                <li>Only 2-3 gowns will be prepared per session.</li>
                 <li><strong>Finalized Event Date Required:</strong> Clients must have a finalized date of use (event date) before scheduling a fitting. This allows us to prepare only the gowns that are still available on your date of use, ensuring you only try on gowns you can actually book. Your event date determines gown availability.</li>
-                <li>Only 3–4 gowns will be prepared per session.</li>
                 <li>Real-time availability updates are provided only if you inquire directly.</li>
+                <li>Clients may only bring <strong>2–3 companions</strong> inside the fitting area. This is to maintain a comfortable and organized space for everyone.</li>
                 <li>Clients have a strict 30-minute allotment for fitting and decision-making. To maximize this time and keep our schedule on track, fittings are limited to gowns only. Accessories are unavailable for fitting but can be selected via our website. Extensions of up to 30 minutes may be allowed if there is no next client after your slot; a ₱400.00 extension fee applies.</li>
               </ul>
 
@@ -140,7 +141,15 @@ export default function RentalTermsPage() {
                   <ul className="list-disc list-inside space-y-1">
                     <li>Day 1 – Dispatch between 3 PM to 5 PM (earlier if possible)</li>
                     <li>Day 2 – Client uses gown</li>
-                    <li>Day 3 – Return via Lalamove between 8 AM to 9 AM</li>
+                    <li>
+                      Day 3 – Return Schedule — <strong>STRICT</strong>
+                      <ul className="list-disc list-inside ml-6 mt-1 space-y-1">
+                        <li>Return booking must be booked between 8:00 AM – 9:00 AM (<strong>STRICT</strong>).</li>
+                        <li>The gown must be received by Mystical Wardrobes by 9:00 AM – 1:00 PM, (especially for Greater Metro Manila locations)</li>
+                        <li>Return bookings must be <strong>EXCLUSIVE</strong> only (no pooling/multi-drop) and must follow the receiving timeline to avoid penalties.</li>
+                      </ul>
+                      <p className="mt-2 italic text-sm">Unless we specifically advise an earlier receiving time depending on the arrangement or schedule.</p>
+                    </li>
                   </ul>
                 </div>
                 <div>
@@ -174,14 +183,261 @@ export default function RentalTermsPage() {
           </FadeInOnScroll>
 
           <FadeInOnScroll delay={0.35}>
-            <section className="bg-white/95 rounded-lg border border-foreground/10 p-6 shadow-md md:p-8">
-              <h2 className="font-vegawanty text-2xl text-foreground md:text-3xl mb-4">
-                4. Shipping
-              </h2>
-              <ul className="list-disc list-inside space-y-2">
-                <li>We are not liable for delays, weather disruptions, or courier issues, but we will assist in coordinating if needed.</li>
-                <li>The client shoulders all shipping fees.</li>
-              </ul>
+            <section className="bg-white/95 rounded-lg border border-foreground/10 p-6 shadow-md md:p-8 space-y-6">
+              <div>
+                <h2 className="font-vegawanty text-2xl text-foreground md:text-3xl mb-1">
+                  4. Delivery &amp; Return Coordination Policy
+                </h2>
+                <p className="text-sm italic">(Metro Manila &amp; Greater Metro Manila)</p>
+                <p className="mt-3">
+                  To ensure faster and smoother coordination during peak season, please follow the policy below:
+                </p>
+              </div>
+
+              <hr className="border-foreground/10" />
+
+              {/* 4.1 Pickup Options */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground text-xl mb-2">
+                  4.1 Pickup Options
+                </h3>
+
+                {/* A) Rider / 3rd-Party Pickup */}
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">
+                    A) Rider / 3rd-Party Pickup (Lalamove / Grab / etc.)
+                  </h4>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Clients will <strong>book their own rider</strong> for both <strong>delivery and return</strong>.</li>
+                    <li>If you&apos;re unable to book, message us — we&apos;ll <strong>guide you or assist if needed</strong>.</li>
+                    <li>Mystical Wardrobes may <strong>take over rider booking</strong> only when necessary to maintain delivery schedules/timelines.</li>
+                  </ul>
+                </div>
+
+                {/* B) Client Pick-up */}
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">
+                    B) Client Pick-up (Personal Pick-up)
+                  </h4>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Client pick-up is <strong>by appointment only</strong>.</li>
+                    <li>Pick-up is confirmed by our team <strong>once items are ready</strong>.</li>
+                    <li>Client (or authorized representative) must <strong>sign the Release Logbook</strong> upon release.</li>
+                    <li>Please <strong>do not arrive without confirmation</strong>, as packing and release are scheduled.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <hr className="border-foreground/10" />
+
+              {/* 4.2 Required Details for Record Purposes */}
+              <div>
+                <h3 className="font-semibold text-foreground text-xl mb-2">
+                  4.2 Required Details for Record Purposes
+                </h3>
+                <p className="mb-3">
+                  Even if the client books the rider, clients are still <strong>required to submit delivery and return details in advance</strong> (for documentation and smooth coordination), including:
+                </p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Name</li>
+                  <li>Contact number(s)</li>
+                  <li>Exact pin location / address</li>
+                </ul>
+              </div>
+
+              <hr className="border-foreground/10" />
+
+              {/* 4.3 Standard Delivery & Return Windows (Strict) */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground text-xl mb-2">
+                  4.3 Standard Delivery &amp; Return Windows (Strict)
+                </h3>
+
+                {/* Delivery Dispatch */}
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Delivery Dispatch</h4>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li><strong>Dispatch window: 3:00 PM – 5:00 PM</strong></li>
+                    <li>Please <strong>message us first before booking/pickup</strong> so we can confirm the items are ready.</li>
+                  </ul>
+                </div>
+
+                {/* Return Schedule */}
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Return Schedule — STRICT</h4>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Return booking must be booked between 8:00 AM – 9:00 AM (<strong>STRICT</strong>).</li>
+                    <li>The gown must be <strong>received by Mystical Wardrobes by 9:00 AM – 1:00 PM, (especially for Greater Metro Manila locations)</strong></li>
+                  </ul>
+                  <p className="mt-2 italic text-sm">
+                    Unless we advise an earlier receiving time depending on the arrangement or schedule.
+                  </p>
+                </div>
+
+                {/* FOR RETURN NO POOLING */}
+                <div>
+                  <p className="font-semibold text-foreground mb-2">FOR RETURN <strong>NO POOLING / MULTI-DROP (STRICT)</strong>:</p>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Return bookings must be <strong>exclusive</strong> (not pooled with other deliveries).</li>
+                    <li>Inform your rider that this is an <strong>exclusive return</strong> and must follow the receiving timeline.</li>
+                    <li>Late arrivals may affect the next booking and may incur penalties.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <hr className="border-foreground/10" />
+
+              {/* 4.4 Delivery Updates & Item Checking */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground text-xl mb-2">
+                  4.4 Delivery Updates &amp; Item Checking
+                </h3>
+
+                {/* If 3rd-Party Rider */}
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">If 3rd-Party Rider</h4>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Upon receiving the items, the client is <strong>required to immediately check and confirm</strong> that all items are complete.</li>
+                    <li>
+                      The rider you booked must know the following details:
+                      <ul className="list-[circle] list-inside ml-6 mt-1 space-y-1">
+                        <li><strong>Gown name</strong></li>
+                        <li><strong>Client/Account name</strong></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* If Client Pick-up */}
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">If Client Pick-up</h4>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Clients may inspect the gown before release.</li>
+                    <li>Clients must sign the <strong>Release Logbook</strong> confirming items are complete.</li>
+                    <li>
+                      Provide:
+                      <ul className="list-[circle] list-inside ml-6 mt-1 space-y-1">
+                        <li><strong>Gown name</strong></li>
+                        <li><strong>Client/Account name</strong></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <hr className="border-foreground/10" />
+
+              {/* 4.5 Return Confirmation (Required) */}
+              <div>
+                <h3 className="font-semibold text-foreground text-xl mb-2">
+                  4.5 Return Confirmation (Required)
+                </h3>
+                <p className="mb-3">Upon return, please provide:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li><strong>Gown name</strong></li>
+                  <li><strong>Client/Account name</strong></li>
+                </ul>
+                <p className="mt-2 text-sm">So we can properly record the return in our system.</p>
+              </div>
+
+              <hr className="border-foreground/10" />
+
+              {/* 4.6 Important Notes */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground text-xl mb-2">
+                  4.6 Important Notes
+                </h3>
+
+                {/* Address Changes */}
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Address Changes (Strict)</h4>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Delivery addresses must be finalized at least <strong>2 days before</strong> the delivery date.</li>
+                    <li>Address changes requested within <strong>2 days</strong> cannot be accommodated because logistics details are already scheduled and recorded.</li>
+                  </ul>
+                </div>
+
+                {/* Batch Deliveries */}
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Batch Deliveries (Case by case basis only)</h4>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Deliveries may be handled in <strong>batches</strong>, so a Lalamove link may not always be available.</li>
+                    <li>Status updates will be provided instead.</li>
+                  </ul>
+                </div>
+
+                {/* Shipping Fees */}
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Shipping Fees</h4>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Delivery and return shipping fees are shouldered by the client.</li>
+                    <li>Shipping fees are based on <strong>Lalamove Priority Rate</strong> (or agreed rate).</li>
+                  </ul>
+                </div>
+
+                {/* Policy Note */}
+                <div className="bg-amber-50/80 border border-amber-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-foreground mb-2">Policy Note</h4>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Failure to follow booking windows and coordination timelines may result in delays that can affect the next renter. Mystical Wardrobes will not be liable for delays caused by late booking, pooled riders, or unconfirmed coordination.</li>
+                    <li>The gown must be <strong>received by Mystical Wardrobes by 9:00 AM – 1:00 PM, (especially for Greater Metro Manila locations)</strong>. Late arrivals may affect the next booking and may incur penalties.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <hr className="border-foreground/10" />
+
+              {/* 4.7 Why We Follow Lalamove Priority Rates */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground text-xl mb-2">
+                  4.7 Why We Follow Lalamove Priority Rates (and Why Client Pooling is Not Allowed)
+                </h3>
+                <p>
+                  To keep scheduling fair and operations smooth during peak season, Mystical Wardrobes follows the <strong>Lalamove Priority Rate</strong> as the standard basis for shipping fees (unless there is an agreed fixed amount). Please note that <strong>we do not earn from shipping fees</strong>—the amount goes directly to the rider/courier.
+                </p>
+
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Why shipping may be handled &ldquo;by batch&rdquo;</h4>
+                  <p className="mt-2">
+                    During peak season, we handle a high volume of deliveries and returns daily (around <strong>100–150 gowns/day</strong>). To meet strict timelines—especially for next-day bookings—we sometimes coordinate deliveries and returns <strong>by batch</strong> using our own trusted riders.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Why Mystical Wardrobes may pool using our own riders</h4>
+                  <p className="mb-2">
+                    When we pool orders through <strong>our own riders</strong>, it is done with controlled routing and internal scheduling to ensure:
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 ml-2">
+                    <li>gowns arrive within our required receiving time</li>
+                    <li>gowns are handled properly during transit</li>
+                    <li>we can track riders directly and coordinate real-time updates</li>
+                  </ul>
+                  <p className="mt-2">
+                    Pooling under our supervision helps prevent delays that could affect the next renter.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2 text-red-700">Why client-booked pooling / multi-drop is NOT allowed</h4>
+                  <p className="mb-3">
+                    If the rider is booked by the client under <strong>pooling/multi-drop</strong>, we do not have direct control over the route and schedule. Based on experience, even when booked early, some pooled riders arrive <strong>very late (ex. 12 midnight–3 AM)</strong> due to multiple stops. This disrupts our production, cleaning, repairs, and next-day dispatch.
+                  </p>
+                  <p className="mb-3">
+                    We have also had cases where gowns were <strong>mishandled, dropped, or lost</strong> during client-booked bookings, and unfortunately these were not shouldered by the rider or client.
+                  </p>
+                  <p>
+                    Because each gown is a single unit per design and often reserved back-to-back, we enforce a strict policy:
+                  </p>
+                  <div className="bg-red-50/80 border border-red-200 rounded-lg p-4 mt-3">
+                    <ul className="list-disc list-inside space-y-2">
+                      <li>Return bookings must be <strong>EXCLUSIVE</strong> (not pooled with other deliveries).</li>
+                      <li>Inform your rider that this is an <strong>exclusive return</strong> and must follow the receiving timeline.</li>
+                      <li>Late arrivals may affect the next booking and <strong>may incur penalties</strong>.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </section>
           </FadeInOnScroll>
 
@@ -261,7 +517,7 @@ export default function RentalTermsPage() {
                       <td className="py-3 px-4 align-top">
                         <ul className="list-disc list-inside space-y-1">
                           <li>The gown was reserved exclusively for your date. Since we don't charge a security deposit, the remaining balance must be settled. Down-payments are non-refundable.</li>
-                          <li>If approved under the Store Credit Policy, only the eligible portion of the amount you've already paid may be converted to store credit instead of being forfeited.</li>
+                          <li>If approved under the Store Credit Policy, only the eligible portion of the amount you've already paid may be converted to store credit instead of being forfeited. The remaining balance is still due and must be settled regardless of any store credit approval.</li>
                         </ul>
                       </td>
                     </tr>
@@ -286,7 +542,7 @@ export default function RentalTermsPage() {
                     <tr className="border-b border-foreground/10">
                       <td className="py-3 px-4 align-top">Rescheduling Fees</td>
                       <td className="py-3 px-4 align-top">
-                        Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
+                        Metro Manila: ₱3,000<br />Outside Metro Manila: ₱4,000
                       </td>
                       <td className="py-3 px-4 align-top">
                         This applies if you move your event date—even if the event is canceled—as your original slot was already reserved. This option is not available if you decide just 2 days before your scheduled delivery. If your first-choice gown isn't available on the new date, you'll need to choose from what's available. The fee still applies, as the gown was previously blocked for your original schedule.
@@ -295,7 +551,7 @@ export default function RentalTermsPage() {
                     <tr>
                       <td className="py-3 px-4 align-top">Changing of Gown Fees</td>
                       <td className="py-3 px-4 align-top">
-                        Metro Manila: ₱2,000<br />Outside Metro Manila: ₱3,000
+                        Metro Manila: ₱3,000<br />Outside Metro Manila: ₱4,000
                       </td>
                       <td className="py-3 px-4 align-top">
                         Upon approval and subject to availability. One change per booking. If the new gown's rate is higher, the difference must be paid; if lower, no refunds are issued.
@@ -570,7 +826,7 @@ export default function RentalTermsPage() {
                 9. Updates
               </h2>
               <ul className="list-disc list-inside space-y-2">
-                <li>Last updated on October 15, 2025</li>
+                <li>Last updated on February 14, 2026</li>
                 <li>These terms may be updated at any time without prior notice. The latest version will always be posted on our website.</li>
               </ul>
             </section>

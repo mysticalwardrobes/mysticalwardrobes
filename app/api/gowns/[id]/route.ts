@@ -1,129 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { client } from '@/app/api/config';
+import { sanityClient, GOWN_DETAIL_QUERY } from '@/lib/sanity';
 import { Gown } from '../model';
 import {
-  CACHE_DURATION,
   CACHE_CONTROL_HEADER,
-  ContentfulEntryResponse,
-  CacheEntry,
-  isCacheValid,
   getCacheAge,
-  getCacheExpiry
 } from '@/app/api/cache-config';
 import { USE_REDIS_CACHE, getJSON, setJSON } from '@/lib/redis';
-import {
-  serializeGownEntry,
-  deserializeGownEntry,
-  SerializedGownEntrySingle
-} from '@/lib/contentful-serializer';
 
 // Cache configuration
 // Note: Must be a literal value for Next.js static analysis (3600 = 1 hour)
 export const revalidate = 3600;
 
-// Helper functions for Contentful data extraction
-const isRecord = (value: unknown): value is Record<string, unknown> => {
-  return typeof value === 'object' && value !== null;
-};
-
-const ensureString = (value: unknown): string | null => {
-  return typeof value === 'string' && value.trim().length > 0 ? value : null;
-};
-
-const ensureNumber = (value: unknown): number | null => {
-  return typeof value === 'number' && !isNaN(value) ? value : null;
-};
-
-// Accepts either an array of strings or an array of linked entries and
-// returns an array of strings using the linked entry's `fields.name` when present
-const extractStringArray = (value: unknown): string[] => {
-  if (!Array.isArray(value)) return [];
-
-  const result: string[] = [];
-  for (const item of value) {
-    const asString = ensureString(item);
-    if (asString) {
-      result.push(asString);
-      continue;
-    }
-
-    if (isRecord(item)) {
-      // Contentful SDK resolves links to entries when include > 0
-      const fields = (item as { fields?: unknown }).fields;
-      if (isRecord(fields) && 'name' in fields) {
-        const name = ensureString((fields as Record<string, unknown>).name);
-        if (name) result.push(name);
-        continue;
-      }
-    }
-  }
-  return result;
-};
-
-// Accepts either an array of strings (ids) or an array of linked entries
-// and returns an array of entry IDs
-const extractIdArray = (value: unknown): string[] => {
-  if (!Array.isArray(value)) return [];
-
-  const ids: string[] = [];
-  for (const item of value) {
-    const asString = ensureString(item);
-    if (asString) {
-      ids.push(asString);
-      continue;
-    }
-
-    if (isRecord(item) && 'sys' in item) {
-      const sys = (item as { sys?: unknown }).sys;
-      if (isRecord(sys) && 'id' in sys) {
-        const id = ensureString((sys as Record<string, unknown>).id);
-        if (id) ids.push(id);
-        continue;
-      }
-    }
-  }
-  return ids;
-};
-
-const extractAssetUrl = (value: unknown): string | null => {
-  if (!isRecord(value) || !('fields' in value)) {
-    return null;
-  }
-
-  const fields = (value as { fields?: unknown }).fields;
-  if (!isRecord(fields) || !('file' in fields)) {
-    return null;
-  }
-
-  const file = (fields as { file?: unknown }).file;
-  if (!isRecord(file) || !('url' in file)) {
-    return null;
-  }
-
-  return ensureString((file as { url?: unknown }).url);
-};
-
-const normalizeAssetUrls = (value: unknown): string[] => {
-  const collect = Array.isArray(value) ? value : value != null ? [value] : [];
-
-  const urls = collect
-    .map((item) => extractAssetUrl(item))
-    .filter((url): url is string =>
-      typeof url === 'string' &&
-      url !== 'null' &&
-      url.trim() !== ''
-    );
-
-  return urls;
-};
-
-// Strict string-array extractor (for fields guaranteed to be Symbol[])
-const ensureStringArray = (value: unknown): string[] => {
-  if (!Array.isArray(value)) return [];
-  return value
-    .map((item) => ensureString(item))
-    .filter((v): v is string => v !== null);
-};
+// Serialized cache entry structure for Redis
+interface SerializedCacheEntry {
+  data: Gown;
+  timestamp: number;
+}
 
 export async function GET(
   request: NextRequest,
@@ -140,136 +32,90 @@ export async function GET(
 
     // Prepare variables for data source
     const now = Date.now();
-    const redisCacheKey = `gown:${id}`;
-    let response: ContentfulEntryResponse | undefined;
-    let dataSource: 'cache' | 'contentful' = 'contentful';
+    const redisCacheKey = `gown:${id}:sanity`;
+    let gownData: Gown | undefined;
+    let dataSource: 'cache' | 'sanity' = 'sanity';
 
     // Optionally check Redis cache first for this specific gown
     if (USE_REDIS_CACHE) {
-      interface SerializedCacheEntry {
-        serialized: SerializedGownEntrySingle;
-        timestamp: number;
-      }
       const cachedEntry = await getJSON<SerializedCacheEntry>(redisCacheKey);
 
       if (cachedEntry) {
-        // Deserialize cached data from Redis (no expiration - invalidated via webhook)
-        response = deserializeGownEntry(cachedEntry.serialized);
+        // Use cached data from Redis (no expiration - invalidated via webhook)
+        gownData = cachedEntry.data;
         dataSource = 'cache';
         console.log('✅ REDIS CACHE HIT: Using cached gown data from Redis');
         console.log(`   Cache age: ${getCacheAge(cachedEntry.timestamp)}s`);
       }
     }
 
-    if (!response) {
-      // Fetch fresh data from Contentful
+    if (!gownData) {
+      // Fetch fresh data from Sanity
       const fetchStart = Date.now();
-      response = await client.getEntry(id, {
-        include: 10, // Include linked assets (images)
-      });
+      const sanityResponse = await sanityClient.fetch<Gown | null>(GOWN_DETAIL_QUERY, { id });
       const fetchDuration = Date.now() - fetchStart;
 
-      dataSource = 'contentful';
+      if (!sanityResponse) {
+        console.log('❌ Gown not found in Sanity');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        return NextResponse.json(
+          { error: 'Gown not found' },
+          { status: 404 }
+        );
+      }
 
-      // Serialize and store in Redis cache (no expiration - invalidated via webhook)
+      // Map Sanity response to ensure proper defaults
+      gownData = {
+        id: sanityResponse.id,
+        name: sanityResponse.name ?? 'Untitled Gown',
+        collection: sanityResponse.collection ?? [],
+        bestFor: sanityResponse.bestFor ?? [],
+        tags: sanityResponse.tags ?? [],
+        color: sanityResponse.color ?? [],
+        skirtStyle: sanityResponse.skirtStyle ?? [],
+        metroManilaRate: sanityResponse.metroManilaRate ?? 0,
+        luzonRate: sanityResponse.luzonRate ?? 0,
+        outsideLuzonRate: sanityResponse.outsideLuzonRate ?? 0,
+        pixieMetroManilaRate: sanityResponse.pixieMetroManilaRate ?? 0,
+        pixieLuzonRate: sanityResponse.pixieLuzonRate ?? 0,
+        pixieOutsideLuzonRate: sanityResponse.pixieOutsideLuzonRate ?? 0,
+        forSaleRateLong: sanityResponse.forSaleRateLong ?? 0,
+        forSaleRatePixie: sanityResponse.forSaleRatePixie ?? 0,
+        bust: sanityResponse.bust ?? '',
+        bustAlt: sanityResponse.bustAlt ?? '',
+        waist: sanityResponse.waist ?? '',
+        waistAlt: sanityResponse.waistAlt ?? '',
+        lenght: sanityResponse.lenght ?? '',
+        sleeves: sanityResponse.sleeves ?? '',
+        longGownPictures: sanityResponse.longGownPictures?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+        longGownPicturesAlt: sanityResponse.longGownPicturesAlt?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+        filipinianaPictures: sanityResponse.filipinianaPictures?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+        pixiePictures: sanityResponse.pixiePictures?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+        trainPictures: sanityResponse.trainPictures?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+        addOns: sanityResponse.addOns?.filter((id): id is string => typeof id === 'string') ?? [],
+        relatedGowns: sanityResponse.relatedGowns?.filter((id): id is string => typeof id === 'string') ?? [],
+      };
+
+      dataSource = 'sanity';
+
+      // Store in Redis cache (no expiration - invalidated via webhook)
       if (USE_REDIS_CACHE) {
-        const serialized = serializeGownEntry(response);
-        interface SerializedCacheEntry {
-          serialized: SerializedGownEntrySingle;
-          timestamp: number;
-        }
         const cacheEntry: SerializedCacheEntry = {
-          serialized,
+          data: gownData,
           timestamp: now
         };
         await setJSON(redisCacheKey, cacheEntry);
 
-        console.log('🔄 REDIS CACHE MISS: Fetched fresh gown from Contentful and stored in Redis');
+        console.log('🔄 REDIS CACHE MISS: Fetched fresh gown from Sanity and stored in Redis');
         console.log(`   Fetch duration: ${fetchDuration}ms`);
         console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
       } else {
-        console.log('ℹ️ Redis cache disabled: fetched gown directly from Contentful');
+        console.log('ℹ️ Redis cache disabled: fetched gown directly from Sanity');
         console.log(`   Fetch duration: ${fetchDuration}ms`);
       }
     }
 
-    if (!response) {
-      return NextResponse.json(
-        { error: 'Gown not found' },
-        { status: 404 }
-      );
-    }
-
-    const fields = isRecord(response.fields) ? (response.fields as Record<string, unknown>) : {};
-
-    const name = ensureString(fields.name) ?? 'Untitled Gown';
-    const collection = ensureStringArray(fields.collection);
-    const bestFor = ensureStringArray(fields.bestFor);
-    const tags = ensureStringArray(fields.tags);
-    const color = ensureStringArray(fields.color);
-    const skirtStyle = ensureStringArray(fields.skirtStyle);
-    const metroManilaRate = ensureNumber(fields.metroManilaRate) ?? 0;
-    const luzonRate = ensureNumber(fields.luzonRate) ?? 0;
-    const outsideLuzonRate = ensureNumber(fields.outsideLuzonRate) ?? 0;
-    const pixieMetroManilaRate = ensureNumber(fields.pixieMetroManilaRate) ?? 0;
-    const pixieLuzonRate = ensureNumber(fields.pixieLuzonRate) ?? 0;
-    const pixieOutsideLuzonRate = ensureNumber(fields.pixieOutsideLuzonRate) ?? 0;
-    const forSaleRateLong = ensureNumber(fields.forSaleRateLong) ?? 0;
-    const forSaleRatePixie = ensureNumber(fields.forSaleRatePixie) ?? 0;
-    const bust = ensureString(fields.bust) ?? '';
-    const bustAlt = ensureString(fields.bustAlt) ?? '';
-    const waist = ensureString(fields.waist) ?? '';
-    const waistAlt = ensureString(fields.waistAlt) ?? '';
-    const arms = ensureString(fields.arms) ?? '';
-    const backing = ensureString(fields.backing) ?? '';
-    const lenght = ensureString(fields.lenght) ?? '';
-    const sleeves = ensureString(fields.sleeves) ?? '';
-    // Add-ons may be Symbols or Entry links; normalize to entry IDs
-    const addOns = extractIdArray(fields.addOns);
-    // Related gowns are typically Entry links; normalize to IDs
-    const relatedGowns = extractIdArray(fields.relatedGowns);
-
-    // Extract image URLs (handle arrays of images)
-    const longGownPictures = normalizeAssetUrls(fields.longGownPicture);
-    const longGownPicturesAlt = normalizeAssetUrls(fields.longGownPictureAlt);
-    const filipinianaPictures = normalizeAssetUrls(fields.filipinianaPicture);
-    const pixiePictures = normalizeAssetUrls(fields.pixiePicture);
-    const trainPictures = normalizeAssetUrls(fields.trainPicture);
-
-    const gown: Gown = {
-      id: String(response.sys.id),
-      name,
-      collection,
-      bestFor,
-      tags,
-      color,
-      skirtStyle,
-      metroManilaRate,
-      luzonRate,
-      outsideLuzonRate,
-      pixieMetroManilaRate,
-      pixieLuzonRate,
-      pixieOutsideLuzonRate,
-      forSaleRateLong,
-      forSaleRatePixie,
-      bust,
-      bustAlt,
-      waist,
-      waistAlt,
-      arms,
-      backing,
-      lenght,
-      sleeves,
-      longGownPictures,
-      longGownPicturesAlt,
-      filipinianaPictures,
-      pixiePictures,
-      trainPictures,
-      addOns,
-      relatedGowns,
-    };
-
-    const responseData = NextResponse.json(gown);
+    const responseData = NextResponse.json(gownData);
 
     // Add cache headers for browser caching
     responseData.headers.set('Cache-Control', CACHE_CONTROL_HEADER);
@@ -278,14 +124,14 @@ export async function GET(
     const totalRequestTime = Date.now() - requestStart;
     console.log('📤 RESPONSE:');
     console.log(`   Data source: ${dataSource.toUpperCase()}`);
-    console.log(`   Gown: ${gown.name}`);
-    console.log(`   Collection: ${gown.collection.join(', ')}`);
+    console.log(`   Gown: ${gownData.name}`);
+    console.log(`   Collection: ${gownData.collection.join(', ')}`);
     console.log(`   Total request time: ${totalRequestTime}ms`);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     return responseData;
   } catch (error) {
-    console.error('❌ Error fetching gown from Contentful:', error);
+    console.error('❌ Error fetching gown from Sanity:', error);
     return NextResponse.json(
       { error: 'Failed to fetch gown' },
       { status: 500 }

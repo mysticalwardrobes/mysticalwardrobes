@@ -1,29 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { client } from '@/app/api/config';
-import { Gown } from './model';
+import { sanityClient, GOWNS_LIST_QUERY } from '@/lib/sanity';
+import { GownListItem } from './model';
 import {
-  CACHE_DURATION,
   CACHE_CONTROL_HEADER,
-  ContentfulEntriesResponse,
-  CacheEntry,
-  isCacheValid,
   getCacheAge,
-  getCacheExpiry
 } from '@/app/api/cache-config';
 import { supabaseAdmin } from '@/lib/supabase';
 import { USE_REDIS_CACHE, getJSON, setJSON } from '@/lib/redis';
-import {
-  serializeGownsResponse,
-  deserializeGownsResponse,
-  SerializedGownEntry
-} from '@/lib/contentful-serializer';
 
 // Cache configuration
 // Note: Must be a literal value for Next.js static analysis (3600 = 1 hour)
 export const revalidate = 3600;
 
 // Redis cache key for all gowns
-const REDIS_CACHE_KEY = 'gowns:all';
+const REDIS_CACHE_KEY = 'gowns:list:sanity';
 
 // In-memory cache for popularity data (gown click counts)
 interface PopularityData {
@@ -38,80 +28,11 @@ function isPopularityCacheValid(timestamp: number): boolean {
   return Date.now() - timestamp < POPULARITY_CACHE_DURATION;
 }
 
-// Helper functions for Contentful data extraction
-const isRecord = (value: unknown): value is Record<string, unknown> => {
-  return typeof value === 'object' && value !== null;
-};
-
-const ensureString = (value: unknown): string | null => {
-  return typeof value === 'string' && value.trim().length > 0 ? value : null;
-};
-
-const ensureNumber = (value: unknown): number | null => {
-  return typeof value === 'number' && !isNaN(value) ? value : null;
-};
-
-const ensureStringArray = (value: unknown): string[] => {
-  if (Array.isArray(value)) {
-    return value
-      .map(item => ensureString(item))
-      .filter((item): item is string => item !== null);
-  }
-  return [];
-};
-
-// Accepts either an array of strings (ids) or an array of linked entries
-// and returns an array of entry IDs
-const extractIdArray = (value: unknown): string[] => {
-  if (!Array.isArray(value)) return [];
-
-  const ids: string[] = [];
-  for (const item of value) {
-    const asString = ensureString(item);
-    if (asString) {
-      ids.push(asString);
-      continue;
-    }
-
-    if (isRecord(item) && 'sys' in item) {
-      const sys = (item as { sys?: unknown }).sys;
-      if (isRecord(sys) && 'id' in sys) {
-        const id = ensureString((sys as Record<string, unknown>).id);
-        if (id) ids.push(id);
-        continue;
-      }
-    }
-  }
-  return ids;
-};
-
-const extractAssetUrl = (value: unknown): string | null => {
-  if (!isRecord(value) || !('fields' in value)) {
-    return null;
-  }
-
-  const fields = (value as { fields?: unknown }).fields;
-  if (!isRecord(fields) || !('file' in fields)) {
-    return null;
-  }
-
-  const file = (fields as { file?: unknown }).file;
-  if (!isRecord(file) || !('url' in file)) {
-    return null;
-  }
-
-  return ensureString((file as { url?: unknown }).url);
-};
-
-const normalizeAssetUrls = (value: unknown): string[] => {
-  const collect = Array.isArray(value) ? value : value != null ? [value] : [];
-
-  const urls = collect
-    .map((item) => extractAssetUrl(item))
-    .filter((url): url is string => typeof url === 'string');
-
-  return urls;
-};
+// Serialized cache entry structure for Redis
+interface SerializedCacheEntry {
+  data: GownListItem[];
+  timestamp: number;
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -135,136 +56,74 @@ export async function GET(request: NextRequest) {
 
     // Prepare variables for data source
     const now = Date.now();
-    let response: ContentfulEntriesResponse | undefined;
-    let dataSource: 'cache' | 'contentful' = 'contentful';
+    let gownsData: GownListItem[] | undefined;
+    let dataSource: 'cache' | 'sanity' = 'sanity';
 
     // Optionally check Redis cache first
     if (USE_REDIS_CACHE) {
-      interface SerializedCacheEntry {
-        serialized: SerializedGownEntry[];
-        timestamp: number;
-      }
       const cachedData = await getJSON<SerializedCacheEntry>(REDIS_CACHE_KEY);
 
       if (cachedData) {
-        // Deserialize cached data from Redis (no expiration - invalidated via webhook)
-        response = deserializeGownsResponse(cachedData.serialized);
+        // Use cached data from Redis (no expiration - invalidated via webhook)
+        gownsData = cachedData.data;
         dataSource = 'cache';
         console.log('✅ REDIS CACHE HIT: Using cached gowns data from Redis');
         console.log(`   Cache age: ${getCacheAge(cachedData.timestamp)}s`);
-        console.log(`   Total items in cache: ${response.items.length}`);
+        console.log(`   Total items in cache: ${gownsData.length}`);
       }
     }
 
-    if (!response) {
-      // Fetch fresh data from Contentful
+    if (!gownsData) {
+      // Fetch fresh data from Sanity
       const fetchStart = Date.now();
-      response = await client.getEntries({
-        content_type: 'gown',
-        include: 10, // Include linked assets (images)
-        limit: 1000, // Maximum allowed by Contentful API to fetch all items
-      });
+      const sanityResponse = await sanityClient.fetch<GownListItem[] | null>(GOWNS_LIST_QUERY);
       const fetchDuration = Date.now() - fetchStart;
 
-      dataSource = 'contentful';
+      // Handle null response (no documents found)
+      if (!sanityResponse || !Array.isArray(sanityResponse)) {
+        console.log('⚠️ No gowns found in Sanity or invalid response');
+        gownsData = [];
+      } else {
+        // Map Sanity response to ensure proper defaults (only list view fields)
+        gownsData = sanityResponse.map((item) => ({
+          id: item.id,
+          name: item.name ?? 'Untitled Gown',
+          collection: item.collection ?? [],
+          bestFor: item.bestFor ?? [],
+          tags: item.tags ?? [],
+          color: item.color ?? [],
+          skirtStyle: item.skirtStyle ?? [],
+          metroManilaRate: item.metroManilaRate ?? 0,
+          pixieMetroManilaRate: item.pixieMetroManilaRate ?? 0,
+          longGownPictures: item.longGownPictures?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+          filipinianaPictures: item.filipinianaPictures?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+          pixiePictures: item.pixiePictures?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+          trainPictures: item.trainPictures?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+        }));
+      }
 
-      // Serialize and store in Redis cache (no expiration - invalidated via webhook)
+      dataSource = 'sanity';
+
+      // Store in Redis cache (no expiration - invalidated via webhook)
       if (USE_REDIS_CACHE) {
-        const serialized = serializeGownsResponse(response);
-        interface SerializedCacheEntry {
-          serialized: SerializedGownEntry[];
-          timestamp: number;
-        }
         const cacheEntry: SerializedCacheEntry = {
-          serialized,
+          data: gownsData,
           timestamp: now
         };
         await setJSON(REDIS_CACHE_KEY, cacheEntry);
 
         console.log(
-          '🆕 INITIAL OR REFRESHED FETCH: Fetched gowns data from Contentful and stored in Redis'
+          '🆕 INITIAL OR REFRESHED FETCH: Fetched gowns data from Sanity and stored in Redis'
         );
       } else {
-        console.log('ℹ️ Redis cache disabled: fetched gowns data directly from Contentful');
+        console.log('ℹ️ Redis cache disabled: fetched gowns data directly from Sanity');
       }
       console.log(`   Fetch duration: ${fetchDuration}ms`);
-      console.log(`   Total items fetched: ${response.items.length}`);
+      console.log(`   Total items fetched: ${gownsData.length}`);
     }
 
-    // At this point, response is guaranteed to be defined
-    const resolvedResponse = response;
-
-    // Transform Contentful entries to our Gown interface
-    let gowns: Gown[] = resolvedResponse.items.map((item) => {
-      const fields = isRecord(item.fields) ? (item.fields as Record<string, unknown>) : {};
-
-      const name = ensureString(fields.name) ?? 'Untitled Gown';
-      const collection = ensureStringArray(fields.collection);
-      const bestFor = ensureStringArray(fields.bestFor);
-      const tags = ensureStringArray(fields.tags);
-      const color = ensureStringArray(fields.color);
-      const skirtStyle = ensureStringArray(fields.skirtStyle);
-      const metroManilaRate = ensureNumber(fields.metroManilaRate) ?? 0;
-      const luzonRate = ensureNumber(fields.luzonRate) ?? 0;
-      const outsideLuzonRate = ensureNumber(fields.outsideLuzonRate) ?? 0;
-      const pixieMetroManilaRate = ensureNumber(fields.pixieMetroManilaRate) ?? 0;
-      const pixieLuzonRate = ensureNumber(fields.pixieLuzonRate) ?? 0;
-      const pixieOutsideLuzonRate = ensureNumber(fields.pixieOutsideLuzonRate) ?? 0;
-      const forSaleRateLong = ensureNumber(fields.forSaleRateLong) ?? 0;
-      const forSaleRatePixie = ensureNumber(fields.forSaleRatePixie) ?? 0;
-      const bust = ensureString(fields.bust) ?? '';
-      const bustAlt = ensureString(fields.bustAlt) ?? '';
-      const waist = ensureString(fields.waist) ?? '';
-      const waistAlt = ensureString(fields.waistAlt) ?? '';
-      const arms = ensureString(fields.arms) ?? '';
-      const backing = ensureString(fields.backing) ?? '';
-      const lenght = ensureString(fields.lenght) ?? '';
-      const sleeves = ensureString(fields.sleeves) ?? '';
-      // Add-ons may be Symbols or Entry links; normalize to entry IDs
-      const addOns = extractIdArray(fields.addOns);
-      // Related gowns may be Entry links; normalize to entry IDs
-      const relatedGowns = extractIdArray(fields.relatedGowns);
-
-      // Extract image URLs (handle arrays of images)
-      const longGownPictures = normalizeAssetUrls(fields.longGownPicture);
-      const longGownPicturesAlt = normalizeAssetUrls(fields.longGownPictureAlt);
-      const filipinianaPictures = normalizeAssetUrls(fields.filipinianaPicture);
-      const pixiePictures = normalizeAssetUrls(fields.pixiePicture);
-      const trainPictures = normalizeAssetUrls(fields.trainPicture);
-
-      return {
-        id: String(item.sys.id),
-        name,
-        collection,
-        bestFor,
-        tags,
-        color,
-        skirtStyle,
-        metroManilaRate,
-        luzonRate,
-        outsideLuzonRate,
-        pixieMetroManilaRate,
-        pixieLuzonRate,
-        pixieOutsideLuzonRate,
-        forSaleRateLong,
-        forSaleRatePixie,
-        bust,
-        bustAlt,
-        waist,
-        waistAlt,
-        arms,
-        backing,
-        lenght,
-        sleeves,
-        longGownPictures,
-        longGownPicturesAlt,
-        filipinianaPictures,
-        pixiePictures,
-        trainPictures,
-        addOns,
-        relatedGowns,
-      };
-    });
+    // At this point, gownsData is guaranteed to be defined
+    let gowns: GownListItem[] = [...gownsData];
 
     // Filter by collection
     if (collection && collection !== 'all') {
@@ -487,7 +346,7 @@ export async function GET(request: NextRequest) {
 
     return responseData;
   } catch (error) {
-    console.error('Error fetching gowns from Contentful:', error);
+    console.error('Error fetching gowns from Sanity:', error);
     return NextResponse.json(
       { error: 'Failed to fetch gowns' },
       { status: 500 }

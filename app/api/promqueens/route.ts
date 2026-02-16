@@ -1,71 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { client } from '@/app/api/config';
+import { sanityClient, PROMQUEENS_LIST_QUERY } from '@/lib/sanity';
 import { PromQueen, PromQueensResponse } from './model';
-import { 
-  PROMQUEENS_CACHE_DURATION, 
-  CACHE_CONTROL_HEADER,
-  ContentfulEntriesResponse,
-  CacheEntry,
-  isCacheValid,
-  getCacheAge,
-  getCacheExpiry
-} from '@/app/api/cache-config';
+import { CACHE_CONTROL_HEADER } from '@/app/api/cache-config';
 
 // Cache configuration
-// Note: Must be a literal value for Next.js static analysis (3600 = 1 hour)
 export const revalidate = 3600;
-
-// In-memory cache for promqueens data
-let promqueensCache: CacheEntry<ContentfulEntriesResponse> | null = null;
-
-// Helper functions for Contentful data extraction
-const isRecord = (value: unknown): value is Record<string, unknown> => {
-  return typeof value === 'object' && value !== null;
-};
-
-const ensureString = (value: unknown): string | null => {
-  return typeof value === 'string' && value.trim().length > 0 ? value : null;
-};
-
-const extractAssetUrl = (value: unknown): string | null => {
-  if (!isRecord(value) || !('fields' in value)) {
-    return null;
-  }
-
-  const fields = (value as { fields?: unknown }).fields;
-  if (!isRecord(fields) || !('file' in fields)) {
-    return null;
-  }
-
-  const file = (fields as { file?: unknown }).file;
-  if (!isRecord(file) || !('url' in file)) {
-    return null;
-  }
-
-  return ensureString((file as { url?: unknown }).url);
-};
-
-const extractGownInfo = (value: unknown): { id: string | null; name: string | null } => {
-  if (!isRecord(value) || !('sys' in value) || !('fields' in value)) {
-    return { id: null, name: null };
-  }
-
-  const sys = (value as { sys?: unknown }).sys;
-  const fields = (value as { fields?: unknown }).fields;
-
-  if (!isRecord(sys) || !('id' in sys)) {
-    return { id: null, name: null };
-  }
-
-  if (!isRecord(fields) || !('name' in fields)) {
-    return { id: null, name: null };
-  }
-
-  const id = ensureString((sys as { id?: unknown }).id);
-  const name = ensureString((fields as { name?: unknown }).name);
-
-  return { id, name };
-};
 
 // Fisher-Yates shuffle algorithm for random ordering
 const shuffleArray = <T>(array: T[]): T[] => {
@@ -87,70 +26,34 @@ export async function GET(request: NextRequest) {
     console.log('🔍 NEW PROMQUEENS API REQUEST');
     console.log(`   Timestamp: ${new Date().toISOString()}`);
 
-    // Check if we have valid cached data
-    const now = Date.now();
-    let response;
-    let dataSource: 'cache' | 'contentful' = 'cache';
-    
-    if (promqueensCache && isCacheValid(promqueensCache.timestamp, PROMQUEENS_CACHE_DURATION)) {
-      // Use cached data
-      response = promqueensCache.data;
-      console.log('✅ CACHE HIT: Using cached promqueens data');
-      console.log(`   Cache age: ${getCacheAge(promqueensCache.timestamp)}s (expires in ${getCacheExpiry(promqueensCache.timestamp, PROMQUEENS_CACHE_DURATION)}s)`);
-      console.log(`   Total items in cache: ${response.items.length}`);
-    } else {
-      // Fetch fresh data from Contentful
-      const fetchStart = Date.now();
-      response = await client.getEntries({
-        content_type: 'promQueens',
-        include: 2, // Include linked entries (gowns) and assets (pictures)
-      });
-      const fetchDuration = Date.now() - fetchStart;
-      
-      dataSource = 'contentful';
-      
-      // Update cache
-      promqueensCache = {
-        data: response,
-        timestamp: now
+    // Fetch prom queens from Sanity
+    const fetchStart = Date.now();
+    const sanityResponse = await sanityClient.fetch<PromQueen[] | null>(PROMQUEENS_LIST_QUERY);
+    const fetchDuration = Date.now() - fetchStart;
+
+    // Handle null response
+    if (!sanityResponse || !Array.isArray(sanityResponse)) {
+      console.log('⚠️ No prom queens found in Sanity or invalid response');
+      const emptyResponse: PromQueensResponse = {
+        items: [],
+        total: 0,
       };
-      
-      if (promqueensCache) {
-        console.log('🔄 CACHE MISS: Fetched fresh promqueens data from Contentful');
-      } else {
-        console.log('🆕 INITIAL FETCH: Fetched promqueens data from Contentful');
-      }
-      console.log(`   Fetch duration: ${fetchDuration}ms`);
-      console.log(`   Total items fetched: ${response.items.length}`);
-      console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
+      return NextResponse.json(emptyResponse);
     }
 
-    // Transform Contentful entries to our PromQueen interface
-    const promQueens = response.items
-      .map((item) => {
-        const fields = isRecord(item.fields) ? (item.fields as Record<string, unknown>) : {};
+    console.log(`   Fetch duration: ${fetchDuration}ms`);
+    console.log(`   Total items fetched: ${sanityResponse.length}`);
 
-        const clientName = ensureString(fields.clientName);
-        const picture = fields.picture;
-        const gown = fields.gown;
-
-        const pictureUrl = extractAssetUrl(picture);
-        const gownInfo = extractGownInfo(gown);
-
-        // Only include entries that have a picture
-        if (!pictureUrl) {
-          return null;
-        }
-
-        return {
-          id: String(item.sys.id),
-          clientName,
-          pictureUrl: 'https:' + pictureUrl,
-          gownId: gownInfo.id,
-          gownName: gownInfo.name,
-        };
-      })
-      .filter((item) => item !== null);
+    // Transform Sanity response and filter items with pictures
+    const promQueens: PromQueen[] = sanityResponse
+      .map((item) => ({
+        id: item.id,
+        clientName: item.clientName ?? null,
+        pictureUrl: item.pictureUrl ?? null,
+        gownId: item.gownId ?? null,
+        gownName: item.gownName ?? null,
+      }))
+      .filter((item) => item.pictureUrl !== null);
 
     // Shuffle the array for random ordering
     const shuffledPromQueens = shuffleArray(promQueens);
@@ -171,7 +74,7 @@ export async function GET(request: NextRequest) {
     // Log final response details
     const totalRequestTime = Date.now() - requestStart;
     console.log('📤 RESPONSE:');
-    console.log(`   Data source: ${dataSource.toUpperCase()}`);
+    console.log(`   Data source: SANITY`);
     console.log(`   Limit: ${limit}`);
     console.log(`   Items in response: ${limitedPromQueens.length}`);
     console.log(`   Total promqueens: ${promQueens.length}`);
@@ -180,7 +83,7 @@ export async function GET(request: NextRequest) {
 
     return responseJson;
   } catch (error) {
-    console.error('❌ Error fetching prom queens from Contentful:', error);
+    console.error('❌ Error fetching prom queens from Sanity:', error);
     return NextResponse.json(
       { error: 'Failed to fetch prom queens' },
       { status: 500 }

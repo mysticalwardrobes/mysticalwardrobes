@@ -20,7 +20,7 @@ import {
   BEST_FOR_OPTIONS,
   SKIRT_STYLE_OPTIONS
 } from "./filters.store";
-import { Gown } from "@/app/api/gowns/model";
+import { GownListItem } from "@/app/api/gowns/model";
 import { useEffect, useState } from "react";
 import React from "react";
 import { getCollectionDisplayName, getCollectionDescription } from "@/app/config/collections";
@@ -28,7 +28,7 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 
 
 interface GownsResponse {
-  items: Gown[];
+  items: GownListItem[];
   total: number;
   page: number;
   limit: number;
@@ -376,7 +376,7 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
   const searchParams = useSearchParams();
   const serializedParams = searchParams.toString();
   
-  const [gowns, setGowns] = useState<Gown[]>([]);
+  const [gowns, setGowns] = useState<GownListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalItems, setTotalItems] = useState(0);
@@ -444,8 +444,8 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
     }
   };
 
-  // Helper function to normalize and optimize image URLs from Contentful
-  // Uses Contentful's image API to optimize images, avoiding Vercel's optimization limits
+  // Helper function to normalize and optimize image URLs from Contentful or Sanity
+  // Uses CDN image APIs to optimize images, avoiding Vercel's optimization limits
   const normalizeImageUrl = (url: string, width?: number, height?: number, quality: number = 80): string => {
     if (!url || url === 'null' || url.trim() === '') {
       return '/assets/sample_gown-1.jpg';
@@ -481,10 +481,27 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
       }
     }
     
+    // If it's a Sanity CDN URL, add optimization parameters
+    if (normalizedUrl.includes('cdn.sanity.io')) {
+      try {
+        const urlObj = new URL(normalizedUrl);
+        // Only add parameters if they don't already exist (preserve existing params)
+        if (width && !urlObj.searchParams.has('w')) urlObj.searchParams.set('w', width.toString());
+        if (height && !urlObj.searchParams.has('h')) urlObj.searchParams.set('h', height.toString());
+        if (!urlObj.searchParams.has('q')) urlObj.searchParams.set('q', quality.toString());
+        if (!urlObj.searchParams.has('auto')) urlObj.searchParams.set('auto', 'format'); // Use auto format for best compression
+        if (!urlObj.searchParams.has('fit')) urlObj.searchParams.set('fit', 'clip'); // Fit mode
+        return urlObj.toString();
+      } catch (e) {
+        // If URL parsing fails, return normalized URL as-is
+        return normalizedUrl;
+      }
+    }
+    
     return normalizedUrl;
   };
 
-  const getGownImage = (gown: Gown) => {
+  const getGownImage = (gown: GownListItem) => {
     // Check if only "Pixie" is selected in skirt styles
     const isOnlyPixieSelected = selectedSkirtStyles.length === 1 && selectedSkirtStyles.includes('Pixie');
     
@@ -532,7 +549,7 @@ export default function CollectionsAllPage({ params }: { params: Promise<{ name:
     return '/assets/sample_gown-1.jpg';
   };
 
-  const hasValidImages = (gown: Gown) => {
+  const hasValidImages = (gown: GownListItem) => {
     return (
       (gown.longGownPictures.length > 0 && gown.longGownPictures[0] && gown.longGownPictures[0] !== 'null') ||
       (gown.filipinianaPictures.length > 0 && gown.filipinianaPictures[0] && gown.filipinianaPictures[0] !== 'null') ||

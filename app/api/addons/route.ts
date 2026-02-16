@@ -1,69 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { client } from '@/app/api/config';
+import { sanityClient, ADDONS_LIST_QUERY } from '@/lib/sanity';
 import { AddOn } from './model';
 import {
-  CACHE_DURATION,
   CACHE_CONTROL_HEADER,
-  ContentfulEntriesResponse,
-  CacheEntry,
-  isCacheValid,
   getCacheAge,
-  getCacheExpiry
 } from '@/app/api/cache-config';
 import { USE_REDIS_CACHE, getJSON, setJSON } from '@/lib/redis';
-import {
-  serializeAddonsResponse,
-  deserializeAddonsResponse,
-  SerializedAddonEntry
-} from '@/lib/contentful-serializer';
 
 // Cache configuration
 // Note: Must be a literal value for Next.js static analysis (3600 = 1 hour)
 export const revalidate = 3600;
 
 // Redis cache key for all addons
-const REDIS_CACHE_KEY = 'addons:all';
+const REDIS_CACHE_KEY = 'addons:all:sanity';
 
-// Helper functions for Contentful data extraction
-const isRecord = (value: unknown): value is Record<string, unknown> => {
-  return typeof value === 'object' && value !== null;
-};
-
-const ensureString = (value: unknown): string | null => {
-  return typeof value === 'string' && value.trim().length > 0 ? value : null;
-};
-
-const ensureNumber = (value: unknown): number | null => {
-  return typeof value === 'number' && !isNaN(value) ? value : null;
-};
-
-const extractAssetUrl = (value: unknown): string | null => {
-  if (!isRecord(value) || !('fields' in value)) {
-    return null;
-  }
-
-  const fields = (value as { fields?: unknown }).fields;
-  if (!isRecord(fields) || !('file' in fields)) {
-    return null;
-  }
-
-  const file = (fields as { file?: unknown }).file;
-  if (!isRecord(file) || !('url' in file)) {
-    return null;
-  }
-
-  return ensureString((file as { url?: unknown }).url);
-};
-
-const normalizeAssetUrls = (value: unknown): string[] => {
-  const collect = Array.isArray(value) ? value : value != null ? [value] : [];
-
-  const urls = collect
-    .map((item) => extractAssetUrl(item))
-    .filter((url): url is string => typeof url === 'string');
-
-  return urls;
-};
+// Serialized cache entry structure for Redis
+interface SerializedCacheEntry {
+  data: AddOn[];
+  timestamp: number;
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -83,93 +38,66 @@ export async function GET(request: NextRequest) {
 
     // Prepare variables for data source
     const now = Date.now();
-    let response: ContentfulEntriesResponse | undefined;
-    let dataSource: 'cache' | 'contentful' = 'contentful';
+    let addOnsData: AddOn[] | undefined;
+    let dataSource: 'cache' | 'sanity' = 'sanity';
 
     // Optionally check Redis cache first
     if (USE_REDIS_CACHE) {
-      interface SerializedCacheEntry {
-        serialized: SerializedAddonEntry[];
-        timestamp: number;
-      }
       const cachedData = await getJSON<SerializedCacheEntry>(REDIS_CACHE_KEY);
 
       if (cachedData) {
-        // Deserialize cached data from Redis (no expiration - invalidated via webhook)
-        response = deserializeAddonsResponse(cachedData.serialized);
+        // Use cached data from Redis (no expiration - invalidated via webhook)
+        addOnsData = cachedData.data;
         dataSource = 'cache';
         console.log('✅ REDIS CACHE HIT: Using cached addons data from Redis');
         console.log(`   Cache age: ${getCacheAge(cachedData.timestamp)}s`);
-        console.log(`   Total items in cache: ${response.items.length}`);
+        console.log(`   Total items in cache: ${addOnsData.length}`);
       }
     }
 
-    // If no valid cache (or Redis disabled), fetch from Contentful
-    if (!response) {
-      // Fetch fresh data from Contentful
+    // If no valid cache (or Redis disabled), fetch from Sanity
+    if (!addOnsData) {
+      // Fetch fresh data from Sanity
       const fetchStart = Date.now();
-      response = await client.getEntries({
-        content_type: 'addOns', // Make sure this matches your Contentful content type
-        limit: 1000, // Maximum allowed by Contentful API to fetch all items
-      });
+      const sanityResponse = await sanityClient.fetch<AddOn[]>(ADDONS_LIST_QUERY);
       const fetchDuration = Date.now() - fetchStart;
 
-      dataSource = 'contentful';
+      // Map Sanity response to ensure proper defaults
+      addOnsData = sanityResponse.map((item) => ({
+        id: item.id,
+        name: item.name ?? 'Untitled Add-On',
+        type: item.type ?? 'accessory',
+        metroManilaRate: item.metroManilaRate ?? 0,
+        luzonRate: item.luzonRate ?? 0,
+        outsideLuzonRate: item.outsideLuzonRate ?? 0,
+        forSaleRate: item.forSaleRate ?? null,
+        pictures: item.pictures?.filter((url): url is string => typeof url === 'string' && url.length > 0) ?? [],
+      }));
 
-      // Serialize and store in Redis cache (no expiration - invalidated via webhook)
+      dataSource = 'sanity';
+
+      // Store in Redis cache (no expiration - invalidated via webhook)
       if (USE_REDIS_CACHE) {
-        const serialized = serializeAddonsResponse(response);
-        interface SerializedCacheEntry {
-          serialized: SerializedAddonEntry[];
-          timestamp: number;
-        }
         const cacheEntry: SerializedCacheEntry = {
-          serialized,
+          data: addOnsData,
           timestamp: now
         };
         await setJSON(REDIS_CACHE_KEY, cacheEntry);
 
         console.log(
-          '🆕 INITIAL OR REFRESHED FETCH: Fetched addons data from Contentful and stored in Redis'
+          '🆕 INITIAL OR REFRESHED FETCH: Fetched addons data from Sanity and stored in Redis'
         );
       } else {
-        console.log('ℹ️ Redis cache disabled: fetched addons data directly from Contentful');
+        console.log('ℹ️ Redis cache disabled: fetched addons data directly from Sanity');
       }
       console.log(`   Fetch duration: ${fetchDuration}ms`);
-      console.log(`   Total items fetched: ${response.items.length}`);
+      console.log(`   Total items fetched: ${addOnsData.length}`);
       console.log(`   Cache stored in Redis (no expiration - invalidated via webhook)`);
       console.log(`   Cache updated at: ${new Date(now).toISOString()}`);
     }
 
-    // At this point, response is guaranteed to be defined
-    const resolvedResponse = response;
-
-    // Transform Contentful entries to our AddOn interface
-    let addOns: AddOn[] = resolvedResponse.items.map((item) => {
-      const fields = isRecord(item.fields) ? (item.fields as Record<string, unknown>) : {};
-
-      const name = ensureString(fields.name) ?? 'Untitled Add-On';
-      const description = ensureString(fields.description) ?? '';
-      const type = ensureString(fields.type) ?? 'accessory';
-      const metroManilaRate = ensureNumber(fields.metroManilaRate) ?? 0;
-      const luzonRate = ensureNumber(fields.luzonRate) ?? 0;
-      const outsideLuzonRate = ensureNumber(fields.outsideLuzonRate) ?? 0;
-      const forSaleRate = ensureNumber(fields.forSaleRate);
-
-      const pictures = normalizeAssetUrls(fields.pictures);
-
-      return {
-        id: String(item.sys.id),
-        name,
-        description,
-        type,
-        metroManilaRate,
-        luzonRate,
-        outsideLuzonRate,
-        forSaleRate,
-        pictures,
-      };
-    });
+    // At this point, addOnsData is guaranteed to be defined
+    let addOns: AddOn[] = [...addOnsData];
 
     // Log available types for debugging
     const availableTypes = [...new Set(addOns.map(a => a.type))];
@@ -183,12 +111,11 @@ export async function GET(request: NextRequest) {
       console.log(`   Found ${addOns.length} addons matching type "${type}"`);
     }
 
-    // Filter by search query
+    // Filter by search query (name only - description is now Portable Text)
     if (search && search.trim()) {
       const searchLower = search.toLowerCase().trim();
       addOns = addOns.filter(addon =>
-        addon.name.toLowerCase().includes(searchLower) ||
-        addon.description.toLowerCase().includes(searchLower)
+        addon.name.toLowerCase().includes(searchLower)
       );
       console.log(`   Search query: "${search}"`);
       console.log(`   Found ${addOns.length} addons matching search`);
@@ -253,7 +180,7 @@ export async function GET(request: NextRequest) {
 
     return responseData;
   } catch (error) {
-    console.error('Error fetching add-ons from Contentful:', error);
+    console.error('Error fetching add-ons from Sanity:', error);
     return NextResponse.json(
       { error: 'Failed to fetch add-ons' },
       { status: 500 }

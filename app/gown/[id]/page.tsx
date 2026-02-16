@@ -4,12 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 import { Gown } from "@/app/api/gowns/model";
-import { AddOn } from "@/app/api/addons/model";
+import { AddOnDetail } from "@/app/api/addons/model";
 import { Review } from "@/app/api/reviews/model";
 import { collections as collectionConfig } from "@/app/config/collections";
 import React from "react";
 import { div } from "framer-motion/client";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { extractTextFromPortableText } from "@/lib/sanity";
 
 type Props = {
   params: { id: string };
@@ -31,8 +32,8 @@ const getCollectionSlugFromName = (name: string) => {
   return encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"));
 };
 
-// Helper function to normalize and optimize image URLs from Contentful
-// Uses Contentful's image API to optimize images, avoiding Vercel's optimization limits
+// Helper function to normalize and optimize image URLs from Contentful or Sanity
+// Uses CDN image APIs to optimize images, avoiding Vercel's optimization limits
 const normalizeImageUrl = (url: string, width?: number, height?: number, quality: number = 80): string => {
   if (!url || url === 'null' || url.trim() === '') {
     return '/assets/sample_gown-1.jpg';
@@ -61,6 +62,23 @@ const normalizeImageUrl = (url: string, width?: number, height?: number, quality
       if (height && !urlObj.searchParams.has('h')) urlObj.searchParams.set('h', height.toString());
       if (!urlObj.searchParams.has('q')) urlObj.searchParams.set('q', quality.toString());
       if (!urlObj.searchParams.has('fm')) urlObj.searchParams.set('fm', 'webp'); // Use WebP format for better compression
+      return urlObj.toString();
+    } catch (e) {
+      // If URL parsing fails, return normalized URL as-is
+      return normalizedUrl;
+    }
+  }
+
+  // If it's a Sanity CDN URL, add optimization parameters
+  if (normalizedUrl.includes('cdn.sanity.io')) {
+    try {
+      const urlObj = new URL(normalizedUrl);
+      // Only add parameters if they don't already exist (preserve existing params)
+      if (width && !urlObj.searchParams.has('w')) urlObj.searchParams.set('w', width.toString());
+      if (height && !urlObj.searchParams.has('h')) urlObj.searchParams.set('h', height.toString());
+      if (!urlObj.searchParams.has('q')) urlObj.searchParams.set('q', quality.toString());
+      if (!urlObj.searchParams.has('auto')) urlObj.searchParams.set('auto', 'format'); // Use auto format for best compression
+      if (!urlObj.searchParams.has('fit')) urlObj.searchParams.set('fit', 'clip'); // Fit mode
       return urlObj.toString();
     } catch (e) {
       // If URL parsing fails, return normalized URL as-is
@@ -1025,9 +1043,9 @@ function GownReviews({ gownId }: { gownId: string }) {
               <h4 className="font-vegawanty text-lg text-foreground">
                 {review.clientName}
               </h4>
-              {review.comment && (
+              {review.comment && extractTextFromPortableText(review.comment) && (
                 <p className="mt-1 font-manrope text-xs text-secondary/70 line-clamp-2">
-                  "{review.comment}"
+                  "{extractTextFromPortableText(review.comment)}"
                 </p>
               )}
             </div>
@@ -1039,7 +1057,7 @@ function GownReviews({ gownId }: { gownId: string }) {
 }
 
 function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
-  const [addOnsByCategory, setAddOnsByCategory] = useState<Record<string, AddOn[]>>({});
+  const [addOnsByCategory, setAddOnsByCategory] = useState<Record<string, AddOnDetail[]>>({});
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
@@ -1060,7 +1078,7 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
             .then((res) => (res.ok ? res.json() : null))
             .catch(() => null)
         );
-        const fetchedAddOns = (await Promise.all(addOnPromises)).filter(Boolean) as AddOn[];
+        const fetchedAddOns = (await Promise.all(addOnPromises)).filter(Boolean) as AddOnDetail[];
 
         // Group fetched add-ons by category (type)
         const grouped = fetchedAddOns.reduce((acc, addon) => {
@@ -1069,7 +1087,7 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
           }
           acc[addon.type].push(addon);
           return acc;
-        }, {} as Record<string, AddOn[]>);
+        }, {} as Record<string, AddOnDetail[]>);
 
         setAddOnsByCategory(grouped);
       } catch (err) {
@@ -1227,9 +1245,16 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 font-manrope text-xs text-secondary/70 line-clamp-2">
-                      {addon.description}
-                    </p>
+                    {addon.description && addon.description.length > 0 && (
+                      <p className="mt-1 font-manrope text-xs text-secondary/70 line-clamp-2">
+                        {addon.description
+                          .filter((block): block is typeof block & { children?: Array<{ text?: string }> } => 
+                            block._type === 'block' && 'children' in block
+                          )
+                          .flatMap(block => block.children?.map((child: { text?: string }) => child.text) || [])
+                          .join(' ')}
+                      </p>
+                    )}
                   </div>
                 </Link>
               ))}

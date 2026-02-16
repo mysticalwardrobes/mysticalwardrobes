@@ -1,10 +1,12 @@
+import { PortableTextBlock } from '@sanity/types';
+
 export interface CustomMadeGown {
   id: string;
   title: string;
   gownFor: string;
   location: string;
   clientName?: string;
-  description: string;
+  description: PortableTextBlock[] | null; // Portable Text from Sanity (array of blocks)
   preOrderPrice: number;
   pixiePreOrderPrice?: number;
   hoodPreOrderPrice?: number;
