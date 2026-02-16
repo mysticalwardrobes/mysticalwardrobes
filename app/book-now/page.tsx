@@ -305,7 +305,7 @@ function BookFittingSection() {
             <ul className="space-y-2 font-manrope text-sm text-secondary/80">
               <li className="flex items-start gap-2">
                 <span className="text-secondary font-bold">•</span>
-                <span><strong>Time Allotted:</strong> Clients have a strict 30-minute allotment for fitting and decision-making. To maximize this time and keep our schedule on track, fittings are limited to gowns only. Accessories are unavailable for fitting but can be selected via our website. You can try on 3-4 gowns during this session. An extension of up to 30 minutes may be allowed if there is no next client booked after your slot, for a ₱400 extension fee.</span>
+                <span><strong>Time Allotted:</strong> Clients have a strict 30-minute allotment for fitting and decision-making. To maximize this time and keep our schedule on track, fittings are limited to gowns only. Accessories are unavailable for fitting but can be selected via our website. You can try on 2-3 gowns during this session. An extension of up to 30 minutes may be allowed if there is no next client booked after your slot, for a ₱400 extension fee.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-secondary font-bold">•</span>
