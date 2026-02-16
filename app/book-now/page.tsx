@@ -304,6 +304,12 @@ function BookFittingSection() {
             </h3>
             <ul className="space-y-2 font-manrope text-sm text-secondary/80">
               <li className="flex items-start gap-2">
+                <svg className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span><strong>Finalized Event Date Required:</strong> You must have a confirmed date of use (event date) before booking your fitting. We use your event date to determine which gowns are still available, so you only try on gowns that can actually be booked for your date. This ensures your fitting session is productive and focused on gowns you can rent.</span>
+              </li>
+              <li className="flex items-start gap-2">
                 <span className="text-secondary font-bold">•</span>
                 <span><strong>Time Allotted:</strong> Clients have a strict 30-minute allotment for fitting and decision-making. To maximize this time and keep our schedule on track, fittings are limited to gowns only. Accessories are unavailable for fitting but can be selected via our website. You can try on 3-4 gowns during this session. An extension of up to 30 minutes may be allowed if there is no next client booked after your slot, for a ₱400 extension fee.</span>
               </li>
@@ -316,6 +322,10 @@ function BookFittingSection() {
               Gown Choices & Availability
             </h3>
             <ul className="space-y-2 font-manrope text-sm text-secondary/80 mb-4">
+              <li className="flex items-start gap-2">
+                <span className="text-secondary font-bold">•</span>
+                <span><strong>Finalized Event Date Required:</strong> You must have a confirmed date of use (event date) before your fitting. We use your event date to check which gowns are still available, so you only try on gowns that can actually be booked for your date.</span>
+              </li>
               <li className="flex items-start gap-2">
                 <span className="text-secondary font-bold">•</span>
                 <span>Some gowns may not be available on your fitting date, as they may already be booked by other clients. That's why we ask for your top 8–15 choices, so we can easily remove any unavailable gowns and proceed with the rest.</span>

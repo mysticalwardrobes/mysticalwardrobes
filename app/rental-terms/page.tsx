@@ -95,6 +95,7 @@ export default function RentalTermsPage() {
                 Note: Fitting schedules are confirmed only after payment of the fitting or rescheduling fee. Gown availability is not guaranteed, as some pieces may be booked online at the same time.
               </p>
               <ul className="mt-4 list-disc list-inside space-y-2">
+                <li><strong>Finalized Event Date Required:</strong> Clients must have a finalized date of use (event date) before scheduling a fitting. This allows us to prepare only the gowns that are still available on your date of use, ensuring you only try on gowns you can actually book. Your event date determines gown availability.</li>
                 <li>Only 3–4 gowns will be prepared per session.</li>
                 <li>Real-time availability updates are provided only if you inquire directly.</li>
                 <li>Clients have a strict 30-minute allotment for fitting and decision-making. To maximize this time and keep our schedule on track, fittings are limited to gowns only. Accessories are unavailable for fitting but can be selected via our website. Extensions of up to 30 minutes may be allowed if there is no next client after your slot; a ₱400.00 extension fee applies.</li>
@@ -105,6 +106,7 @@ export default function RentalTermsPage() {
                   Gown Choices &amp; Availability
                 </h3>
                 <ul className="list-disc list-inside space-y-2 mb-4">
+                  <li><strong>Finalized Event Date Required:</strong> You must have a confirmed date of use (event date) before your fitting appointment. We use your event date to check which gowns are still available, so you only try on gowns that can actually be booked for your date.</li>
                   <li>Some gowns may not be available on your fitting date, as they may already be booked by other clients. That's why we ask for your top 8–15 choices, so we can easily remove any unavailable gowns and proceed with the rest.</li>
                   <li>We're unable to update every fitting client in real time about each gown's status, so please message us a few days before your fitting and we'll send an updated list of gowns that are available to try.</li>
                   <li>Paying the ₱800 fitting fee does not reserve any gown for your fitting date or your event date. A gown is only reserved once you officially book it for your event.</li>
