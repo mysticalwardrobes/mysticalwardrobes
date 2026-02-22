@@ -615,7 +615,7 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
                     <span className="font-semibold">6-7 days</span> (excluding Sundays and holidays)
                   </p>
                   <p className="text-xs text-neutral-600">
-                    <span className="font-semibold">9 days</span> (including Saturdays and Sundays)
+                    <span className="font-semibold">9 days</span> (including Sundays and holidays)
                   </p>
                 </div>
               )}
