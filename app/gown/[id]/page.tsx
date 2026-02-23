@@ -612,10 +612,10 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
               {location === "LUZON" && (
                 <div className="mt-3 space-y-1">
                   <p className="text-xs text-neutral-600">
-                    <span className="font-semibold">6-7 days</span> (excluding Sundays and holidays)
+                    <span className="font-semibold">6 days</span> (excluding Sundays and holidays)
                   </p>
                   <p className="text-xs text-neutral-600">
-                    <span className="font-semibold">9 days</span> (including Sundays and holidays)
+                    <span className="font-semibold">7-9 days</span> (including Sundays and holidays)
                   </p>
                 </div>
               )}

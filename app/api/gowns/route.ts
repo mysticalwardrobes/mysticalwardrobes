@@ -124,6 +124,7 @@ export async function GET(request: NextRequest) {
 
     // At this point, gownsData is guaranteed to be defined
     let gowns: GownListItem[] = [...gownsData];
+    const searchPriorityByGownId = new Map<string, number>();
 
     // Filter by collection
     if (collection && collection !== 'all') {
@@ -187,16 +188,44 @@ export async function GET(request: NextRequest) {
 
     // Search by name, collection, bestFor, color, or tags
     if (search) {
-      const searchLower = search.toLowerCase();
-      gowns = gowns.filter(gown =>
-        gown.name.toLowerCase().includes(searchLower) ||
-        gown.collection.some(c => c.toLowerCase().includes(searchLower)) ||
-        gown.bestFor.some(b => b.toLowerCase().includes(searchLower)) ||
-        gown.color.some(c => c.toLowerCase().includes(searchLower)) ||
-        gown.skirtStyle.some(s => s.toLowerCase().includes(searchLower)) ||
-        gown.tags.some(tag => tag.toLowerCase().includes(searchLower))
-      );
+      const searchLower = search.toLowerCase().trim();
+      gowns = gowns.filter(gown => {
+        const nameLower = gown.name.toLowerCase();
+        const nameStartsWithMatch = nameLower.startsWith(searchLower);
+        const nameContainsMatch = nameLower.includes(searchLower);
+        const otherFieldsMatch =
+          gown.collection.some(c => c.toLowerCase().includes(searchLower)) ||
+          gown.bestFor.some(b => b.toLowerCase().includes(searchLower)) ||
+          gown.color.some(c => c.toLowerCase().includes(searchLower)) ||
+          gown.skirtStyle.some(s => s.toLowerCase().includes(searchLower)) ||
+          gown.tags.some(tag => tag.toLowerCase().includes(searchLower));
+
+        if (nameStartsWithMatch) {
+          searchPriorityByGownId.set(gown.id, 0);
+          return true;
+        }
+
+        if (nameContainsMatch) {
+          searchPriorityByGownId.set(gown.id, 1);
+          return true;
+        }
+
+        if (otherFieldsMatch) {
+          searchPriorityByGownId.set(gown.id, 2);
+          return true;
+        }
+
+        return false;
+      });
     }
+
+    const compareBySearchPriority = (a: GownListItem, b: GownListItem) => {
+      if (!search || searchPriorityByGownId.size === 0) return 0;
+
+      const priorityA = searchPriorityByGownId.get(a.id) ?? Number.MAX_SAFE_INTEGER;
+      const priorityB = searchPriorityByGownId.get(b.id) ?? Number.MAX_SAFE_INTEGER;
+      return priorityA - priorityB;
+    };
 
     // Sort
     switch (sortBy) {
@@ -251,6 +280,11 @@ export async function GET(request: NextRequest) {
 
           // Sort by click count (descending), then by name
           gowns.sort((a, b) => {
+            const searchPriorityDiff = compareBySearchPriority(a, b);
+            if (searchPriorityDiff !== 0) {
+              return searchPriorityDiff;
+            }
+
             const clicksA = clickCounts.get(a.id) || 0;
             const clicksB = clickCounts.get(b.id) || 0;
             if (clicksB !== clicksA) {
@@ -266,6 +300,11 @@ export async function GET(request: NextRequest) {
         break;
       case 'price-low-high':
         gowns.sort((a, b) => {
+          const searchPriorityDiff = compareBySearchPriority(a, b);
+          if (searchPriorityDiff !== 0) {
+            return searchPriorityDiff;
+          }
+
           const priceA = a.metroManilaRate > 0 ? a.metroManilaRate : a.pixieMetroManilaRate;
           const priceB = b.metroManilaRate > 0 ? b.metroManilaRate : b.pixieMetroManilaRate;
           return priceA - priceB;
@@ -273,17 +312,36 @@ export async function GET(request: NextRequest) {
         break;
       case 'price-high-low':
         gowns.sort((a, b) => {
+          const searchPriorityDiff = compareBySearchPriority(a, b);
+          if (searchPriorityDiff !== 0) {
+            return searchPriorityDiff;
+          }
+
           const priceA = a.metroManilaRate > 0 ? a.metroManilaRate : a.pixieMetroManilaRate;
           const priceB = b.metroManilaRate > 0 ? b.metroManilaRate : b.pixieMetroManilaRate;
           return priceB - priceA;
         });
         break;
       case 'name-desc':
-        gowns.sort((a, b) => b.name.localeCompare(a.name));
+        gowns.sort((a, b) => {
+          const searchPriorityDiff = compareBySearchPriority(a, b);
+          if (searchPriorityDiff !== 0) {
+            return searchPriorityDiff;
+          }
+
+          return b.name.localeCompare(a.name);
+        });
         break;
       case 'name':
       default:
-        gowns.sort((a, b) => a.name.localeCompare(b.name));
+        gowns.sort((a, b) => {
+          const searchPriorityDiff = compareBySearchPriority(a, b);
+          if (searchPriorityDiff !== 0) {
+            return searchPriorityDiff;
+          }
+
+          return a.name.localeCompare(b.name);
+        });
         break;
     }
 
