@@ -273,26 +273,32 @@ function BookFittingSection() {
           {/* Fitting Fee */}
           <div className="bg-gradient-to-br from-yellow-50 to-amber-50 border-2 border-yellow-300 rounded-lg p-4">
             <h3 className="font-manrope text-lg font-semibold text-foreground mb-3">
-              Fitting Fee: ₱800
+              Fitting Fee: ₱800.00
             </h3>
             <ul className="space-y-2 font-manrope text-sm text-secondary/80">
               <li className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>A non-refundable ₱800 fitting fee is required and must be paid online before your visit.</span>
+                <span>The ₱800 fitting fee is required before your appointment is scheduled and confirmed.</span>
               </li>
               <li className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span><strong>₱500 Rebate:</strong> ₱500 of your fitting fee will be deducted from your gown rental if you book within 5 days of your fitting appointment.</span>
+                <span><strong>Fee breakdown:</strong> ₱300 covers staff assistance (non-refundable), while ₱500 can be credited to your rental if you book within 5 calendar days from your fitting date (Day 1 is your fitting day).</span>
               </li>
               <li className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-foreground flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                <span><strong>Cancellation Policy:</strong> The fitting fee is non-refundable for cancellations or missed appointments.</span>
+                <span><strong>Cancellation and no-show policy:</strong> Missed or late-cancelled appointments forfeit the fitting fee.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <svg className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Fitting schedules are confirmed only after payment of the fitting or rescheduling fee.</span>
               </li>
             </ul>
           </div>
@@ -305,7 +311,15 @@ function BookFittingSection() {
             <ul className="space-y-2 font-manrope text-sm text-secondary/80">
               <li className="flex items-start gap-2">
                 <span className="text-secondary font-bold">•</span>
-                <span><strong>Time Allotted:</strong> Clients have a strict 30-minute allotment for fitting and decision-making. To maximize this time and keep our schedule on track, fittings are limited to gowns only. Accessories are unavailable for fitting but can be selected via our website. You can try on 3-4 gowns during this session. An extension of up to 30 minutes may be allowed if there is no next client booked after your slot, for a ₱400 extension fee.</span>
+                <span><strong>Time Allotted:</strong> Clients have a strict 30-minute allotment for fitting and decision-making. To maximize this time and keep our schedule on track, fittings are limited to gowns only. Accessories are unavailable for fitting but can be selected via our website. An extension of up to 30 minutes may be allowed if there is no next client booked after your slot, for a ₱400 extension fee.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-secondary font-bold">•</span>
+                <span>Only 2-3 gowns are prepared per fitting session.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-secondary font-bold">•</span>
+                <span>Clients may only bring 2-3 companions inside the fitting area.</span>
               </li>
             </ul>
           </div>
@@ -316,6 +330,10 @@ function BookFittingSection() {
               Gown Choices & Availability
             </h3>
             <ul className="space-y-2 font-manrope text-sm text-secondary/80 mb-4">
+              <li className="flex items-start gap-2">
+                <span className="text-secondary font-bold">•</span>
+                <span><strong>Finalized Event Date Required:</strong> You must have a confirmed date of use before scheduling a fitting so we can prepare gowns that are still available for your event date.</span>
+              </li>
               <li className="flex items-start gap-2">
                 <span className="text-secondary font-bold">•</span>
                 <span>Some gowns may not be available on your fitting date, as they may already be booked by other clients. That's why we ask for your top 8–15 choices, so we can easily remove any unavailable gowns and proceed with the rest.</span>
