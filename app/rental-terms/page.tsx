@@ -516,7 +516,7 @@ export default function RentalTermsPage() {
                       <td className="py-3 px-4 align-top">Remaining balance payable</td>
                       <td className="py-3 px-4 align-top">
                         <ul className="list-disc list-inside space-y-1">
-                          <li>The gown was reserved exclusively for your date. Since we don't charge a security deposit, the remaining balance must be settled. Down-payments are non-refundable.</li>
+                          <li>The gown was reserved exclusively for your date. If your event is canceled or rescheduled, Mystical Wardrobes is not liable for resulting losses and no refund will be issued for booked gowns. Since we don't charge a security deposit, the remaining balance must still be settled. Down-payments are non-refundable.</li>
                           <li>If approved under the Store Credit Policy, only the eligible portion of the amount you've already paid may be converted to store credit instead of being forfeited. The remaining balance is still due and must be settled regardless of any store credit approval.</li>
                         </ul>
                       </td>
@@ -545,7 +545,7 @@ export default function RentalTermsPage() {
                         Metro Manila: ₱3,000<br />Outside Metro Manila: ₱4,000
                       </td>
                       <td className="py-3 px-4 align-top">
-                        This applies if you move your event date—even if the event is canceled—as your original slot was already reserved. This option is not available if you decide just 2 days before your scheduled delivery. If your first-choice gown isn't available on the new date, you'll need to choose from what's available. The fee still applies, as the gown was previously blocked for your original schedule.
+                        This applies if you move your event date, even when the original event is canceled, because your original slot was already reserved. Mystical Wardrobes is not liable for event cancellation or rescheduling outcomes, and no refund will be issued for booked gowns. This option is not available if you decide just 2 days before your scheduled delivery. If your first-choice gown isn't available on the new date, you'll need to choose from what's available. The fee still applies, as the gown was previously blocked for your original schedule.
                       </td>
                     </tr>
                     <tr>

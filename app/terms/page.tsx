@@ -80,7 +80,7 @@ export default function TermsOfServicePage() {
                 All bookings and appointments are subject to availability. We recommend booking in advance, especially for peak seasons. Walk-ins are not guaranteed immediate service.
               </p>
               <p className="mb-4">
-                Cancellation and rescheduling policies apply as outlined in our specific service terms.
+                Cancellation and rescheduling policies apply as outlined in our specific service terms. For gown rentals, if the event is canceled or rescheduled, Mystical Wardrobes is not liable for resulting losses and no refund will be issued for booked gowns.
               </p>
             </section>
           </FadeInOnScroll>
