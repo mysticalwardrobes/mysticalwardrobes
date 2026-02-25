@@ -208,9 +208,9 @@ export default function RentalTermsPage() {
                     A) Rider / 3rd-Party Pickup (Lalamove / Grab / etc.)
                   </h4>
                   <ul className="list-disc list-inside space-y-2">
-                    <li>Clients will <strong>book their own rider</strong> for both <strong>delivery and return</strong>.</li>
-                    <li>If you&apos;re unable to book, message us — we&apos;ll <strong>guide you or assist if needed</strong>.</li>
-                    <li>Mystical Wardrobes may <strong>take over rider booking</strong> only when necessary to maintain delivery schedules/timelines.</li>
+                    <li>Mystical Wardrobes will <strong>book the rider for gown delivery</strong> by default.</li>
+                    <li>Clients will only <strong>book their own delivery rider</strong> if they specifically request to do so.</li>
+                    <li>If you&apos;d like to book delivery yourself, message us first so we can coordinate timelines smoothly.</li>
                   </ul>
                 </div>
 
@@ -236,7 +236,7 @@ export default function RentalTermsPage() {
                   4.2 Required Details for Record Purposes
                 </h3>
                 <p className="mb-3">
-                  Even if the client books the rider, clients are still <strong>required to submit delivery and return details in advance</strong> (for documentation and smooth coordination), including:
+                  Whether Mystical Wardrobes books the delivery rider or the client requests to book it, clients are still <strong>required to submit delivery and return details in advance</strong> (for documentation and smooth coordination), including:
                 </p>
                 <ul className="list-disc list-inside space-y-1">
                   <li>Name</li>
@@ -826,7 +826,7 @@ export default function RentalTermsPage() {
                 9. Updates
               </h2>
               <ul className="list-disc list-inside space-y-2">
-                <li>Last updated on February 14, 2026</li>
+                <li>Last updated on February 25, 2026</li>
                 <li>These terms may be updated at any time without prior notice. The latest version will always be posted on our website.</li>
               </ul>
             </section>

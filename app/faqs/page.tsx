@@ -122,11 +122,11 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "How does delivery work for Metro Manila?",
-        answer: "Clients will book their own rider (Lalamove, Grab, etc.) for both delivery and return. If you're unable to book, message us and we'll guide you or assist if needed. Mystical Wardrobes may take over rider booking only when necessary to maintain delivery schedules/timelines. Client pick-up is also available by appointment only."
+        answer: "Mystical Wardrobes books the rider for gown delivery by default. Clients will only book their own delivery rider (Lalamove, Grab, etc.) if they specifically request to do so. If you'd like to book delivery yourself, message us first so we can coordinate timelines smoothly. Client pick-up is also available by appointment only."
       },
       {
         question: "What details do I need to submit for delivery?",
-        answer: "Even if you book the rider yourself, you are still required to submit delivery and return details in advance for documentation and smooth coordination, including: your name, contact number(s), and exact pin location / address."
+        answer: "Whether Mystical Wardrobes books the delivery rider or you request to book it yourself, you are still required to submit delivery and return details in advance for documentation and smooth coordination, including: your name, contact number(s), and exact pin location / address."
       },
       {
         question: "What are the standard delivery and return windows?",
