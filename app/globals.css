@@ -1,22 +1,11 @@
 @import "tailwindcss";
 
 :root {
-/* Core Brand Colors */
-  --primary-rose: #B94B56;       /* Your Foreground */
-  --primary-deep: #912933;       /* Your Foreground Darker */
-  
-  /* Missing: Formal Neutrals */
-  --bg-main: #ffffff;
-  --bg-soft: #F9F7F6;            /* A warm, formal off-white for sections */
-  --text-main: #2D2926;          /* Deep charcoal for readability */
-  --text-muted: #6B6661;         /* For secondary info/captions */
-  
-  /* Refined Accents */
-  --secondary-sage: #7A7E6B;     /* Slightly lighter/cleaner version of your olive */
-  --tertiary-dust: #B38882;      /* Your tertiary (excellent for borders/decor) */
-  
-  /* Missing: Border & UI lines */
-  --border-light: #E5E1DF;
+  --background: #ffffff;
+  --foreground: #B94B56;
+  --foreground-darker: #912933;
+  --secondary: #636653;
+  --tertiary: #B38882;
 }
 
 @theme inline {
