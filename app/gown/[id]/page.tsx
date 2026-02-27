@@ -20,7 +20,7 @@ type LocationKey = "METRO_MANILA" | "LUZON" | "OUTSIDE_LUZON";
 const TAG_PREVIEW_LIMIT = 4;
 const RENTAL_TIMELINES: { key: LocationKey; title: string; duration: string }[] = [
   { key: "METRO_MANILA", title: "Metro Manila & Greater Metro Manila", duration: "3 days" },
-  { key: "LUZON", title: "Luzon (Outside Metro Manila)", duration: "6-9 days" },
+  { key: "LUZON", title: "Luzon (Outside Metro Manila)", duration: "5-8 days" },
   { key: "OUTSIDE_LUZON", title: "Outside Luzon & Luzon Islands", duration: "15-16 days" },
 ];
 
@@ -612,10 +612,10 @@ export default function GownPage({ params }: { params: Promise<{ id: string }> }
               {location === "LUZON" && (
                 <div className="mt-3 space-y-1">
                   <p className="text-xs text-neutral-600">
-                    <span className="font-semibold">6 days</span> (excluding Sundays and holidays)
+                    <span className="font-semibold">5 days</span> (excluding Sundays and holidays)
                   </p>
                   <p className="text-xs text-neutral-600">
-                    <span className="font-semibold">7-9 days</span> (including Sundays and holidays)
+                    <span className="font-semibold">6-8 days</span> (including Sundays and 1-2 holidays)
                   </p>
                 </div>
               )}

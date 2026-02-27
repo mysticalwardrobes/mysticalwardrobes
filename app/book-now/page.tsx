@@ -319,7 +319,7 @@ function BookFittingSection() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-secondary font-bold">•</span>
-                <span>Clients may only bring 2-3 companions inside the fitting area.</span>
+                <span>Clients may only bring 1-2 companions inside the fitting area.</span>
               </li>
             </ul>
           </div>

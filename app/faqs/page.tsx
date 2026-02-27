@@ -101,7 +101,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "How many companions can I bring to a fitting?",
-        answer: "Clients may only bring 2–3 companions inside the fitting area. This is to maintain a comfortable and organized space for everyone."
+        answer: "Clients may only bring 1–2 companions inside the fitting area. This is to maintain a comfortable and organized space for everyone."
       },
       {
         question: "Is gown availability guaranteed for fitting appointments?",
@@ -118,7 +118,7 @@ const faqData: FAQCategory[] = [
     faqs: [
       {
         question: "When does the rental period begin?",
-        answer: "The rental period starts on the day we ship out the gown. Courier working days exclude Sundays and holidays if we will use LBC."
+        answer: "The rental period starts on the day we ship out the gown. For Luzon Provinces (Outside Metro Manila), timeline is 5 days (excluding Sundays and holidays) or 6-8 days (including Sundays and 1-2 holidays). Courier working days exclude Sundays and holidays if we will use LBC."
       },
       {
         question: "How does delivery work for Metro Manila?",
