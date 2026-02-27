@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Mystical Wings</title>
+  <desc id="desc">Decorative wings thumbnail for style extensions category.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2b1f35" />
+      <stop offset="100%" stop-color="#7f5aa2" />
+    </linearGradient>
+    <linearGradient id="wing" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f4e9ff" />
+      <stop offset="100%" stop-color="#d4b6f3" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)" />
+  <g transform="translate(600 470)">
+    <ellipse cx="-240" cy="-20" rx="210" ry="300" fill="url(#wing)" opacity="0.9" />
+    <ellipse cx="240" cy="-20" rx="210" ry="300" fill="url(#wing)" opacity="0.9" />
+    <ellipse cx="-150" cy="40" rx="120" ry="230" fill="#f9f1ff" opacity="0.8" />
+    <ellipse cx="150" cy="40" rx="120" ry="230" fill="#f9f1ff" opacity="0.8" />
+    <path d="M-50 220 C-25 120, 25 120, 50 220" fill="none" stroke="#f9e9ff" stroke-width="28" stroke-linecap="round" />
+    <circle cx="0" cy="245" r="18" fill="#f9e9ff" />
+  </g>
+  <text x="600" y="840" text-anchor="middle" font-family="Georgia, serif" font-size="74" fill="#f8eeff" letter-spacing="8">
+    WINGS
+  </text>
+</svg>

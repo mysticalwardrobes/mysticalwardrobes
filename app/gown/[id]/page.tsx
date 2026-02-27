@@ -1109,9 +1109,10 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
       fan: 'Fans',
       mask: 'Masks',
       necklace: 'Necklaces',
-      umbrella: 'Umbrellas'
+      umbrella: 'Umbrellas',
+      wings: 'Wings'
     };
-    return names[type] || type.charAt(0).toUpperCase() + type.slice(1) + 's';
+    return names[type] || type.charAt(0).toUpperCase() + type.slice(1) + (type.endsWith('s') ? '' : 's');
   };
 
   const getCategoryDescription = (type: string) => {
@@ -1123,7 +1124,8 @@ function RelatedAddOns({ suggestedAddOns }: { suggestedAddOns: string[] }) {
       fan: 'Beautiful fans for a touch of vintage elegance',
       mask: 'Mysterious masks for your masquerade moments',
       necklace: 'Stunning necklaces to add sparkle to your ensemble',
-      umbrella: 'Elegant umbrellas for a romantic and dreamy touch'
+      umbrella: 'Elegant umbrellas for a romantic and dreamy touch',
+      wings: 'Ethereal wings to add a magical and enchanting touch'
     };
     return descriptions[type] || 'Beautiful accessories to complete your look';
   };

@@ -37,7 +37,7 @@ function FiltersPanel({ type }: { type: string }) {
   const [priceRange, setPriceRange] = useAtom(priceRangeAtom);
 
   // Determine if this is a style extension or add-on
-  const isStyleExtension = type === 'hood' || type === 'train';
+  const isStyleExtension = type === 'hood' || type === 'train' || type === 'wings';
   const sectionTitle = isStyleExtension ? 'Style Extensions' : 'Accessories';
 
   const handleMinChange = (value: number) => {
@@ -140,6 +140,15 @@ function FiltersPanel({ type }: { type: string }) {
               >
                 Trains
               </Link>
+              <Link
+                href="/addons-style-extensions/wings"
+                className={`block text-sm capitalize transition-all duration-200 hover:translate-x-1 ${'wings' === type
+                  ? 'text-secondary font-semibold'
+                  : 'text-secondary/70 hover:text-secondary/90'
+                  }`}
+              >
+                Wings
+              </Link>
             </div>
           </div>
 
@@ -241,7 +250,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
     setCurrentPage(1);
   }, [type, sortBy, priceRange, addonSearch, setCurrentPage]);
 
-  const isStyleExtension = type === 'hood' || type === 'train';
+  const isStyleExtension = type === 'hood' || type === 'train' || type === 'wings';
   const sectionName = isStyleExtension ? 'Style Extensions' : 'Accessories';
 
   const getTypeIcon = (type: string) => {
@@ -254,7 +263,8 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
       fan: 'Fan',
       mask: 'Mask',
       necklace: 'Necklace',
-      umbrella: 'Umbrella'
+      umbrella: 'Umbrella',
+      wings: 'Wings'
     };
     return icons[type] || 'Accessory';
   };
@@ -269,9 +279,16 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
       fan: 'Beautiful fans for a touch of vintage elegance',
       mask: 'Mysterious masks for your masquerade moments',
       necklace: 'Stunning necklaces to add sparkle to your ensemble',
-      umbrella: 'Elegant umbrellas for a romantic and dreamy touch'
+      umbrella: 'Elegant umbrellas for a romantic and dreamy touch',
+      wings: 'Ethereal wings to add a magical and enchanting touch'
     };
     return descriptions[type] || 'Beautiful accessories to complete your look';
+  };
+
+  const getPluralLabel = (value: string) => {
+    if (value === 'necklace') return 'Necklaces';
+    if (value === 'gloves' || value === 'wings') return value.charAt(0).toUpperCase() + value.slice(1);
+    return value.charAt(0).toUpperCase() + value.slice(1) + 's';
   };
 
   if (loading) {
@@ -307,7 +324,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
             <p className="font-manrope text-xs uppercase tracking-[0.4em] text-secondary/70">{sectionName}</p>
             <div className="flex items-center justify-center gap-3 lg:justify-start">
               <h1 className="font-vegawanty text-4xl text-foreground sm:text-5xl capitalize">
-                {type === 'necklace' ? 'Necklaces' : type === 'gloves' ? 'Gloves' : type + 's'}
+                {getPluralLabel(type)}
               </h1>
             </div>
             <p className="font-manrope text-sm text-secondary sm:text-base">
@@ -373,7 +390,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
           <div className="flex flex-col gap-4 bg-white/90 py-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             <div className="flex items-center justify-between sm:justify-start sm:gap-12">
               <p className="font-manrope text-xs text-secondary/80 sm:text-sm">
-                Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, totalItems)} of {totalItems} {type === 'necklace' ? 'necklaces' : type === 'gloves' ? 'gloves' : type + 's'}
+                Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, totalItems)} of {totalItems} {getPluralLabel(type).toLowerCase()}
               </p>
               <button
                 type="button"
@@ -408,7 +425,7 @@ export default function AddOnsCategoryPage({ params }: { params: Promise<{ type:
               <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-secondary/10 mx-auto">
                 <span className="font-vegawanty text-2xl font-semibold text-secondary">{getTypeIcon(type).charAt(0)}</span>
               </div>
-              <h3 className="font-vegawanty text-xl text-foreground mb-2">No {type === 'necklace' ? 'necklaces' : type === 'gloves' ? 'gloves' : type + 's'} found</h3>
+              <h3 className="font-vegawanty text-xl text-foreground mb-2">No {getPluralLabel(type).toLowerCase()} found</h3>
               <p className="font-manrope text-secondary/70">
                 Try adjusting your filters to see more results.
               </p>

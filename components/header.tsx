@@ -128,6 +128,13 @@ export default function Header() {
               >
                 Train
               </Link>
+              <Link
+                href="/addons-style-extensions/wings"
+                className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
+                onClick={() => setIsStyleExtensionDropdownOpen(false)}
+              >
+                Wings
+              </Link>
               <Link 
                 href="/request-style-extension" 
                 className="block px-4 py-3 text-foreground hover:bg-gray-100 hover:text-foreground-darker transition-colors duration-200"
@@ -342,6 +349,16 @@ export default function Header() {
                   }}
                 >
                   Train
+                </Link>
+                <Link
+                  href="/addons-style-extensions/wings"
+                  className="block py-2 px-3 rounded-lg transition-all duration-300 hover:text-gray-900 hover:bg-gray-100 text-secondary text-sm"
+                  onClick={() => {
+                    setIsStyleExtensionDropdownOpen(false);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  Wings
                 </Link>
                 <Link 
                   href="/request-style-extension" 

@@ -60,9 +60,16 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
       fan: 'Beautiful fans for a touch of vintage elegance',
       mask: 'Mysterious masks for your masquerade moments',
       necklace: 'Stunning necklaces to add sparkle to your ensemble',
-      umbrella: 'Elegant umbrellas for a romantic and dreamy touch'
+      umbrella: 'Elegant umbrellas for a romantic and dreamy touch',
+      wings: 'Ethereal wings to add a magical and enchanting touch'
     };
     return descriptions[type] || 'Beautiful accessories to complete your look';
+  };
+
+  const getPluralLabel = (value: string) => {
+    if (value === 'necklace') return 'Necklaces';
+    if (value === 'gloves' || value === 'wings') return value.charAt(0).toUpperCase() + value.slice(1);
+    return value.charAt(0).toUpperCase() + value.slice(1) + 's';
   };
 
   if (loading) {
@@ -82,7 +89,7 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
               href={`/addons/${type}`}
               className="inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-3 text-sm font-medium text-white transition hover:bg-secondary/90"
             >
-              ← Back to {type === 'necklace' ? 'necklaces' : type === 'gloves' ? 'gloves' : type + 's'}
+              ← Back to {getPluralLabel(type).toLowerCase()}
             </Link>
           </div>
         </div>
@@ -100,7 +107,7 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
           </Link>
           <span className="text-secondary/50">/</span>
           <Link href={`/addons/${type}`} className="text-secondary/70 hover:text-secondary transition-colors capitalize">
-            {type === 'necklace' ? 'necklaces' : type === 'gloves' ? 'gloves' : type + 's'}
+            {getPluralLabel(type).toLowerCase()}
           </Link>
           <span className="text-secondary/50">/</span>
           <span className="text-secondary">{addOn.name}</span>
@@ -238,9 +245,9 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
         {/* Related Items */}
         <section className="mt-16">
           <div className="mb-8 text-center">
-            <h2 className="font-vegawanty text-3xl text-foreground sm:text-4xl">More {addOn.type === 'necklace' ? 'Necklaces' : addOn.type === 'gloves' ? 'Gloves' : addOn.type.charAt(0).toUpperCase() + addOn.type.slice(1) + 's'}</h2>
+            <h2 className="font-vegawanty text-3xl text-foreground sm:text-4xl">More {getPluralLabel(addOn.type)}</h2>
             <p className="mt-2 font-manrope text-sm text-secondary/70">
-              Explore other {addOn.type === 'necklace' ? 'necklaces' : addOn.type === 'gloves' ? 'gloves' : addOn.type + 's'} in our collection
+              Explore other {getPluralLabel(addOn.type).toLowerCase()} in our collection
             </p>
           </div>
           
@@ -249,7 +256,7 @@ export default function AddOnDetailPage({ params }: { params: Promise<{ type: st
               href={`/addons/${type}`}
               className="inline-flex items-center gap-2 rounded-full border-2 border-secondary px-6 py-3 text-sm font-medium text-secondary transition hover:bg-secondary hover:text-white"
             >
-              View All {addOn.type === 'necklace' ? 'Necklaces' : addOn.type === 'gloves' ? 'Gloves' : addOn.type.charAt(0).toUpperCase() + addOn.type.slice(1) + 's'}
+              View All {getPluralLabel(addOn.type)}
             </Link>
           </div>
         </section>
