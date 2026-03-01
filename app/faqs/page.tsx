@@ -89,7 +89,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "Can I reschedule my fitting appointment?",
-        answer: "Yes, a ₱300 fee is payable each time a fitting slot is moved."
+        answer: "Fitting rescheduling is not allowed by default. If an exception is permitted and approved, a ₱400 rescheduling fee applies per approved move."
       },
       {
         question: "How long is a standard fitting session?",

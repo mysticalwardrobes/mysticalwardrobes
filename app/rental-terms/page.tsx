@@ -76,9 +76,9 @@ export default function RentalTermsPage() {
                     </tr>
                     <tr className="border-b border-foreground/10">
                       <td className="py-3 px-4 align-top">Reschedule Fee</td>
-                      <td className="py-3 px-4 align-top">₱500.00</td>
+                      <td className="py-3 px-4 align-top">₱400.00</td>
                       <td className="py-3 px-4 align-top">
-                        A ₱300.00 fee is payable each time a fitting slot is moved.
+                        Fitting rescheduling is not allowed by default. If an exception is permitted and approved, a ₱400.00 rescheduling fee applies per approved move.
                       </td>
                     </tr>
                     <tr>
@@ -92,7 +92,7 @@ export default function RentalTermsPage() {
                 </table>
               </div>
               <p className="mt-4 text-sm">
-                Note: Fitting schedules are confirmed only after payment of the fitting or rescheduling fee. Gown availability is not guaranteed, as some pieces may be booked online at the same time.
+                Note: Fitting schedules are confirmed only after payment of the fitting fee. Rescheduling is not allowed by default; if an exception is permitted and approved, the ₱400.00 rescheduling fee applies. Gown availability is not guaranteed, as some pieces may be booked online at the same time.
               </p>
               <ul className="mt-4 list-disc list-inside space-y-2">
                 <li>Only 2-3 gowns will be prepared per session.</li>
