@@ -826,7 +826,7 @@ export default function RentalTermsPage() {
                 9. Updates
               </h2>
               <ul className="list-disc list-inside space-y-2">
-                <li>Last updated on February 25, 2026</li>
+                <li>Last updated on February 28, 2026</li>
                 <li>These terms may be updated at any time without prior notice. The latest version will always be posted on our website.</li>
               </ul>
             </section>
