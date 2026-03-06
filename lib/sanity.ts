@@ -67,6 +67,7 @@ export const ADDON_DETAIL_QUERY = `*[_type == "addOns" && _id == $id][0] {
 // Used for filtering, sorting, and displaying gown cards
 export const GOWNS_LIST_QUERY = `*[_type == "gown"] {
   "id": _id,
+  "createdAt": _createdAt,
   name,
   collection,
   bestFor,
@@ -83,6 +84,7 @@ export const GOWNS_LIST_QUERY = `*[_type == "gown"] {
 
 export const GOWN_DETAIL_QUERY = `*[_type == "gown" && _id == $id][0] {
   "id": _id,
+  "createdAt": _createdAt,
   name,
   collection,
   bestFor,

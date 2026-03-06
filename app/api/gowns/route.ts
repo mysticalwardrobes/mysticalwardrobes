@@ -64,12 +64,21 @@ export async function GET(request: NextRequest) {
       const cachedData = await getJSON<SerializedCacheEntry>(REDIS_CACHE_KEY);
 
       if (cachedData) {
-        // Use cached data from Redis (no expiration - invalidated via webhook)
-        gownsData = cachedData.data;
-        dataSource = 'cache';
-        console.log('✅ REDIS CACHE HIT: Using cached gowns data from Redis');
-        console.log(`   Cache age: ${getCacheAge(cachedData.timestamp)}s`);
-        console.log(`   Total items in cache: ${gownsData.length}`);
+        const hasCreatedAtField = cachedData.data.every(
+          (item) => typeof item.createdAt === 'string'
+        );
+
+        if (hasCreatedAtField) {
+          // Use cached data from Redis (no expiration - invalidated via webhook)
+          gownsData = cachedData.data;
+          dataSource = 'cache';
+          console.log('✅ REDIS CACHE HIT: Using cached gowns data from Redis');
+          console.log(`   Cache age: ${getCacheAge(cachedData.timestamp)}s`);
+          console.log(`   Total items in cache: ${gownsData.length}`);
+        } else {
+          // Backward compatibility: refresh old cache entries that predate createdAt field
+          console.log('⚠️ REDIS CACHE STALE: Missing createdAt field, refetching from Sanity');
+        }
       }
     }
 
@@ -87,6 +96,7 @@ export async function GET(request: NextRequest) {
         // Map Sanity response to ensure proper defaults (only list view fields)
         gownsData = sanityResponse.map((item) => ({
           id: item.id,
+          createdAt: item.createdAt ?? '',
           name: item.name ?? 'Untitled Gown',
           collection: item.collection ?? [],
           bestFor: item.bestFor ?? [],
@@ -227,6 +237,11 @@ export async function GET(request: NextRequest) {
       return priorityA - priorityB;
     };
 
+    const getCreatedAtTimestamp = (gown: GownListItem): number => {
+      const timestamp = Date.parse(gown.createdAt);
+      return Number.isNaN(timestamp) ? 0 : timestamp;
+    };
+
     // Sort
     switch (sortBy) {
       case 'most-popular':
@@ -297,6 +312,38 @@ export async function GET(request: NextRequest) {
           // Fallback to name sorting if click data fetch fails
           gowns.sort((a, b) => a.name.localeCompare(b.name));
         }
+        break;
+      case 'new-to-old':
+        gowns.sort((a, b) => {
+          const searchPriorityDiff = compareBySearchPriority(a, b);
+          if (searchPriorityDiff !== 0) {
+            return searchPriorityDiff;
+          }
+
+          const createdAtA = getCreatedAtTimestamp(a);
+          const createdAtB = getCreatedAtTimestamp(b);
+          if (createdAtB !== createdAtA) {
+            return createdAtB - createdAtA;
+          }
+
+          return a.name.localeCompare(b.name);
+        });
+        break;
+      case 'old-to-new':
+        gowns.sort((a, b) => {
+          const searchPriorityDiff = compareBySearchPriority(a, b);
+          if (searchPriorityDiff !== 0) {
+            return searchPriorityDiff;
+          }
+
+          const createdAtA = getCreatedAtTimestamp(a);
+          const createdAtB = getCreatedAtTimestamp(b);
+          if (createdAtA !== createdAtB) {
+            return createdAtA - createdAtB;
+          }
+
+          return a.name.localeCompare(b.name);
+        });
         break;
       case 'price-low-high':
         gowns.sort((a, b) => {

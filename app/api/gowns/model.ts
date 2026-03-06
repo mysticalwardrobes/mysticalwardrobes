@@ -2,6 +2,7 @@
 // Contains only fields needed for filtering, sorting, and card display
 export interface GownListItem {
   id: string;
+  createdAt: string;
   name: string;
   collection: string[];
   bestFor: string[];

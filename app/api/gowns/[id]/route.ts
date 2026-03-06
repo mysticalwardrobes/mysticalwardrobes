@@ -67,6 +67,7 @@ export async function GET(
       // Map Sanity response to ensure proper defaults
       gownData = {
         id: sanityResponse.id,
+        createdAt: sanityResponse.createdAt ?? '',
         name: sanityResponse.name ?? 'Untitled Gown',
         collection: sanityResponse.collection ?? [],
         bestFor: sanityResponse.bestFor ?? [],

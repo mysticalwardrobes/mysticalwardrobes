@@ -39,6 +39,8 @@ interface GownsResponse {
 
 const sortOptions = [
   { value: "most-popular", label: "Most Popular" },
+  { value: "new-to-old", label: "New to Old" },
+  { value: "old-to-new", label: "Old to New" },
   { value: "name", label: "Name A-Z" },
   { value: "name-desc", label: "Name Z-A" },
   { value: "price-low-high", label: "Price: Low to High" },
