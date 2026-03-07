@@ -286,13 +286,13 @@ function BookFittingSection() {
                 <svg className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span><strong>Fee breakdown:</strong> ₱300 covers staff assistance (non-refundable), while ₱500 can be credited to your rental if you book within 5 calendar days from your fitting date (Day 1 is your fitting day).</span>
+                <span><strong>Fee breakdown:</strong> Once paid and booked, fitting fees are strictly non-refundable. ₱300 covers staff assistance (non-refundable), while ₱500 can be credited to your rental only if you book within 5 calendar days from your fitting date (Day 1 is your fitting day).</span>
               </li>
               <li className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-foreground flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                <span><strong>Cancellation and no-show policy:</strong> Missed or late-cancelled appointments forfeit the fitting fee.</span>
+                <span><strong>Cancellation and no-show policy:</strong> Once paid and booked, fitting fees are strictly non-refundable. Missed or late-cancelled appointments forfeit the fitting fee.</span>
               </li>
               <li className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

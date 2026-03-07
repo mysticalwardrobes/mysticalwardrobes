@@ -71,7 +71,7 @@ export default function RentalTermsPage() {
                       <td className="py-3 px-4 align-top">Fitting Fee</td>
                       <td className="py-3 px-4 align-top">₱800.00</td>
                       <td className="py-3 px-4 align-top">
-                        Fitting Fee (₱800): ₱300 covers staff assistance (non-refundable), and ₱500 will be credited to your rental if you book within 5 calendar days from your fitting date (Day 1 = fitting day); missed or late-cancelled appointments forfeit the fee.
+                        Fitting Fee (₱800): Once paid and booked, fitting fees are strictly non-refundable. ₱300 covers staff assistance (non-refundable), and ₱500 can be credited to your rental only if you book within 5 calendar days from your fitting date (Day 1 = fitting day); missed or late-cancelled appointments forfeit the fee.
                       </td>
                     </tr>
                     <tr className="border-b border-foreground/10">
@@ -92,7 +92,7 @@ export default function RentalTermsPage() {
                 </table>
               </div>
               <p className="mt-4 text-sm">
-                Note: Fitting schedules are confirmed only after payment of the fitting fee. Rescheduling is not allowed by default; if an exception is permitted and approved, the ₱400.00 rescheduling fee applies. Gown availability is not guaranteed, as some pieces may be booked online at the same time.
+                Note: Fitting schedules are confirmed only after payment of the fitting fee. Once paid and booked, fitting fees are strictly non-refundable. Rescheduling is not allowed by default; if an exception is permitted and approved, the ₱400.00 rescheduling fee applies. Gown availability is not guaranteed, as some pieces may be booked online at the same time.
               </p>
               <ul className="mt-4 list-disc list-inside space-y-2">
                 <li>Only 2-3 gowns will be prepared per session.</li>
@@ -516,8 +516,8 @@ export default function RentalTermsPage() {
                       <td className="py-3 px-4 align-top">Remaining balance payable</td>
                       <td className="py-3 px-4 align-top">
                         <ul className="list-disc list-inside space-y-1">
-                          <li>The gown was reserved exclusively for your date. If your event is canceled or rescheduled, Mystical Wardrobes is not liable for resulting losses and no refund will be issued for booked gowns. Since we don't charge a security deposit, the remaining balance must still be settled. Down-payments are non-refundable.</li>
-                          <li>If approved under the Store Credit Policy, only the eligible portion of the amount you've already paid may be converted to store credit instead of being forfeited. The remaining balance is still due and must be settled regardless of any store credit approval.</li>
+                          <li>Once paid and booked, rental booking payments are strictly non-refundable. The gown was reserved exclusively for your date. If your event is canceled or rescheduled, Mystical Wardrobes is not liable for resulting losses and no refund will be issued for booked gowns. Since we don't charge a security deposit, the remaining balance must still be settled.</li>
+                          <li>Store credit is not a refund. If approved under the Store Credit Policy, only the eligible portion of the amount you've already paid may be converted to store credit instead of being forfeited. The remaining balance is still due and must be settled regardless of any store credit approval.</li>
                         </ul>
                       </td>
                     </tr>
@@ -527,7 +527,7 @@ export default function RentalTermsPage() {
                       <td className="py-3 px-4 align-top space-y-3">
                         <div>
                           <p className="font-semibold text-foreground mb-1">What it is:</p>
-                          <p>We convert only the eligible portion of the amount you've already paid into credit you can use for a future booking.</p>
+                          <p>Store credit is not a refund. We convert only the eligible portion of the amount you've already paid into credit you can use for a future booking.</p>
                         </div>
                         <div>
                           <p className="font-semibold text-foreground mb-1">How long it's valid:</p>
@@ -545,7 +545,7 @@ export default function RentalTermsPage() {
                         Metro Manila: ₱3,000<br />Outside Metro Manila: ₱4,000
                       </td>
                       <td className="py-3 px-4 align-top">
-                        This applies if you move your event date, even when the original event is canceled, because your original slot was already reserved. Mystical Wardrobes is not liable for event cancellation or rescheduling outcomes, and no refund will be issued for booked gowns. This option is not available if you decide just 2 days before your scheduled delivery. If your first-choice gown isn't available on the new date, you'll need to choose from what's available. The fee still applies, as the gown was previously blocked for your original schedule.
+                        This applies if you move your event date, even when the original event is canceled, because your original slot was already reserved. Once paid and booked, rental booking payments are strictly non-refundable. Mystical Wardrobes is not liable for event cancellation or rescheduling outcomes, and no refund will be issued for booked gowns. This option is not available if you decide just 2 days before your scheduled delivery. If your first-choice gown isn't available on the new date, you'll need to choose from what's available. The fee still applies, as the gown was previously blocked for your original schedule.
                       </td>
                     </tr>
                     <tr>
@@ -554,7 +554,7 @@ export default function RentalTermsPage() {
                         Metro Manila: ₱3,000<br />Outside Metro Manila: ₱4,000
                       </td>
                       <td className="py-3 px-4 align-top">
-                        Upon approval and subject to availability. One change per booking. If the new gown's rate is higher, the difference must be paid; if lower, no refunds are issued.
+                        Upon approval and subject to availability. One change per booking. Once paid and booked, rental booking payments are strictly non-refundable. If the new gown's rate is higher, the difference must be paid; if lower, no refunds are issued.
                       </td>
                     </tr>
                   </tbody>

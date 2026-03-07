@@ -85,7 +85,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "Is there a fee for fitting appointments?",
-        answer: "Yes, Fitting Fee (₱800): ₱300 covers staff assistance (non-refundable), and ₱500 will be credited to your rental if you book within 5 calendar days from your fitting date (Day 1 = fitting day); missed or late-cancelled appointments forfeit the fee."
+        answer: "Yes. Once paid and booked, fitting fees are strictly non-refundable. Fitting Fee (₱800): ₱300 covers staff assistance (non-refundable), and ₱500 can be credited to your rental only if you book within 5 calendar days from your fitting date (Day 1 = fitting day); missed or late-cancelled appointments forfeit the fee."
       },
       {
         question: "Can I reschedule my fitting appointment?",
@@ -196,11 +196,11 @@ const faqData: FAQCategory[] = [
     faqs: [
       {
         question: "Can I cancel my gown rental?",
-        answer: "If you cancel a rental, the gown was reserved exclusively for your date, and since we don't charge a security deposit, the remaining balance must be settled. Down-payments are non-refundable. Under our Store Credit Policy, the paid amount may be converted to store credit instead of being forfeited if approved."
+        answer: "Once paid and booked, rental booking payments are strictly non-refundable. If you cancel a rental, the gown was reserved exclusively for your date, and since we don't charge a security deposit, the remaining balance must still be settled. Store credit is not a refund; under our Store Credit Policy, only the eligible paid amount may be converted to store credit if approved."
       },
       {
         question: "What is the Store Credit Option?",
-        answer: "What it is: We convert only the eligible portion of the amount you've already paid into credit you can use for a future booking. How long it's valid: Use the credit to make a new booking within 30 days of issuance. Your new event date must be within 6 months of issuance. One-time only. If you rebook with store credit and cancel again, our standard cancellation policy applies and the credit is forfeited."
+        answer: "Store credit is not a refund. What it is: We convert only the eligible portion of the amount you've already paid into credit you can use for a future booking. How long it's valid: Use the credit to make a new booking within 30 days of issuance. Your new event date must be within 6 months of issuance. One-time only. If you rebook with store credit and cancel again, our standard cancellation policy applies and the credit is forfeited."
       },
       {
         question: "Is there a fee for rescheduling my event date?",
