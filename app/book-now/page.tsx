@@ -7,7 +7,7 @@ import FadeInOnScroll from "@/components/FadeInOnScroll";
 type TabType = "rental" | "fitting" | "custom";
 
 export default function BookNowPage() {
-  const [activeTab, setActiveTab] = useState<TabType>("rental");
+  const [activeTab, setActiveTab] = useState<TabType>("fitting");
   const [showBanner, setShowBanner] = useState(false); // Set to true to show exclusive deals
 
   return (
@@ -44,15 +44,6 @@ export default function BookNowPage() {
           <div className="mx-auto max-w-5xl">
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8">
               <button
-                onClick={() => setActiveTab("rental")}
-                className={`px-6 py-3 font-manrope text-sm md:text-base rounded-lg transition-all duration-300 ${activeTab === "rental"
-                  ? "bg-secondary text-background shadow-lg"
-                  : "bg-white text-secondary border-2 border-secondary/20 hover:border-secondary/50"
-                  }`}
-              >
-                Book a Rental
-              </button>
-              <button
                 onClick={() => setActiveTab("fitting")}
                 className={`px-6 py-3 font-manrope text-sm md:text-base rounded-lg transition-all duration-300 ${activeTab === "fitting"
                   ? "bg-secondary text-background shadow-lg"
@@ -60,6 +51,15 @@ export default function BookNowPage() {
                   }`}
               >
                 Book a Fitting
+              </button>
+              <button
+                onClick={() => setActiveTab("rental")}
+                className={`px-6 py-3 font-manrope text-sm md:text-base rounded-lg transition-all duration-300 ${activeTab === "rental"
+                  ? "bg-secondary text-background shadow-lg"
+                  : "bg-white text-secondary border-2 border-secondary/20 hover:border-secondary/50"
+                  }`}
+              >
+                Book a Rental
               </button>
               <button
                 onClick={() => setActiveTab("custom")}
